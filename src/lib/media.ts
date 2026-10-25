@@ -20,8 +20,8 @@ export const media = {
 
 // Company details shown in the footer and structured data — replace with real ones.
 export const company = {
-  name: "WAV Invest",
+  name: "WAV Invest s.r.o.",
   email: "info@wavinvest.eu",
-  phone: "+00 000 000 000",
-  address: "Street 1, 000 00 City, Country",
+  phone: "+421 910 279 990",
+  address: "Štefana Moyzesa 30, 071 01 Michalovce, Slovakia",
 };

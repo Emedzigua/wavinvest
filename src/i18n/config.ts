@@ -1,4 +1,4 @@
-export const locales = ["en", "de", "pl", "cs", "sk"] as const;
+export const locales = ["en", "de", "pl", "cz", "sk"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en";
 
@@ -6,16 +6,17 @@ export const localeNames: Record<Locale, string> = {
   en: "English",
   de: "Deutsch",
   pl: "Polski",
-  cs: "Čeština",
+  cz: "Čeština",
   sk: "Slovenčina",
 };
 
-// BCP 47 tags used for <html lang>, hreflang and Open Graph
+// BCP 47 tags used for <html lang>, hreflang and Open Graph.
+// The Czech URL is /cz, but the official language code search engines expect is "cs".
 export const localeTags: Record<Locale, string> = {
   en: "en",
   de: "de",
   pl: "pl",
-  cs: "cs",
+  cz: "cs",
   sk: "sk",
 };
 
@@ -27,7 +28,7 @@ export const countryLocale: Record<string, Locale> = {
   LI: "de",
   LU: "de",
   PL: "pl",
-  CZ: "cs",
+  CZ: "cz",
   SK: "sk",
 };
 

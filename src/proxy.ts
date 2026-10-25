@@ -6,6 +6,7 @@ import {
   defaultLocale,
   hasLocale,
   LOCALE_COOKIE,
+  localeTags,
   locales,
   type Locale,
 } from "@/i18n/config";
@@ -32,7 +33,9 @@ function detectLocale(request: NextRequest): Locale {
     headers: { "accept-language": accept },
   }).languages();
   try {
-    return match(languages, [...locales], defaultLocale) as Locale;
+    // Browsers send "cs" for Czech, so match on language tags, then map back
+    const tag = match(languages, locales.map((l) => localeTags[l]), localeTags[defaultLocale]);
+    return locales.find((l) => localeTags[l] === tag) ?? defaultLocale;
   } catch {
     return defaultLocale;
   }

@@ -1,8 +1,8 @@
 {
   "meta": {
     "title": "WAV Invest — Europalety EPAL a paletové nástavce ve velkoobchodě",
-    "description": "B2B dodavatel europalet EPAL (1200×800) a dřevěných paletových nástavců. Nové i použité, skladem, s dodáním do Česka, Slovenska, Německa, Polska a Rakouska. Vyžádejte si nabídku.",
-    "keywords": "palety EPAL, europalety, paletové nástavce, dřevěné palety velkoobchod, palety 1200x800, použité europalety, palety B2B"
+    "description": "B2B dodavatel europalet EPAL (1200×800) a dřevěných paletových nástavců. Výhradně nové, skladem, s dodáním do Česka, Slovenska, Německa, Polska a Rakouska. Vyžádejte si nabídku.",
+    "keywords": "palety EPAL, europalety, paletové nástavce, dřevěné palety velkoobchod, palety 1200x800, nové europalety, palety B2B"
   },
   "nav": {
     "products": "Produkty",
@@ -16,11 +16,9 @@
   },
   "hero": {
     "title": "Europalety a nástavce dodávané v průmyslovém měřítku.",
-    "subtitle": "Palety EPAL a paletové nástavce pro výrobce, sklady a logistické firmy v celé střední Evropě.",
+    "subtitle": "Nové palety EPAL a paletové nástavce pro výrobce, sklady a logistické firmy v celé střední Evropě.",
     "cta": "Poptat nabídku",
-    "secondary": "Zobrazit produkty",
-    "cardLabel": "Skladem",
-    "cardText": "EPAL 1200 × 800 · expedice do 48 h"
+    "secondary": "Zobrazit produkty"
   },
   "intro": {
     "label": "O nás",
@@ -43,12 +41,12 @@
       "epal": {
         "name": "Europalety EPAL",
         "tagline": "Evropský standard pro nosiče nákladu.",
-        "description": "Licencované europalety EPAL 1, značené a s kontrolou kvality. Nové nebo jako tříděné použité — vhodné pro automatizované sklady, export i každodenní logistiku.",
+        "description": "Licencované europalety EPAL 1, značené a s kontrolou kvality. Vždy zcela nové, přímo z výroby — vhodné pro automatizované sklady, export i každodenní logistiku.",
         "specs": [
           ["Rozměry", "1200 × 800 × 144 mm"],
           ["Bezpečné pracovní zatížení", "1 500 kg"],
           ["Hmotnost", "cca 25 kg"],
-          ["Stav", "Nové · Použité třída A · Použité třída B"],
+          ["Stav", "Pouze nové"],
           ["Ošetření", "Tepelně ošetřené (IPPC / ISPM 15)"]
         ],
         "imageAlt": "Stohy europalet EPAL ve skladu"
@@ -61,7 +59,7 @@
           ["Pro paletu", "EPAL 1200 × 800 mm"],
           ["Výška nástavce", "200 mm"],
           ["Panty", "4 nebo 6 pozinkovaných pantů"],
-          ["Stav", "Nové · Použité"],
+          ["Stav", "Pouze nové"],
           ["Složené", "Naplocho pro zpětnou přepravu"]
         ],
         "imageAlt": "Dřevěné palety s nástavci stohované venku"
@@ -83,11 +81,11 @@
     "label": "FAQ",
     "title": "Časté dotazy zákazníků",
     "items": [
-      { "q": "Jaké je minimální objednací množství?", "a": "Obvykle dodáváme od jednoho stohu palet (cca 15–20 kusů). U celých kamionů (zhruba 600 palet) nabízíme nejlepší cenu za kus." },
-      { "q": "Prodáváte kromě nových i použité palety?", "a": "Ano. Kromě nových palet EPAL nabízíme tříděné použité palety třídy A (světlé, čisté, jako nové) a třídy B (tmavší, plně funkční)." },
+      { "q": "Jaké je minimální objednací množství?", "a": "Pevné minimální množství nemáme. Jsme nastavení na pravidelné dodávky 500+ palet měsíčně a celé kamiony mají nejlepší cenu za kus. Uveďte ve formuláři své měsíční množství a nabídku připravíme na míru." },
+      { "q": "Jsou vaše palety a nástavce nové?", "a": "Ano — prodáváme výhradně nové palety EPAL a nové paletové nástavce přímo z výroby. Použité, opravované ani tříděné palety neprodáváme." },
       { "q": "Jak rychle dokážete dodat?", "a": "Zboží skladem obvykle opouští náš areál do 48 hodin. Doba doručení pak závisí na místě určení — přesný termín potvrdíme v nabídce." },
       { "q": "Pasují nástavce na každou europaletu?", "a": "Naše nástavce jsou vyrobené pro standardní formát EPAL 1200 × 800 mm a pasují na každou paletu podle tohoto standardu." },
-      { "q": "Můžete od nás odebrat použité palety?", "a": "Výměna nebo zpětný odkup palet je v mnoha případech možný. Uveďte množství ve formuláři a navrhneme řešení." }
+      { "q": "Je možné nastavit pravidelné měsíční dodávky?", "a": "Ano. Většina zákazníků objednává podle pevného měsíčního plánu. Dohodneme s vámi množství a dny dodání a zboží pro vaše objednávky rezervujeme." }
     ]
   },
   "quote": {
@@ -95,7 +93,7 @@
     "title": "Napište nám, co potřebujete. Odpovíme do 24 hodin.",
     "intro": "Vyplňte formulář a váš obchodní zástupce se ozve s cenou, dostupností a termínem dodání.",
     "trust": [
-      { "title": "Licence EPAL", "text": "Pouze certifikované palety" },
+      { "title": "100 % nové", "text": "Licencované palety EPAL a nástavce" },
       { "title": "Odpověď do 24 h", "text": "V pracovní dny" },
       { "title": "Dodáváme do", "text": "DE · PL · CZ · SK · AT" }
     ],
@@ -108,13 +106,12 @@
       "quantity": "Množství (ks)",
       "location": "Místo dodání (město, země)",
       "message": "Zpráva",
-      "messagePlaceholder": "Stav, četnost dodávek, termíny…",
+      "messagePlaceholder": "Měsíční množství, četnost dodávek, termíny…",
       "consent": "Souhlasím s tím, že WAV Invest použije mé údaje k vyřízení této poptávky podle zásad ochrany osobních údajů."
     },
     "productOptions": {
-      "epal-new": "Europalety EPAL — nové",
-      "epal-used": "Europalety EPAL — použité",
-      "collars": "Paletové nástavce",
+      "epal": "Europalety EPAL (nové)",
+      "collars": "Paletové nástavce (nové)",
       "mixed": "Palety + nástavce / jiné"
     },
     "submit": "Odeslat poptávku",

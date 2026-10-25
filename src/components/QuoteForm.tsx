@@ -12,7 +12,7 @@ const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 type Status = "idle" | "sending" | "success" | "error" | "missing-key";
 
 export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; lang: Locale }) {
-  const [product, setProduct] = useState("epal-new");
+  const [product, setProduct] = useState("epal");
   const [status, setStatus] = useState<Status>("idle");
   const f = dict.fields;
 

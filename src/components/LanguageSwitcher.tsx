@@ -1,6 +1,6 @@
 "use client";
 
-import { LOCALE_COOKIE, localeNames, locales, type Locale } from "@/i18n/config";
+import { LOCALE_COOKIE, localeNames, localeTags, locales, type Locale } from "@/i18n/config";
 
 // Remembers the choice for a year so the auto-detection never overrides it
 function choose(l: Locale) {
@@ -27,8 +27,8 @@ export default function LanguageSwitcher({
           <li key={l}>
             <a
               href={`/${l}${path}`}
-              hrefLang={l}
-              lang={l}
+              hrefLang={localeTags[l]}
+              lang={localeTags[l]}
               aria-current={l === lang ? "true" : undefined}
               onClick={() => choose(l)}
             >

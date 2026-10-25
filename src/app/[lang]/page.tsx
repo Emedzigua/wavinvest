@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { hasLocale, siteUrl } from "@/i18n/config";
+import { hasLocale, localeTags, siteUrl } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { company, media } from "@/lib/media";
 import Nav from "@/components/Nav";
@@ -15,7 +15,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   if (!hasLocale(lang)) notFound();
   const t = await getDictionary(lang);
   const products = [
-    { id: "epal", product: "epal-new", image: media.products.epal, ...t.products.items.epal },
+    { id: "epal", product: "epal", image: media.products.epal, ...t.products.items.epal },
     { id: "collars", product: "collars", image: media.products.collars, ...t.products.items.collars },
   ] as const;
 
@@ -41,7 +41,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       })),
       {
         "@type": "FAQPage",
-        inLanguage: lang,
+        inLanguage: localeTags[lang],
         mainEntity: t.faq.items.map((f) => ({
           "@type": "Question",
           name: f.q,
@@ -73,10 +73,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 <a href="#products" className="btn btn--ghost-light">{t.hero.secondary}</a>
               </div>
             </div>
-            <aside className="hero__card">
-              <span className="label label--light">{t.hero.cardLabel}</span>
-              <p>{t.hero.cardText}</p>
-            </aside>
           </div>
         </section>
 

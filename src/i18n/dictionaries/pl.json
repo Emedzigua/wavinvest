@@ -1,8 +1,8 @@
 {
   "meta": {
     "title": "WAV Invest — Palety EPAL i nadstawki paletowe w hurcie",
-    "description": "Dostawca B2B palet EPAL (1200×800) oraz drewnianych nadstawek paletowych. Nowe i używane, z magazynu, z dostawą do Polski, Niemiec, Czech, Słowacji i Austrii. Zapytaj o ofertę.",
-    "keywords": "palety EPAL, europalety, nadstawki paletowe, palety drewniane hurt, palety 1200x800, używane europalety, palety B2B"
+    "description": "Dostawca B2B palet EPAL (1200×800) oraz drewnianych nadstawek paletowych. Wyłącznie nowe, z magazynu, z dostawą do Polski, Niemiec, Czech, Słowacji i Austrii. Zapytaj o ofertę.",
+    "keywords": "palety EPAL, europalety, nadstawki paletowe, palety drewniane hurt, palety 1200x800, nowe europalety, palety B2B"
   },
   "nav": {
     "products": "Produkty",
@@ -16,11 +16,9 @@
   },
   "hero": {
     "title": "Europalety i nadstawki dostarczane w skali przemysłowej.",
-    "subtitle": "Palety EPAL i nadstawki paletowe dla producentów, magazynów i firm logistycznych w całej Europie Środkowej.",
+    "subtitle": "Nowe palety EPAL i nadstawki paletowe dla producentów, magazynów i firm logistycznych w całej Europie Środkowej.",
     "cta": "Zapytaj o ofertę",
-    "secondary": "Zobacz produkty",
-    "cardLabel": "Na stanie",
-    "cardText": "EPAL 1200 × 800 · wysyłka w ciągu 48 h"
+    "secondary": "Zobacz produkty"
   },
   "intro": {
     "label": "O nas",
@@ -43,12 +41,12 @@
       "epal": {
         "name": "Europalety EPAL",
         "tagline": "Europejski standard nośników ładunku.",
-        "description": "Licencjonowane europalety EPAL 1, oznakowane i kontrolowane jakościowo. Dostępne nowe lub jako sortowane palety używane — do magazynów automatycznych, eksportu i codziennej logistyki.",
+        "description": "Licencjonowane europalety EPAL 1, oznakowane i kontrolowane jakościowo. Zawsze nowe, prosto z produkcji — do magazynów automatycznych, eksportu i codziennej logistyki.",
         "specs": [
           ["Wymiary", "1200 × 800 × 144 mm"],
           ["Bezpieczne obciążenie", "1 500 kg"],
           ["Waga", "ok. 25 kg"],
-          ["Stan", "Nowe · Używane klasa A · Używane klasa B"],
+          ["Stan", "Tylko nowe"],
           ["Obróbka", "Fumigacja termiczna (IPPC / ISPM 15)"]
         ],
         "imageAlt": "Stosy europalet EPAL w magazynie"
@@ -61,7 +59,7 @@
           ["Pasuje do", "EPAL 1200 × 800 mm"],
           ["Wysokość nadstawki", "200 mm"],
           ["Zawiasy", "4 lub 6 zawiasów ocynkowanych"],
-          ["Stan", "Nowe · Używane"],
+          ["Stan", "Tylko nowe"],
           ["Po złożeniu", "Płaskie do transportu powrotnego"]
         ],
         "imageAlt": "Palety drewniane z nadstawkami ułożone na zewnątrz"
@@ -83,11 +81,11 @@
     "label": "FAQ",
     "title": "Najczęstsze pytania klientów",
     "items": [
-      { "q": "Jaka jest minimalna ilość zamówienia?", "a": "Zazwyczaj dostarczamy od jednego stosu palet (ok. 15–20 sztuk). Przy pełnych ładunkach (ok. 600 palet) oferujemy najlepszą cenę za sztukę." },
-      { "q": "Czy sprzedajecie również palety używane?", "a": "Tak. Oprócz nowych palet EPAL oferujemy sortowane palety używane w klasie A (jasne, czyste, jak nowe) i klasie B (ciemniejsze, w pełni sprawne)." },
+      { "q": "Jaka jest minimalna ilość zamówienia?", "a": "Nie mamy sztywnej minimalnej ilości zamówienia. Specjalizujemy się w regularnych dostawach 500+ palet miesięcznie, a pełne ładunki otrzymują najlepszą cenę za sztukę. Podaj w formularzu swoją miesięczną ilość, a dopasujemy ofertę." },
+      { "q": "Czy wasze palety i nadstawki są nowe?", "a": "Tak — sprzedajemy wyłącznie nowe palety EPAL i nowe nadstawki paletowe, prosto z produkcji. Nie handlujemy paletami używanymi, naprawianymi ani sortowanymi." },
       { "q": "Jak szybko możecie dostarczyć?", "a": "Towar z magazynu zwykle opuszcza nasz plac w ciągu 48 godzin. Czas dostawy zależy od miejsca docelowego — dokładny termin potwierdzamy w ofercie." },
       { "q": "Czy nadstawki pasują do każdej europalety?", "a": "Nasze nadstawki są wykonane dla standardowego formatu EPAL 1200 × 800 mm i pasują do każdej palety zgodnej z tym standardem." },
-      { "q": "Czy odbieracie nasze używane palety?", "a": "W wielu przypadkach możliwa jest wymiana lub odkup palet. Podaj swoje ilości w formularzu, a zaproponujemy rozwiązanie." }
+      { "q": "Czy możliwe są regularne dostawy co miesiąc?", "a": "Tak. Większość klientów zamawia według stałego harmonogramu miesięcznego. Ustalamy z Tobą ilości i dni dostaw oraz rezerwujemy towar na Twoje zamówienia." }
     ]
   },
   "quote": {
@@ -95,7 +93,7 @@
     "title": "Powiedz nam, czego potrzebujesz. Odpowiemy w ciągu 24 godzin.",
     "intro": "Wypełnij formularz, a Twój opiekun odezwie się z ceną, dostępnością i terminem dostawy.",
     "trust": [
-      { "title": "Licencja EPAL", "text": "Tylko certyfikowane palety" },
+      { "title": "100 % nowe", "text": "Licencjonowane palety EPAL i nadstawki" },
       { "title": "Odpowiedź w 24 h", "text": "W dni robocze" },
       { "title": "Dostarczamy do", "text": "DE · PL · CZ · SK · AT" }
     ],
@@ -108,13 +106,12 @@
       "quantity": "Ilość (szt.)",
       "location": "Miejsce dostawy (miasto, kraj)",
       "message": "Wiadomość",
-      "messagePlaceholder": "Stan, częstotliwość dostaw, terminy…",
+      "messagePlaceholder": "Ilość miesięczna, częstotliwość dostaw, terminy…",
       "consent": "Wyrażam zgodę na wykorzystanie moich danych przez WAV Invest w celu odpowiedzi na to zapytanie, zgodnie z polityką prywatności."
     },
     "productOptions": {
-      "epal-new": "Europalety EPAL — nowe",
-      "epal-used": "Europalety EPAL — używane",
-      "collars": "Nadstawki paletowe",
+      "epal": "Europalety EPAL (nowe)",
+      "collars": "Nadstawki paletowe (nowe)",
       "mixed": "Palety + nadstawki / inne"
     },
     "submit": "Wyślij zapytanie",

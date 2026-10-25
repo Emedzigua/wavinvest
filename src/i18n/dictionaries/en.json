@@ -1,8 +1,8 @@
 {
   "meta": {
     "title": "WAV Invest — EPAL Euro Pallets & Pallet Collars Wholesale",
-    "description": "B2B supplier of EPAL Euro pallets (1200×800) and wooden pallet collars. New and used, from stock, delivered across Germany, Poland, Czechia, Slovakia and Austria. Request a quote.",
-    "keywords": "EPAL pallets, Euro pallets, pallet collars, wooden pallets wholesale, 1200x800 pallets, used Euro pallets, B2B pallets"
+    "description": "B2B supplier of EPAL Euro pallets (1200×800) and wooden pallet collars. Brand-new only, from stock, delivered across Germany, Poland, Czechia, Slovakia and Austria. Request a quote.",
+    "keywords": "EPAL pallets, Euro pallets, pallet collars, wooden pallets wholesale, 1200x800 pallets, new Euro pallets, B2B pallets"
   },
   "nav": {
     "products": "Products",
@@ -16,11 +16,9 @@
   },
   "hero": {
     "title": "Euro pallets and collars, delivered at industrial scale.",
-    "subtitle": "EPAL pallets and pallet collars for manufacturers, warehouses and logistics companies across Central Europe.",
+    "subtitle": "Brand-new EPAL pallets and pallet collars for manufacturers, warehouses and logistics companies across Central Europe.",
     "cta": "Request a quote",
-    "secondary": "See products",
-    "cardLabel": "In stock",
-    "cardText": "EPAL 1200 × 800 · ready for dispatch within 48 h"
+    "secondary": "See products"
   },
   "intro": {
     "label": "About",
@@ -43,12 +41,12 @@
       "epal": {
         "name": "EPAL Euro pallets",
         "tagline": "The European standard for load carriers.",
-        "description": "Licensed EPAL 1 Euro pallets, branded and quality-controlled. Available new or as sorted used grades — suited for automated warehouses, export and everyday logistics.",
+        "description": "Licensed EPAL 1 Euro pallets, branded and quality-controlled. Always brand-new, straight from production — suited for automated warehouses, export and everyday logistics.",
         "specs": [
           ["Dimensions", "1200 × 800 × 144 mm"],
           ["Safe working load", "1 500 kg"],
           ["Weight", "approx. 25 kg"],
-          ["Condition", "New · Used grade A · Used grade B"],
+          ["Condition", "New only"],
           ["Treatment", "Heat-treated (IPPC / ISPM 15)"]
         ],
         "imageAlt": "Stacks of EPAL Euro pallets in a warehouse"
@@ -61,7 +59,7 @@
           ["Fits", "EPAL 1200 × 800 mm"],
           ["Height per collar", "200 mm"],
           ["Hinges", "4 or 6 galvanised hinges"],
-          ["Condition", "New · Used"],
+          ["Condition", "New only"],
           ["Folded", "Flat for return transport"]
         ],
         "imageAlt": "Wooden pallets with collars stacked outdoors"
@@ -83,11 +81,11 @@
     "label": "FAQ",
     "title": "Questions buyers often ask",
     "items": [
-      { "q": "What is the minimum order quantity?", "a": "We usually deliver from one pallet stack (about 15–20 pallets) upwards. For full truckloads (around 600 pallets) we offer the best price per piece." },
-      { "q": "Do you sell used pallets as well as new ones?", "a": "Yes. Besides new EPAL pallets we offer sorted used pallets in grade A (light, clean, like new) and grade B (darker, fully functional)." },
+      { "q": "What is the minimum order quantity?", "a": "There is no fixed minimum order. We are built for regular supply of 500+ pallets per month, and full truckloads get the best price per piece. Tell us your monthly volume in the form and we will tailor the offer." },
+      { "q": "Are your pallets and collars new?", "a": "Yes — we sell only brand-new EPAL pallets and brand-new pallet collars, straight from production. We do not trade used, repaired or sorted pallets." },
       { "q": "How quickly can you deliver?", "a": "Items in stock usually leave our yard within 48 hours. Delivery time then depends on the destination — we confirm the exact date with your quote." },
       { "q": "Do pallet collars fit every Euro pallet?", "a": "Our collars are made for the standard 1200 × 800 mm EPAL format and fit any pallet built to that standard." },
-      { "q": "Can you take our used pallets back?", "a": "Pallet exchange or buy-back is possible in many cases. Tell us your volumes in the form and we will suggest an option." }
+      { "q": "Can we set up regular monthly deliveries?", "a": "Yes. Most customers order on a fixed monthly schedule. We agree volumes and delivery days with you and keep stock reserved for your orders." }
     ]
   },
   "quote": {
@@ -95,7 +93,7 @@
     "title": "Tell us what you need. We will reply within 24 hours.",
     "intro": "Fill in the form and your account manager will get back to you with price, availability and delivery date.",
     "trust": [
-      { "title": "EPAL licensed", "text": "Certified pallets only" },
+      { "title": "100 % new", "text": "Licensed EPAL pallets & collars" },
       { "title": "Reply within 24 h", "text": "On business days" },
       { "title": "We deliver to", "text": "DE · PL · CZ · SK · AT" }
     ],
@@ -108,13 +106,12 @@
       "quantity": "Quantity (pieces)",
       "location": "Delivery location (city, country)",
       "message": "Message",
-      "messagePlaceholder": "Condition, delivery frequency, deadlines…",
+      "messagePlaceholder": "Monthly volume, delivery frequency, deadlines…",
       "consent": "I agree that WAV Invest may use my details to answer this request, as described in the privacy policy."
     },
     "productOptions": {
-      "epal-new": "EPAL Euro pallets — new",
-      "epal-used": "EPAL Euro pallets — used",
-      "collars": "Pallet collars",
+      "epal": "EPAL Euro pallets (new)",
+      "collars": "Pallet collars (new)",
       "mixed": "Pallets + collars / other"
     },
     "submit": "Send request",

@@ -472,18 +472,6 @@ textarea {
   line-height: 1.45;
   opacity: 0.88;
 }
-.hero__card {
-  flex: none;
-  width: 280px;
-  padding: 18px;
-  background: var(--carbon);
-  border-radius: var(--r-body);
-  font-size: var(--text-body-sm);
-  line-height: 1.35;
-}
-.hero__card .label {
-  margin-bottom: 10px;
-}
 @media (max-width: 900px) {
   .hero__shade {
     background: linear-gradient(to top, rgba(15, 14, 18, 0.82) 0%, rgba(15, 14, 18, 0.5) 55%, rgba(15, 14, 18, 0.35) 100%);
@@ -496,9 +484,6 @@ textarea {
     align-items: flex-start;
     gap: 24px;
     padding-bottom: 32px;
-  }
-  .hero__card {
-    width: auto;
   }
 }
 
