@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "WAV Invest — EPAL Europaletten & Aufsetzrahmen im Großhandel",
+    "description": "B2B-Lieferant für EPAL Europaletten (1200×800) und Aufsetzrahmen aus Holz. Neu und gebraucht, ab Lager, Lieferung nach Deutschland, Österreich, Polen, Tschechien und in die Slowakei. Jetzt Angebot anfordern.",
+    "keywords": "EPAL Paletten, Europaletten, Aufsetzrahmen, Holzpaletten Großhandel, Paletten 1200x800, gebrauchte Europaletten, Paletten B2B"
+  },
+  "nav": {
+    "products": "Produkte",
+    "why": "Warum wir",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "cta": "Angebot anfordern",
+    "menu": "Menü",
+    "close": "Schließen",
+    "language": "Sprache"
+  },
+  "hero": {
+    "title": "Europaletten und Aufsetzrahmen, geliefert im Industriemaßstab.",
+    "subtitle": "EPAL Paletten und Aufsetzrahmen für Hersteller, Lager und Logistikunternehmen in ganz Mitteleuropa.",
+    "cta": "Angebot anfordern",
+    "secondary": "Produkte ansehen",
+    "cardLabel": "Auf Lager",
+    "cardText": "EPAL 1200 × 800 · versandbereit innerhalb von 48 h"
+  },
+  "intro": {
+    "label": "Über uns",
+    "title": "Ein verlässlicher Palettenpartner für Unternehmen, die nicht warten können.",
+    "body": "WAV Invest liefert zertifizierte EPAL Europaletten und Aufsetzrahmen aus Holz in Komplett- und Teilladungen. Wir halten Ware auf Lager, erstellen Angebote schnell und liefern termingerecht — damit Ihre Ware in Bewegung bleibt.",
+    "stats": [
+      { "value": "1200×800", "label": "Standardformat EPAL" },
+      { "value": "1 500 kg", "label": "Sichere Arbeitslast pro Palette" },
+      { "value": "48 h", "label": "Typischer Versand ab Lager" },
+      { "value": "5", "label": "Lieferländer" }
+    ]
+  },
+  "products": {
+    "label": "Produkte",
+    "title": "Was wir liefern",
+    "intro": "Zwei Produkte, gebaut nach demselben europäischen Standard. Einzeln bestellbar oder zusammen als komplette Ladung.",
+    "specsLabel": "Technische Daten",
+    "cta": "Angebot anfordern",
+    "items": {
+      "epal": {
+        "name": "EPAL Europaletten",
+        "tagline": "Der europäische Standard für Ladungsträger.",
+        "description": "Lizenzierte EPAL 1 Europaletten, gebrandet und qualitätsgeprüft. Erhältlich neu oder als sortierte Gebrauchtware — geeignet für automatisierte Lager, Export und die tägliche Logistik.",
+        "specs": [
+          ["Abmessungen", "1200 × 800 × 144 mm"],
+          ["Sichere Arbeitslast", "1 500 kg"],
+          ["Gewicht", "ca. 25 kg"],
+          ["Zustand", "Neu · Gebraucht Klasse A · Gebraucht Klasse B"],
+          ["Behandlung", "Hitzebehandelt (IPPC / ISPM 15)"]
+        ],
+        "imageAlt": "Gestapelte EPAL Europaletten in einem Lager"
+      },
+      "collars": {
+        "name": "Aufsetzrahmen",
+        "tagline": "Aus der Palette wird eine stapelbare Kiste.",
+        "description": "Klappbare Aufsetzrahmen aus Holz für die Europalette 1200 × 800. Mehrere Rahmen übereinander ergeben die gewünschte Höhe — leer werden sie flach zusammengeklappt und sparen Platz beim Rücktransport.",
+        "specs": [
+          ["Passend für", "EPAL 1200 × 800 mm"],
+          ["Höhe pro Rahmen", "200 mm"],
+          ["Scharniere", "4 oder 6 verzinkte Scharniere"],
+          ["Zustand", "Neu · Gebraucht"],
+          ["Zusammengeklappt", "Flach für den Rücktransport"]
+        ],
+        "imageAlt": "Holzpaletten mit Aufsetzrahmen im Freien gestapelt"
+      }
+    }
+  },
+  "why": {
+    "label": "Warum WAV Invest",
+    "title": "Ausgerichtet darauf, wie B2B-Kunden wirklich bestellen.",
+    "imageAlt": "Luftaufnahme eines Palettenlagers",
+    "items": [
+      { "title": "Verlässlicher Lagerbestand", "text": "Paletten und Aufsetzrahmen liegen bei uns bereit — eilige Aufträge warten nicht auf die Produktion." },
+      { "title": "Lieferung in ganz Mitteleuropa", "text": "Komplett- und Teilladungen nach Deutschland, Österreich, Polen, Tschechien und in die Slowakei — zum vereinbarten Termin." },
+      { "title": "Zertifizierte Qualität", "text": "EPAL-gebrandete Paletten, hitzebehandelt nach ISPM 15 und vor jedem Versand geprüft." },
+      { "title": "Ein Ansprechpartner, schnelle Antworten", "text": "Ihr persönlicher Kundenbetreuer antwortet innerhalb eines Werktags — in Ihrer Sprache." }
+    ]
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Häufige Fragen unserer Kunden",
+    "items": [
+      { "q": "Wie hoch ist die Mindestbestellmenge?", "a": "In der Regel liefern wir ab einem Palettenstapel (ca. 15–20 Paletten). Für Komplettladungen (rund 600 Paletten) bieten wir den besten Stückpreis." },
+      { "q": "Verkaufen Sie neben neuen auch gebrauchte Paletten?", "a": "Ja. Neben neuen EPAL Paletten bieten wir sortierte Gebrauchtpaletten der Klasse A (hell, sauber, neuwertig) und Klasse B (dunkler, voll funktionsfähig)." },
+      { "q": "Wie schnell können Sie liefern?", "a": "Lagerware verlässt unseren Hof meist innerhalb von 48 Stunden. Die Lieferzeit hängt dann vom Zielort ab — den genauen Termin bestätigen wir mit Ihrem Angebot." },
+      { "q": "Passen die Aufsetzrahmen auf jede Europalette?", "a": "Unsere Rahmen sind für das Standardformat EPAL 1200 × 800 mm gefertigt und passen auf jede Palette nach diesem Standard." },
+      { "q": "Nehmen Sie unsere gebrauchten Paletten zurück?", "a": "Palettentausch oder Rückkauf ist in vielen Fällen möglich. Nennen Sie uns Ihre Mengen im Formular, und wir schlagen Ihnen eine Lösung vor." }
+    ]
+  },
+  "quote": {
+    "label": "Angebot anfordern",
+    "title": "Sagen Sie uns, was Sie brauchen. Wir antworten innerhalb von 24 Stunden.",
+    "intro": "Füllen Sie das Formular aus — Ihr Kundenbetreuer meldet sich mit Preis, Verfügbarkeit und Liefertermin.",
+    "trust": [
+      { "title": "EPAL lizenziert", "text": "Nur zertifizierte Paletten" },
+      { "title": "Antwort in 24 h", "text": "An Werktagen" },
+      { "title": "Wir liefern nach", "text": "DE · PL · CZ · SK · AT" }
+    ],
+    "fields": {
+      "name": "Vor- und Nachname",
+      "company": "Unternehmen",
+      "email": "Geschäftliche E-Mail",
+      "phone": "Telefon",
+      "product": "Produkt",
+      "quantity": "Menge (Stück)",
+      "location": "Lieferort (Stadt, Land)",
+      "message": "Nachricht",
+      "messagePlaceholder": "Zustand, Liefertakt, Fristen…",
+      "consent": "Ich bin einverstanden, dass WAV Invest meine Angaben zur Bearbeitung dieser Anfrage gemäß Datenschutzerklärung verwendet."
+    },
+    "productOptions": {
+      "epal-new": "EPAL Europaletten — neu",
+      "epal-used": "EPAL Europaletten — gebraucht",
+      "collars": "Aufsetzrahmen",
+      "mixed": "Paletten + Aufsetzrahmen / Sonstiges"
+    },
+    "submit": "Anfrage senden",
+    "sending": "Wird gesendet…",
+    "success": "Vielen Dank — Ihre Anfrage wurde gesendet. Wir melden uns innerhalb von 24 Stunden.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt eine E-Mail.",
+    "notConfigured": "Das Formular ist noch nicht verbunden (Zugangsschlüssel fehlt). Bitte schreiben Sie uns direkt eine E-Mail.",
+    "required": "Pflichtfeld"
+  },
+  "footer": {
+    "tagline": "EPAL Europaletten und Aufsetzrahmen für B2B-Kunden in ganz Mitteleuropa.",
+    "contact": "Kontakt",
+    "legal": "Rechtliches",
+    "privacy": "Datenschutzerklärung",
+    "cookies": "Cookie-Einstellungen",
+    "rights": "Alle Rechte vorbehalten."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "text": "Wir verwenden notwendige Cookies für den Betrieb dieser Website. Mit Ihrer Zustimmung möchten wir zusätzlich Analyse-Cookies nutzen, um zu verstehen, wie die Website verwendet wird.",
+    "accept": "Alle akzeptieren",
+    "reject": "Nur notwendige",
+    "customize": "Einstellungen",
+    "save": "Auswahl speichern",
+    "necessary": "Notwendig",
+    "necessaryText": "Spracheinstellung und Ihre Cookie-Auswahl. Immer aktiv.",
+    "analytics": "Analyse",
+    "analyticsText": "Anonyme Besuchsstatistiken. Nur mit Ihrer Zustimmung.",
+    "policy": "Datenschutzerklärung"
+  },
+  "privacy": {
+    "title": "Datenschutz- & Cookie-Richtlinie",
+    "updated": "Zuletzt aktualisiert",
+    "sections": [
+      { "h": "Wer wir sind", "p": "WAV Invest ist verantwortlich für die auf dieser Website verarbeiteten personenbezogenen Daten. Sie erreichen uns über die Kontaktdaten in der Fußzeile." },
+      { "h": "Angebotsanfragen", "p": "Wenn Sie das Anfrageformular senden, erhalten wir Ihren Namen, Ihr Unternehmen, Ihre E-Mail-Adresse, Telefonnummer und die Details Ihrer Anfrage. Wir verwenden diese Daten nur zur Beantwortung Ihrer Anfrage und zur Erstellung eines Angebots (Art. 6 Abs. 1 lit. b DSGVO). Das Formular wird uns über den Dienst Web3Forms per E-Mail zugestellt. Wir speichern die Daten, solange es für die Geschäftsbeziehung und gesetzliche Aufbewahrungsfristen erforderlich ist." },
+      { "h": "Cookies", "p": "Wir setzen ein notwendiges Cookie, um Ihre Sprache zu speichern (NEXT_LOCALE), und eines für Ihre Cookie-Auswahl (wav_consent). Analyse-Cookies werden nur mit Ihrer Zustimmung gesetzt. Ihre Auswahl können Sie jederzeit über „Cookie-Einstellungen“ in der Fußzeile ändern." },
+      { "h": "Ihre Rechte", "p": "Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Außerdem können Sie sich bei Ihrer Datenschutzaufsichtsbehörde beschweren." }
+    ],
+    "back": "Zurück zur Startseite"
+  }
+}

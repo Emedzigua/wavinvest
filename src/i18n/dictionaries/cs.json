@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "WAV Invest — Europalety EPAL a paletové nástavce ve velkoobchodě",
+    "description": "B2B dodavatel europalet EPAL (1200×800) a dřevěných paletových nástavců. Nové i použité, skladem, s dodáním do Česka, Slovenska, Německa, Polska a Rakouska. Vyžádejte si nabídku.",
+    "keywords": "palety EPAL, europalety, paletové nástavce, dřevěné palety velkoobchod, palety 1200x800, použité europalety, palety B2B"
+  },
+  "nav": {
+    "products": "Produkty",
+    "why": "Proč my",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "cta": "Poptat nabídku",
+    "menu": "Menu",
+    "close": "Zavřít",
+    "language": "Jazyk"
+  },
+  "hero": {
+    "title": "Europalety a nástavce dodávané v průmyslovém měřítku.",
+    "subtitle": "Palety EPAL a paletové nástavce pro výrobce, sklady a logistické firmy v celé střední Evropě.",
+    "cta": "Poptat nabídku",
+    "secondary": "Zobrazit produkty",
+    "cardLabel": "Skladem",
+    "cardText": "EPAL 1200 × 800 · expedice do 48 h"
+  },
+  "intro": {
+    "label": "O nás",
+    "title": "Spolehlivý paletový partner pro firmy, které nemohou čekat.",
+    "body": "WAV Invest dodává certifikované europalety EPAL a dřevěné paletové nástavce v celokamionových i dílčích dodávkách. Držíme zásoby, nabídky připravujeme rychle a dodáváme včas — aby vaše zboží zůstalo v pohybu.",
+    "stats": [
+      { "value": "1200×800", "label": "Standardní formát EPAL" },
+      { "value": "1 500 kg", "label": "Bezpečné pracovní zatížení palety" },
+      { "value": "48 h", "label": "Obvyklá expedice ze skladu" },
+      { "value": "5", "label": "Zemí, kam dodáváme" }
+    ]
+  },
+  "products": {
+    "label": "Produkty",
+    "title": "Co dodáváme",
+    "intro": "Dva produkty vyrobené podle stejného evropského standardu. Objednejte je zvlášť, nebo společně jako kompletní náklad.",
+    "specsLabel": "Parametry",
+    "cta": "Poptat cenu",
+    "items": {
+      "epal": {
+        "name": "Europalety EPAL",
+        "tagline": "Evropský standard pro nosiče nákladu.",
+        "description": "Licencované europalety EPAL 1, značené a s kontrolou kvality. Nové nebo jako tříděné použité — vhodné pro automatizované sklady, export i každodenní logistiku.",
+        "specs": [
+          ["Rozměry", "1200 × 800 × 144 mm"],
+          ["Bezpečné pracovní zatížení", "1 500 kg"],
+          ["Hmotnost", "cca 25 kg"],
+          ["Stav", "Nové · Použité třída A · Použité třída B"],
+          ["Ošetření", "Tepelně ošetřené (IPPC / ISPM 15)"]
+        ],
+        "imageAlt": "Stohy europalet EPAL ve skladu"
+      },
+      "collars": {
+        "name": "Paletové nástavce",
+        "tagline": "Z palety stohovatelná bedna.",
+        "description": "Skládací dřevěné nástavce pro europaletu 1200 × 800. Několik nástavců na sobě vytvoří potřebnou výšku a prázdné je složíte naplocho, takže při zpětné přepravě ušetříte místo.",
+        "specs": [
+          ["Pro paletu", "EPAL 1200 × 800 mm"],
+          ["Výška nástavce", "200 mm"],
+          ["Panty", "4 nebo 6 pozinkovaných pantů"],
+          ["Stav", "Nové · Použité"],
+          ["Složené", "Naplocho pro zpětnou přepravu"]
+        ],
+        "imageAlt": "Dřevěné palety s nástavci stohované venku"
+      }
+    }
+  },
+  "why": {
+    "label": "Proč WAV Invest",
+    "title": "Postaveno podle toho, jak B2B zákazníci skutečně objednávají.",
+    "imageAlt": "Letecký pohled na paletový sklad",
+    "items": [
+      { "title": "Spolehlivé zásoby", "text": "Palety i nástavce máme připravené na skladě, takže naléhavé objednávky nečekají na výrobu." },
+      { "title": "Dodávky po celé střední Evropě", "text": "Celé i dílčí náklady do Česka, Slovenska, Německa, Polska a Rakouska — v dohodnutém termínu." },
+      { "title": "Certifikovaná kvalita", "text": "Palety se značkou EPAL, tepelně ošetřené podle ISPM 15 a zkontrolované před každou expedicí." },
+      { "title": "Jeden kontakt, rychlé odpovědi", "text": "Váš osobní obchodní zástupce odpoví do jednoho pracovního dne — ve vašem jazyce." }
+    ]
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Časté dotazy zákazníků",
+    "items": [
+      { "q": "Jaké je minimální objednací množství?", "a": "Obvykle dodáváme od jednoho stohu palet (cca 15–20 kusů). U celých kamionů (zhruba 600 palet) nabízíme nejlepší cenu za kus." },
+      { "q": "Prodáváte kromě nových i použité palety?", "a": "Ano. Kromě nových palet EPAL nabízíme tříděné použité palety třídy A (světlé, čisté, jako nové) a třídy B (tmavší, plně funkční)." },
+      { "q": "Jak rychle dokážete dodat?", "a": "Zboží skladem obvykle opouští náš areál do 48 hodin. Doba doručení pak závisí na místě určení — přesný termín potvrdíme v nabídce." },
+      { "q": "Pasují nástavce na každou europaletu?", "a": "Naše nástavce jsou vyrobené pro standardní formát EPAL 1200 × 800 mm a pasují na každou paletu podle tohoto standardu." },
+      { "q": "Můžete od nás odebrat použité palety?", "a": "Výměna nebo zpětný odkup palet je v mnoha případech možný. Uveďte množství ve formuláři a navrhneme řešení." }
+    ]
+  },
+  "quote": {
+    "label": "Poptat nabídku",
+    "title": "Napište nám, co potřebujete. Odpovíme do 24 hodin.",
+    "intro": "Vyplňte formulář a váš obchodní zástupce se ozve s cenou, dostupností a termínem dodání.",
+    "trust": [
+      { "title": "Licence EPAL", "text": "Pouze certifikované palety" },
+      { "title": "Odpověď do 24 h", "text": "V pracovní dny" },
+      { "title": "Dodáváme do", "text": "DE · PL · CZ · SK · AT" }
+    ],
+    "fields": {
+      "name": "Jméno a příjmení",
+      "company": "Firma",
+      "email": "Pracovní e-mail",
+      "phone": "Telefon",
+      "product": "Produkt",
+      "quantity": "Množství (ks)",
+      "location": "Místo dodání (město, země)",
+      "message": "Zpráva",
+      "messagePlaceholder": "Stav, četnost dodávek, termíny…",
+      "consent": "Souhlasím s tím, že WAV Invest použije mé údaje k vyřízení této poptávky podle zásad ochrany osobních údajů."
+    },
+    "productOptions": {
+      "epal-new": "Europalety EPAL — nové",
+      "epal-used": "Europalety EPAL — použité",
+      "collars": "Paletové nástavce",
+      "mixed": "Palety + nástavce / jiné"
+    },
+    "submit": "Odeslat poptávku",
+    "sending": "Odesílání…",
+    "success": "Děkujeme — vaše poptávka byla odeslána. Ozveme se do 24 hodin.",
+    "error": "Něco se pokazilo. Zkuste to prosím znovu nebo nám napište přímo e-mailem.",
+    "notConfigured": "Formulář zatím není připojen (chybí přístupový klíč). Napište nám prosím přímo e-mailem.",
+    "required": "Povinné"
+  },
+  "footer": {
+    "tagline": "Europalety EPAL a paletové nástavce pro B2B zákazníky v celé střední Evropě.",
+    "contact": "Kontakt",
+    "legal": "Právní informace",
+    "privacy": "Zásady ochrany osobních údajů",
+    "cookies": "Nastavení cookies",
+    "rights": "Všechna práva vyhrazena."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "text": "Pro provoz webu používáme nezbytné cookies. S vaším souhlasem bychom rádi používali i analytické cookies, abychom pochopili, jak web používáte.",
+    "accept": "Přijmout vše",
+    "reject": "Jen nezbytné",
+    "customize": "Nastavení",
+    "save": "Uložit volbu",
+    "necessary": "Nezbytné",
+    "necessaryText": "Zvolený jazyk a vaše volba cookies. Vždy aktivní.",
+    "analytics": "Analytické",
+    "analyticsText": "Anonymní statistiky návštěv. Vypnuto bez vašeho souhlasu.",
+    "policy": "Zásady ochrany osobních údajů"
+  },
+  "privacy": {
+    "title": "Zásady ochrany osobních údajů a cookies",
+    "updated": "Naposledy aktualizováno",
+    "sections": [
+      { "h": "Kdo jsme", "p": "Správcem osobních údajů zpracovávaných na tomto webu je WAV Invest. Kontaktní údaje najdete v zápatí stránky." },
+      { "h": "Poptávky", "p": "Po odeslání formuláře obdržíme vaše jméno, firmu, e-mail, telefon a podrobnosti poptávky. Používáme je pouze k odpovědi a přípravě nabídky (čl. 6 odst. 1 písm. b GDPR). Formulář nám je doručen e-mailem prostřednictvím služby Web3Forms. Údaje uchováváme po dobu obchodního vztahu a zákonných archivačních lhůt." },
+      { "h": "Cookies", "p": "Nastavujeme nezbytnou cookie pro zapamatování jazyka (NEXT_LOCALE) a cookie pro vaši volbu cookies (wav_consent). Analytické cookies nastavujeme jen s vaším souhlasem, který můžete kdykoli změnit v „Nastavení cookies“ v zápatí." },
+      { "h": "Vaše práva", "p": "Máte právo na přístup k údajům, jejich opravu, výmaz, omezení zpracování, přenositelnost a právo vznést námitku. Můžete také podat stížnost u Úřadu pro ochranu osobních údajů." }
+    ],
+    "back": "Zpět na hlavní stránku"
+  }
+}

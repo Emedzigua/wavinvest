@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "WAV Invest — Palety EPAL i nadstawki paletowe w hurcie",
+    "description": "Dostawca B2B palet EPAL (1200×800) oraz drewnianych nadstawek paletowych. Nowe i używane, z magazynu, z dostawą do Polski, Niemiec, Czech, Słowacji i Austrii. Zapytaj o ofertę.",
+    "keywords": "palety EPAL, europalety, nadstawki paletowe, palety drewniane hurt, palety 1200x800, używane europalety, palety B2B"
+  },
+  "nav": {
+    "products": "Produkty",
+    "why": "Dlaczego my",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "cta": "Zapytaj o ofertę",
+    "menu": "Menu",
+    "close": "Zamknij",
+    "language": "Język"
+  },
+  "hero": {
+    "title": "Europalety i nadstawki dostarczane w skali przemysłowej.",
+    "subtitle": "Palety EPAL i nadstawki paletowe dla producentów, magazynów i firm logistycznych w całej Europie Środkowej.",
+    "cta": "Zapytaj o ofertę",
+    "secondary": "Zobacz produkty",
+    "cardLabel": "Na stanie",
+    "cardText": "EPAL 1200 × 800 · wysyłka w ciągu 48 h"
+  },
+  "intro": {
+    "label": "O nas",
+    "title": "Niezawodny partner paletowy dla firm, które nie mogą czekać.",
+    "body": "WAV Invest dostarcza certyfikowane europalety EPAL oraz drewniane nadstawki paletowe w ilościach całopojazdowych i częściowych. Utrzymujemy zapas, szybko przygotowujemy oferty i dostarczamy na czas — aby Twój towar nie stał w miejscu.",
+    "stats": [
+      { "value": "1200×800", "label": "Standardowy format EPAL" },
+      { "value": "1 500 kg", "label": "Bezpieczne obciążenie robocze palety" },
+      { "value": "48 h", "label": "Typowa wysyłka z magazynu" },
+      { "value": "5", "label": "Krajów dostaw" }
+    ]
+  },
+  "products": {
+    "label": "Produkty",
+    "title": "Co dostarczamy",
+    "intro": "Dwa produkty wykonane według tego samego europejskiego standardu. Zamów je osobno lub razem jako kompletny ładunek.",
+    "specsLabel": "Specyfikacja",
+    "cta": "Zapytaj o cenę",
+    "items": {
+      "epal": {
+        "name": "Europalety EPAL",
+        "tagline": "Europejski standard nośników ładunku.",
+        "description": "Licencjonowane europalety EPAL 1, oznakowane i kontrolowane jakościowo. Dostępne nowe lub jako sortowane palety używane — do magazynów automatycznych, eksportu i codziennej logistyki.",
+        "specs": [
+          ["Wymiary", "1200 × 800 × 144 mm"],
+          ["Bezpieczne obciążenie", "1 500 kg"],
+          ["Waga", "ok. 25 kg"],
+          ["Stan", "Nowe · Używane klasa A · Używane klasa B"],
+          ["Obróbka", "Fumigacja termiczna (IPPC / ISPM 15)"]
+        ],
+        "imageAlt": "Stosy europalet EPAL w magazynie"
+      },
+      "collars": {
+        "name": "Nadstawki paletowe",
+        "tagline": "Zamień paletę w skrzynię, którą można piętrować.",
+        "description": "Składane drewniane nadstawki pasujące do europalety 1200 × 800. Ustaw kilka nadstawek jedna na drugiej, aby uzyskać potrzebną wysokość, a po opróżnieniu złóż je na płasko i oszczędzaj miejsce w transporcie powrotnym.",
+        "specs": [
+          ["Pasuje do", "EPAL 1200 × 800 mm"],
+          ["Wysokość nadstawki", "200 mm"],
+          ["Zawiasy", "4 lub 6 zawiasów ocynkowanych"],
+          ["Stan", "Nowe · Używane"],
+          ["Po złożeniu", "Płaskie do transportu powrotnego"]
+        ],
+        "imageAlt": "Palety drewniane z nadstawkami ułożone na zewnątrz"
+      }
+    }
+  },
+  "why": {
+    "label": "Dlaczego WAV Invest",
+    "title": "Dopasowani do tego, jak naprawdę zamawiają klienci B2B.",
+    "imageAlt": "Widok z lotu ptaka na plac paletowy",
+    "items": [
+      { "title": "Pewne stany magazynowe", "text": "Palety i nadstawki czekają gotowe na naszym placu, więc pilne zamówienia nie czekają na produkcję." },
+      { "title": "Dostawy w całej Europie Środkowej", "text": "Ładunki całopojazdowe i częściowe do Polski, Niemiec, Czech, Słowacji i Austrii — w uzgodnionym terminie." },
+      { "title": "Certyfikowana jakość", "text": "Palety z oznaczeniem EPAL, obrabiane termicznie zgodnie z ISPM 15 i sprawdzane przed każdą wysyłką." },
+      { "title": "Jeden opiekun, szybkie odpowiedzi", "text": "Twój osobisty opiekun odpowiada w ciągu jednego dnia roboczego — w Twoim języku." }
+    ]
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Najczęstsze pytania klientów",
+    "items": [
+      { "q": "Jaka jest minimalna ilość zamówienia?", "a": "Zazwyczaj dostarczamy od jednego stosu palet (ok. 15–20 sztuk). Przy pełnych ładunkach (ok. 600 palet) oferujemy najlepszą cenę za sztukę." },
+      { "q": "Czy sprzedajecie również palety używane?", "a": "Tak. Oprócz nowych palet EPAL oferujemy sortowane palety używane w klasie A (jasne, czyste, jak nowe) i klasie B (ciemniejsze, w pełni sprawne)." },
+      { "q": "Jak szybko możecie dostarczyć?", "a": "Towar z magazynu zwykle opuszcza nasz plac w ciągu 48 godzin. Czas dostawy zależy od miejsca docelowego — dokładny termin potwierdzamy w ofercie." },
+      { "q": "Czy nadstawki pasują do każdej europalety?", "a": "Nasze nadstawki są wykonane dla standardowego formatu EPAL 1200 × 800 mm i pasują do każdej palety zgodnej z tym standardem." },
+      { "q": "Czy odbieracie nasze używane palety?", "a": "W wielu przypadkach możliwa jest wymiana lub odkup palet. Podaj swoje ilości w formularzu, a zaproponujemy rozwiązanie." }
+    ]
+  },
+  "quote": {
+    "label": "Zapytaj o ofertę",
+    "title": "Powiedz nam, czego potrzebujesz. Odpowiemy w ciągu 24 godzin.",
+    "intro": "Wypełnij formularz, a Twój opiekun odezwie się z ceną, dostępnością i terminem dostawy.",
+    "trust": [
+      { "title": "Licencja EPAL", "text": "Tylko certyfikowane palety" },
+      { "title": "Odpowiedź w 24 h", "text": "W dni robocze" },
+      { "title": "Dostarczamy do", "text": "DE · PL · CZ · SK · AT" }
+    ],
+    "fields": {
+      "name": "Imię i nazwisko",
+      "company": "Firma",
+      "email": "Służbowy e-mail",
+      "phone": "Telefon",
+      "product": "Produkt",
+      "quantity": "Ilość (szt.)",
+      "location": "Miejsce dostawy (miasto, kraj)",
+      "message": "Wiadomość",
+      "messagePlaceholder": "Stan, częstotliwość dostaw, terminy…",
+      "consent": "Wyrażam zgodę na wykorzystanie moich danych przez WAV Invest w celu odpowiedzi na to zapytanie, zgodnie z polityką prywatności."
+    },
+    "productOptions": {
+      "epal-new": "Europalety EPAL — nowe",
+      "epal-used": "Europalety EPAL — używane",
+      "collars": "Nadstawki paletowe",
+      "mixed": "Palety + nadstawki / inne"
+    },
+    "submit": "Wyślij zapytanie",
+    "sending": "Wysyłanie…",
+    "success": "Dziękujemy — Twoje zapytanie zostało wysłane. Odezwiemy się w ciągu 24 godzin.",
+    "error": "Coś poszło nie tak. Spróbuj ponownie lub napisz do nas bezpośrednio.",
+    "notConfigured": "Formularz nie jest jeszcze podłączony (brak klucza dostępu). Napisz do nas bezpośrednio.",
+    "required": "Wymagane"
+  },
+  "footer": {
+    "tagline": "Europalety EPAL i nadstawki paletowe dla klientów B2B w całej Europie Środkowej.",
+    "contact": "Kontakt",
+    "legal": "Informacje prawne",
+    "privacy": "Polityka prywatności",
+    "cookies": "Ustawienia cookies",
+    "rights": "Wszelkie prawa zastrzeżone."
+  },
+  "cookies": {
+    "title": "Pliki cookies",
+    "text": "Używamy niezbędnych plików cookies do działania strony. Za Twoją zgodą chcielibyśmy też używać analitycznych plików cookies, aby zrozumieć, jak korzystasz ze strony.",
+    "accept": "Akceptuj wszystkie",
+    "reject": "Tylko niezbędne",
+    "customize": "Ustawienia",
+    "save": "Zapisz wybór",
+    "necessary": "Niezbędne",
+    "necessaryText": "Wybrany język i Twoja decyzja dotycząca cookies. Zawsze aktywne.",
+    "analytics": "Analityczne",
+    "analyticsText": "Anonimowe statystyki odwiedzin. Wyłączone bez Twojej zgody.",
+    "policy": "Polityka prywatności"
+  },
+  "privacy": {
+    "title": "Polityka prywatności i cookies",
+    "updated": "Ostatnia aktualizacja",
+    "sections": [
+      { "h": "Kim jesteśmy", "p": "Administratorem danych osobowych przetwarzanych na tej stronie jest WAV Invest. Dane kontaktowe znajdziesz w stopce strony." },
+      { "h": "Zapytania ofertowe", "p": "Po wysłaniu formularza otrzymujemy Twoje imię i nazwisko, nazwę firmy, e-mail, numer telefonu oraz szczegóły zapytania. Wykorzystujemy je wyłącznie do odpowiedzi i przygotowania oferty (art. 6 ust. 1 lit. b RODO). Formularz jest dostarczany do nas e-mailem za pośrednictwem usługi Web3Forms. Dane przechowujemy przez czas trwania współpracy i wymagany prawem okres archiwizacji." },
+      { "h": "Pliki cookies", "p": "Ustawiamy niezbędny plik cookie zapamiętujący język (NEXT_LOCALE) oraz plik zapamiętujący Twój wybór dotyczący cookies (wav_consent). Analityczne pliki cookies ustawiamy tylko za Twoją zgodą, którą możesz w każdej chwili zmienić w „Ustawieniach cookies” w stopce." },
+      { "h": "Twoje prawa", "p": "Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz prawo sprzeciwu. Możesz też złożyć skargę do Prezesa UODO." }
+    ],
+    "back": "Powrót do strony głównej"
+  }
+}

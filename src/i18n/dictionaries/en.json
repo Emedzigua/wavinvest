@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "WAV Invest — EPAL Euro Pallets & Pallet Collars Wholesale",
+    "description": "B2B supplier of EPAL Euro pallets (1200×800) and wooden pallet collars. New and used, from stock, delivered across Germany, Poland, Czechia, Slovakia and Austria. Request a quote.",
+    "keywords": "EPAL pallets, Euro pallets, pallet collars, wooden pallets wholesale, 1200x800 pallets, used Euro pallets, B2B pallets"
+  },
+  "nav": {
+    "products": "Products",
+    "why": "Why us",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "cta": "Request a quote",
+    "menu": "Menu",
+    "close": "Close",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Euro pallets and collars, delivered at industrial scale.",
+    "subtitle": "EPAL pallets and pallet collars for manufacturers, warehouses and logistics companies across Central Europe.",
+    "cta": "Request a quote",
+    "secondary": "See products",
+    "cardLabel": "In stock",
+    "cardText": "EPAL 1200 × 800 · ready for dispatch within 48 h"
+  },
+  "intro": {
+    "label": "About",
+    "title": "A reliable pallet partner for companies that cannot afford to wait.",
+    "body": "WAV Invest supplies certified EPAL Euro pallets and wooden pallet collars in truckload and part-load quantities. We keep stock ready, quote quickly and deliver on schedule — so your goods keep moving.",
+    "stats": [
+      { "value": "1200×800", "label": "Standard EPAL format" },
+      { "value": "1 500 kg", "label": "Safe working load per pallet" },
+      { "value": "48 h", "label": "Typical dispatch from stock" },
+      { "value": "5", "label": "Countries we deliver to" }
+    ]
+  },
+  "products": {
+    "label": "Products",
+    "title": "What we supply",
+    "intro": "Two products, built to the same European standard. Order them separately or together as a complete load.",
+    "specsLabel": "Specifications",
+    "cta": "Get a quote",
+    "items": {
+      "epal": {
+        "name": "EPAL Euro pallets",
+        "tagline": "The European standard for load carriers.",
+        "description": "Licensed EPAL 1 Euro pallets, branded and quality-controlled. Available new or as sorted used grades — suited for automated warehouses, export and everyday logistics.",
+        "specs": [
+          ["Dimensions", "1200 × 800 × 144 mm"],
+          ["Safe working load", "1 500 kg"],
+          ["Weight", "approx. 25 kg"],
+          ["Condition", "New · Used grade A · Used grade B"],
+          ["Treatment", "Heat-treated (IPPC / ISPM 15)"]
+        ],
+        "imageAlt": "Stacks of EPAL Euro pallets in a warehouse"
+      },
+      "collars": {
+        "name": "Pallet collars",
+        "tagline": "Turn a pallet into a stackable crate.",
+        "description": "Foldable wooden side covers that fit on a 1200 × 800 Euro pallet. Stack several collars to reach the height you need, then fold them flat when empty to save space on the return trip.",
+        "specs": [
+          ["Fits", "EPAL 1200 × 800 mm"],
+          ["Height per collar", "200 mm"],
+          ["Hinges", "4 or 6 galvanised hinges"],
+          ["Condition", "New · Used"],
+          ["Folded", "Flat for return transport"]
+        ],
+        "imageAlt": "Wooden pallets with collars stacked outdoors"
+      }
+    }
+  },
+  "why": {
+    "label": "Why WAV Invest",
+    "title": "Built around how B2B buyers actually order.",
+    "imageAlt": "Aerial view of a pallet yard",
+    "items": [
+      { "title": "Stock you can count on", "text": "We keep pallets and collars ready in our yard, so urgent orders do not wait for production." },
+      { "title": "Delivery across Central Europe", "text": "Full and part loads to Germany, Poland, Czechia, Slovakia and Austria, on dates you agree with us." },
+      { "title": "Certified quality", "text": "EPAL-branded pallets, heat-treated to ISPM 15 and checked before every dispatch." },
+      { "title": "One contact, fast answers", "text": "A personal account manager who replies within one business day — in your language." }
+    ]
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Questions buyers often ask",
+    "items": [
+      { "q": "What is the minimum order quantity?", "a": "We usually deliver from one pallet stack (about 15–20 pallets) upwards. For full truckloads (around 600 pallets) we offer the best price per piece." },
+      { "q": "Do you sell used pallets as well as new ones?", "a": "Yes. Besides new EPAL pallets we offer sorted used pallets in grade A (light, clean, like new) and grade B (darker, fully functional)." },
+      { "q": "How quickly can you deliver?", "a": "Items in stock usually leave our yard within 48 hours. Delivery time then depends on the destination — we confirm the exact date with your quote." },
+      { "q": "Do pallet collars fit every Euro pallet?", "a": "Our collars are made for the standard 1200 × 800 mm EPAL format and fit any pallet built to that standard." },
+      { "q": "Can you take our used pallets back?", "a": "Pallet exchange or buy-back is possible in many cases. Tell us your volumes in the form and we will suggest an option." }
+    ]
+  },
+  "quote": {
+    "label": "Request a quote",
+    "title": "Tell us what you need. We will reply within 24 hours.",
+    "intro": "Fill in the form and your account manager will get back to you with price, availability and delivery date.",
+    "trust": [
+      { "title": "EPAL licensed", "text": "Certified pallets only" },
+      { "title": "Reply within 24 h", "text": "On business days" },
+      { "title": "We deliver to", "text": "DE · PL · CZ · SK · AT" }
+    ],
+    "fields": {
+      "name": "Full name",
+      "company": "Company",
+      "email": "Business email",
+      "phone": "Phone",
+      "product": "Product",
+      "quantity": "Quantity (pieces)",
+      "location": "Delivery location (city, country)",
+      "message": "Message",
+      "messagePlaceholder": "Condition, delivery frequency, deadlines…",
+      "consent": "I agree that WAV Invest may use my details to answer this request, as described in the privacy policy."
+    },
+    "productOptions": {
+      "epal-new": "EPAL Euro pallets — new",
+      "epal-used": "EPAL Euro pallets — used",
+      "collars": "Pallet collars",
+      "mixed": "Pallets + collars / other"
+    },
+    "submit": "Send request",
+    "sending": "Sending…",
+    "success": "Thank you — your request was sent. We will get back to you within 24 hours.",
+    "error": "Something went wrong. Please try again or email us directly.",
+    "notConfigured": "The form is not connected yet (missing access key). Please email us directly.",
+    "required": "Required"
+  },
+  "footer": {
+    "tagline": "EPAL Euro pallets and pallet collars for B2B customers across Central Europe.",
+    "contact": "Contact",
+    "legal": "Legal",
+    "privacy": "Privacy policy",
+    "cookies": "Cookie settings",
+    "rights": "All rights reserved."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "text": "We use necessary cookies to run this site. With your consent we would also like to use analytics cookies to understand how the site is used.",
+    "accept": "Accept all",
+    "reject": "Necessary only",
+    "customize": "Settings",
+    "save": "Save choices",
+    "necessary": "Necessary",
+    "necessaryText": "Language preference and your cookie choice. Always on.",
+    "analytics": "Analytics",
+    "analyticsText": "Anonymous statistics about visits. Off unless you allow it.",
+    "policy": "Privacy policy"
+  },
+  "privacy": {
+    "title": "Privacy & cookie policy",
+    "updated": "Last updated",
+    "sections": [
+      { "h": "Who we are", "p": "WAV Invest is responsible for the personal data processed on this website. You can reach us at the contact details in the footer." },
+      { "h": "Quote requests", "p": "When you send the quote form we receive your name, company, email, phone number and the details of your request. We use them only to answer your request and prepare an offer (Art. 6(1)(b) GDPR). The form is delivered to us by email through the service Web3Forms. We keep the data for as long as needed for the business relationship and legal retention periods." },
+      { "h": "Cookies", "p": "We set a necessary cookie to remember your language (NEXT_LOCALE) and one to remember your cookie choice (wav_consent). Analytics cookies are only set if you allow them, and you can change your choice at any time via “Cookie settings” in the footer." },
+      { "h": "Your rights", "p": "You have the right to access, correct, delete or restrict the processing of your data, to data portability and to object. You can also lodge a complaint with your data protection authority." }
+    ],
+    "back": "Back to homepage"
+  }
+}
