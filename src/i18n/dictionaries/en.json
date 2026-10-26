@@ -118,7 +118,8 @@
     "sending": "Sending…",
     "success": "Thank you — your request was sent. We will get back to you within 24 hours.",
     "error": "Something went wrong. Please try again or email us directly.",
-    "notConfigured": "The form is not connected yet (missing access key). Please email us directly.",
+    "notConfigured": "The form is not connected yet. Please email us directly.",
+    "captcha": "Please confirm you are not a robot (the check above the button) and send again.",
     "required": "Required"
   },
   "footer": {
@@ -147,7 +148,7 @@
     "updated": "Last updated",
     "sections": [
       { "h": "Who we are", "p": "WAV Invest is responsible for the personal data processed on this website. You can reach us at the contact details in the footer." },
-      { "h": "Quote requests", "p": "When you send the quote form we receive your name, company, email, phone number and the details of your request. We use them only to answer your request and prepare an offer (Art. 6(1)(b) GDPR). The form is delivered to us by email through the service Web3Forms. We keep the data for as long as needed for the business relationship and legal retention periods." },
+      { "h": "Quote requests", "p": "When you send the quote form we receive your name, company, email, phone number and the details of your request. We use them only to answer your request and prepare an offer (Art. 6(1)(b) GDPR). The request is stored in our customer database, hosted in the EU (Supabase, Frankfurt), and we are notified by email (Resend). To protect the form from spam we use Cloudflare Turnstile, which checks that the form is sent by a person; it does not set advertising cookies. We keep the data for as long as needed for the business relationship and legal retention periods." },
       { "h": "Cookies", "p": "We set a necessary cookie to remember your language (NEXT_LOCALE) and one to remember your cookie choice (wav_consent). Analytics cookies are only set if you allow them, and you can change your choice at any time via “Cookie settings” in the footer." },
       { "h": "Your rights", "p": "You have the right to access, correct, delete or restrict the processing of your data, to data portability and to object. You can also lodge a complaint with your data protection authority." }
     ],

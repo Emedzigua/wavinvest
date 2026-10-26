@@ -118,7 +118,8 @@
     "sending": "Odesílání…",
     "success": "Děkujeme — vaše poptávka byla odeslána. Ozveme se do 24 hodin.",
     "error": "Něco se pokazilo. Zkuste to prosím znovu nebo nám napište přímo e-mailem.",
-    "notConfigured": "Formulář zatím není připojen (chybí přístupový klíč). Napište nám prosím přímo e-mailem.",
+    "notConfigured": "Formulář zatím není připojen. Napište nám prosím přímo e-mailem.",
+    "captcha": "Potvrďte prosím, že nejste robot (ověření nad tlačítkem), a odešlete znovu.",
     "required": "Povinné"
   },
   "footer": {
@@ -147,7 +148,7 @@
     "updated": "Naposledy aktualizováno",
     "sections": [
       { "h": "Kdo jsme", "p": "Správcem osobních údajů zpracovávaných na tomto webu je WAV Invest. Kontaktní údaje najdete v zápatí stránky." },
-      { "h": "Poptávky", "p": "Po odeslání formuláře obdržíme vaše jméno, firmu, e-mail, telefon a podrobnosti poptávky. Používáme je pouze k odpovědi a přípravě nabídky (čl. 6 odst. 1 písm. b GDPR). Formulář nám je doručen e-mailem prostřednictvím služby Web3Forms. Údaje uchováváme po dobu obchodního vztahu a zákonných archivačních lhůt." },
+      { "h": "Poptávky", "p": "Po odeslání formuláře obdržíme vaše jméno, firmu, e-mail, telefon a podrobnosti poptávky. Používáme je pouze k odpovědi a přípravě nabídky (čl. 6 odst. 1 písm. b GDPR). Poptávka se ukládá do naší databáze zákazníků hostované v EU (Supabase, Frankfurt) a o jejím přijetí jsme informováni e-mailem (Resend). K ochraně formuláře před spamem používáme Cloudflare Turnstile, který ověřuje, že formulář odesílá člověk; nenastavuje reklamní cookies. Údaje uchováváme po dobu obchodního vztahu a zákonných archivačních lhůt." },
       { "h": "Cookies", "p": "Nastavujeme nezbytnou cookie pro zapamatování jazyka (NEXT_LOCALE) a cookie pro vaši volbu cookies (wav_consent). Analytické cookies nastavujeme jen s vaším souhlasem, který můžete kdykoli změnit v „Nastavení cookies“ v zápatí." },
       { "h": "Vaše práva", "p": "Máte právo na přístup k údajům, jejich opravu, výmaz, omezení zpracování, přenositelnost a právo vznést námitku. Můžete také podat stížnost u Úřadu pro ochranu osobních údajů." }
     ],

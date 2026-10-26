@@ -118,7 +118,8 @@
     "sending": "Wird gesendet…",
     "success": "Vielen Dank — Ihre Anfrage wurde gesendet. Wir melden uns innerhalb von 24 Stunden.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt eine E-Mail.",
-    "notConfigured": "Das Formular ist noch nicht verbunden (Zugangsschlüssel fehlt). Bitte schreiben Sie uns direkt eine E-Mail.",
+    "notConfigured": "Das Formular ist noch nicht verbunden. Bitte schreiben Sie uns direkt eine E-Mail.",
+    "captcha": "Bitte bestätigen Sie, dass Sie kein Roboter sind (Prüfung über der Schaltfläche), und senden Sie erneut.",
     "required": "Pflichtfeld"
   },
   "footer": {
@@ -147,7 +148,7 @@
     "updated": "Zuletzt aktualisiert",
     "sections": [
       { "h": "Wer wir sind", "p": "WAV Invest ist verantwortlich für die auf dieser Website verarbeiteten personenbezogenen Daten. Sie erreichen uns über die Kontaktdaten in der Fußzeile." },
-      { "h": "Angebotsanfragen", "p": "Wenn Sie das Anfrageformular senden, erhalten wir Ihren Namen, Ihr Unternehmen, Ihre E-Mail-Adresse, Telefonnummer und die Details Ihrer Anfrage. Wir verwenden diese Daten nur zur Beantwortung Ihrer Anfrage und zur Erstellung eines Angebots (Art. 6 Abs. 1 lit. b DSGVO). Das Formular wird uns über den Dienst Web3Forms per E-Mail zugestellt. Wir speichern die Daten, solange es für die Geschäftsbeziehung und gesetzliche Aufbewahrungsfristen erforderlich ist." },
+      { "h": "Angebotsanfragen", "p": "Wenn Sie das Anfrageformular senden, erhalten wir Ihren Namen, Ihr Unternehmen, Ihre E-Mail-Adresse, Telefonnummer und die Details Ihrer Anfrage. Wir verwenden diese Daten nur zur Beantwortung Ihrer Anfrage und zur Erstellung eines Angebots (Art. 6 Abs. 1 lit. b DSGVO). Die Anfrage wird in unserer Kundendatenbank in der EU gespeichert (Supabase, Frankfurt), und wir werden per E-Mail benachrichtigt (Resend). Zum Schutz vor Spam verwenden wir Cloudflare Turnstile, das prüft, ob das Formular von einem Menschen gesendet wird; es setzt keine Werbe-Cookies. Wir speichern die Daten, solange es für die Geschäftsbeziehung und gesetzliche Aufbewahrungsfristen erforderlich ist." },
       { "h": "Cookies", "p": "Wir setzen ein notwendiges Cookie, um Ihre Sprache zu speichern (NEXT_LOCALE), und eines für Ihre Cookie-Auswahl (wav_consent). Analyse-Cookies werden nur mit Ihrer Zustimmung gesetzt. Ihre Auswahl können Sie jederzeit über „Cookie-Einstellungen“ in der Fußzeile ändern." },
       { "h": "Ihre Rechte", "p": "Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Außerdem können Sie sich bei Ihrer Datenschutzaufsichtsbehörde beschweren." }
     ],

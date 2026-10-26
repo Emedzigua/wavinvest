@@ -10,6 +10,7 @@ import {
   locales,
   type Locale,
 } from "@/i18n/config";
+import { updateSession } from "@/lib/supabase/proxy";
 
 // Order of preference:
 // 1. a language the visitor picked earlier (cookie)
@@ -43,6 +44,8 @@ function detectLocale(request: NextRequest): Locale {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return updateSession(request);
+
   const hasPrefix = locales.some(
     (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`),
   );

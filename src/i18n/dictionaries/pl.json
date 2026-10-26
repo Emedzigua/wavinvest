@@ -118,7 +118,8 @@
     "sending": "Wysyłanie…",
     "success": "Dziękujemy — Twoje zapytanie zostało wysłane. Odezwiemy się w ciągu 24 godzin.",
     "error": "Coś poszło nie tak. Spróbuj ponownie lub napisz do nas bezpośrednio.",
-    "notConfigured": "Formularz nie jest jeszcze podłączony (brak klucza dostępu). Napisz do nas bezpośrednio.",
+    "notConfigured": "Formularz nie jest jeszcze podłączony. Napisz do nas bezpośrednio.",
+    "captcha": "Potwierdź, że nie jesteś robotem (weryfikacja nad przyciskiem), i wyślij ponownie.",
     "required": "Wymagane"
   },
   "footer": {
@@ -147,7 +148,7 @@
     "updated": "Ostatnia aktualizacja",
     "sections": [
       { "h": "Kim jesteśmy", "p": "Administratorem danych osobowych przetwarzanych na tej stronie jest WAV Invest. Dane kontaktowe znajdziesz w stopce strony." },
-      { "h": "Zapytania ofertowe", "p": "Po wysłaniu formularza otrzymujemy Twoje imię i nazwisko, nazwę firmy, e-mail, numer telefonu oraz szczegóły zapytania. Wykorzystujemy je wyłącznie do odpowiedzi i przygotowania oferty (art. 6 ust. 1 lit. b RODO). Formularz jest dostarczany do nas e-mailem za pośrednictwem usługi Web3Forms. Dane przechowujemy przez czas trwania współpracy i wymagany prawem okres archiwizacji." },
+      { "h": "Zapytania ofertowe", "p": "Po wysłaniu formularza otrzymujemy Twoje imię i nazwisko, nazwę firmy, e-mail, numer telefonu oraz szczegóły zapytania. Wykorzystujemy je wyłącznie do odpowiedzi i przygotowania oferty (art. 6 ust. 1 lit. b RODO). Zapytanie jest zapisywane w naszej bazie klientów hostowanej w UE (Supabase, Frankfurt), a my otrzymujemy powiadomienie e-mailem (Resend). Aby chronić formularz przed spamem, używamy Cloudflare Turnstile, które sprawdza, czy formularz wysyła człowiek; nie ustawia reklamowych plików cookie. Dane przechowujemy przez czas trwania współpracy i wymagany prawem okres archiwizacji." },
       { "h": "Pliki cookies", "p": "Ustawiamy niezbędny plik cookie zapamiętujący język (NEXT_LOCALE) oraz plik zapamiętujący Twój wybór dotyczący cookies (wav_consent). Analityczne pliki cookies ustawiamy tylko za Twoją zgodą, którą możesz w każdej chwili zmienić w „Ustawieniach cookies” w stopce." },
       { "h": "Twoje prawa", "p": "Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz prawo sprzeciwu. Możesz też złożyć skargę do Prezesa UODO." }
     ],

@@ -4,16 +4,16 @@ import { useEffect, useState, type FormEvent } from "react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { PRODUCT_EVENT } from "./ProductCta";
+import { submitQuote } from "@/lib/quote-action";
+import Turnstile from "./Turnstile";
+import { localeTags } from "@/i18n/config";
 
-// Free Web3Forms key (https://web3forms.com). It is meant to be public —
-// it only lets visitors send forms to the inbox that created it.
-const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
-
-type Status = "idle" | "sending" | "success" | "error" | "missing-key";
+type Status = "idle" | "sending" | "success" | "error" | "missing-config" | "captcha";
 
 export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; lang: Locale }) {
   const [product, setProduct] = useState("epal");
   const [status, setStatus] = useState<Status>("idle");
+  const [attempt, setAttempt] = useState(0);
   const f = dict.fields;
 
   useEffect(() => {
@@ -24,33 +24,20 @@ export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; l
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!ACCESS_KEY) return setStatus("missing-key");
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
-    const productLabel = dict.productOptions[product as keyof typeof dict.productOptions];
+    const data = new FormData(form);
+    data.set("language", lang);
 
     setStatus("sending");
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          ...data,
-          product: productLabel,
-          language: lang.toUpperCase(),
-          access_key: ACCESS_KEY,
-          subject: `Quote request: ${productLabel} — ${data.company || data.name}`,
-          from_name: "WAV Invest website",
-          replyto: data.email,
-        }),
-      });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.message);
-      form.reset();
-      setStatus("success");
+      const result = await submitQuote(data);
+      if (result === "success") form.reset();
+      setStatus(result);
     } catch {
       setStatus("error");
     }
+    // A captcha token works once; get a new one for the next try
+    setAttempt((a) => a + 1);
   }
 
   if (status === "success") {
@@ -106,12 +93,15 @@ export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; l
         </span>
       </label>
 
+      <Turnstile language={localeTags[lang]} theme="dark" resetKey={attempt} />
+
       <button type="submit" className="btn btn--light btn--block" disabled={status === "sending"}>
         {status === "sending" ? dict.sending : dict.submit}
       </button>
 
       {status === "error" && <p className="form__msg" role="alert">{dict.error}</p>}
-      {status === "missing-key" && <p className="form__msg" role="alert">{dict.notConfigured}</p>}
+      {status === "missing-config" && <p className="form__msg" role="alert">{dict.notConfigured}</p>}
+      {status === "captcha" && <p className="form__msg" role="alert">{dict.captcha}</p>}
     </form>
   );
 }
