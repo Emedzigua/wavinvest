@@ -1,4 +1,4 @@
-import type { CustomerStatus, Product, QuoteStatus, Schedule } from "./types";
+import type { CustomerStatus, InvoiceStatus, Product, QuoteStatus, Schedule } from "./types";
 
 export const productLabel: Record<Product | "mixed", string> = {
   epal: "EPAL paleta",
@@ -14,9 +14,16 @@ export const customerStatusLabel: Record<CustomerStatus, string> = {
 
 export const quoteStatusLabel: Record<QuoteStatus, string> = {
   new: "Nový",
-  replied: "Odpovedané",
-  won: "Získaný",
-  lost: "Nezískaný",
+  opened: "Otvorený",
+  replied: "Odpovedaný",
+  archived: "Archív",
+};
+
+export const invoiceStatusLabel: Record<InvoiceStatus | "overdue", string> = {
+  issued: "Neuhradená",
+  overdue: "Po splatnosti",
+  paid: "Uhradená",
+  cancelled: "Stornovaná",
 };
 
 export const scheduleLabel: Record<Schedule, string> = {

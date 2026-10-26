@@ -24,6 +24,11 @@ export default async function QuotePage({ params }: PageProps<"/admin/quotes/[id
     getSettings(supabase),
   ]);
   if (!data) notFound();
+  // Opening a new request moves it to "Otvorený"
+  if (data.status === "new") {
+    await supabase.from("quotes").update({ status: "opened" }).eq("id", id);
+    data.status = "opened";
+  }
   type Row = Quote & { customer: { id: string; company_name: string; status: "active" | "inactive" | "lost" } | null };
   // Distance from the warehouses to the delivery place
   const q = await refreshGeo(supabase, "quotes", data as Row, (data as Row).delivery_location, settings.depots);
@@ -42,11 +47,10 @@ export default async function QuotePage({ params }: PageProps<"/admin/quotes/[id
           </p>
         </div>
         <div className="btn-row">
-          {q.status !== "lost" && (
-            <ConfirmButton action={setQuoteStatus.bind(null, q.id, "lost")}>Nezískaný</ConfirmButton>
-          )}
-          {q.status !== "new" && (
-            <ConfirmButton action={setQuoteStatus.bind(null, q.id, "new")}>Vrátiť na nový</ConfirmButton>
+          {q.status === "archived" ? (
+            <ConfirmButton action={setQuoteStatus.bind(null, q.id, "opened")}>Obnoviť</ConfirmButton>
+          ) : (
+            <ConfirmButton action={setQuoteStatus.bind(null, q.id, "archived")}>Archivovať</ConfirmButton>
           )}
           <ConfirmButton action={deleteQuote.bind(null, q.id)} message="Naozaj vymazať tento dopyt?">
             Vymazať

@@ -38,6 +38,20 @@ export default function CustomerFields({ c, depots }: { c?: Customer; depots: De
           <input name="country" defaultValue={c?.country ?? ""} placeholder="Slovensko" />
         </label>
       </div>
+      <div className="form__row form__row--3">
+        <label className="field">
+          <span>IČO</span>
+          <input name="ico" defaultValue={c?.ico ?? ""} />
+        </label>
+        <label className="field">
+          <span>DIČ</span>
+          <input name="dic" defaultValue={c?.dic ?? ""} />
+        </label>
+        <label className="field">
+          <span>IČ DPH</span>
+          <input name="ic_dph" defaultValue={c?.ic_dph ?? ""} />
+        </label>
+      </div>
       <label className="field">
         <span>Expedičný sklad</span>
         <select name="depot" defaultValue={c?.depot ?? depots[0]?.id}>

@@ -7,7 +7,8 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { addressQuery, geocode, refreshGeo } from "@/lib/admin/geo";
-import type { Depot, DiscountTier, QuoteStatus } from "@/lib/admin/types";
+import { addDays, invoiceTotals } from "@/lib/admin/invoice";
+import type { Billing, Depot, DiscountTier, InvoiceItem, InvoiceStatus, Party, QuoteStatus } from "@/lib/admin/types";
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 const optional = (form: FormData, key: string) => text(form, key) || null;
@@ -59,6 +60,9 @@ export async function saveCustomer(form: FormData): Promise<string | void> {
     country: optional(form, "country"),
     status: text(form, "status") || "inactive",
     depot: text(form, "depot") || "rzeszow",
+    ico: optional(form, "ico"),
+    dic: optional(form, "dic"),
+    ic_dph: optional(form, "ic_dph")?.toUpperCase().replace(/\s/g, "") ?? null,
     notes: optional(form, "notes"),
   };
   if (!fields.company_name) return "Vyplňte názov firmy.";
@@ -192,7 +196,12 @@ export async function saveContract(form: FormData) {
     await supabase.from("customers").update({ status: "active" }).eq("id", row.customer_id).neq("status", "active");
   }
 
-  if (form.get("from_quote")) redirect(`/admin/customers/${row.customer_id}`);
+  // A contract made from a request closes that request
+  const quoteId = optional(form, "quote_id");
+  if (quoteId) {
+    await supabase.from("quotes").update({ status: "archived" }).eq("id", quoteId);
+    redirect(`/admin/customers/${row.customer_id}`);
+  }
   refresh();
 }
 
@@ -220,7 +229,7 @@ export async function markReplied(id: string) {
     .from("quotes")
     .update({ status: "replied", replied_at: new Date().toISOString() })
     .eq("id", id)
-    .eq("status", "new");
+    .in("status", ["new", "opened"]);
   refresh();
 }
 
@@ -280,5 +289,110 @@ export async function saveSettings(form: FormData): Promise<string | void> {
     await supabase.from("customers").update({ distances: null }).not("distances", "is", null);
     await supabase.from("quotes").update({ distances: null }).not("distances", "is", null);
   }
+  refresh();
+}
+
+/* ───────────── Billing details ───────────── */
+
+export async function saveBilling(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const billing: Billing = {
+    name: text(form, "name"),
+    street: text(form, "street"),
+    postal_code: text(form, "postal_code"),
+    city: text(form, "city"),
+    country: text(form, "country"),
+    ico: text(form, "ico"),
+    dic: text(form, "dic"),
+    ic_dph: text(form, "ic_dph").toUpperCase().replace(/\s/g, ""),
+    register: text(form, "register"),
+    iban: text(form, "iban").toUpperCase().replace(/\s/g, ""),
+    swift: text(form, "swift").toUpperCase(),
+    bank: text(form, "bank"),
+    email: text(form, "email"),
+    phone: text(form, "phone"),
+    due_days: Math.max(0, Math.round(number(form, "due_days"))) || 14,
+    note: text(form, "note"),
+  };
+  if (!billing.name) return "Vyplňte obchodné meno.";
+  const { error } = await supabase.from("settings").update({ billing }).eq("id", 1);
+  if (error) throw error;
+  refresh();
+}
+
+/* ───────────── Invoices ───────────── */
+
+export async function saveInvoice(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const settings = await getSettings(supabase);
+  const id = optional(form, "id");
+
+  const items: InvoiceItem[] = form
+    .getAll("item_description")
+    .map((d, i) => ({
+      description: String(d).trim(),
+      qty: Number(String(form.getAll("item_qty")[i]).replace(",", ".")),
+      unit: String(form.getAll("item_unit")[i] || "ks").trim(),
+      unit_price: Number(String(form.getAll("item_price")[i]).replace(",", ".")),
+    }))
+    .filter((i) => i.description && i.qty > 0 && Number.isFinite(i.unit_price));
+  if (items.length === 0) return "Pridajte aspoň jednu položku.";
+
+  const buyer: Party = {
+    name: text(form, "buyer_name"),
+    street: text(form, "buyer_street"),
+    postal_code: text(form, "buyer_postal_code"),
+    city: text(form, "buyer_city"),
+    country: text(form, "buyer_country"),
+    ico: text(form, "buyer_ico"),
+    dic: text(form, "buyer_dic"),
+    ic_dph: text(form, "buyer_ic_dph").toUpperCase().replace(/\s/g, ""),
+  };
+  if (!buyer.name) return "Vyplňte odberateľa.";
+
+  const euSupply = form.get("eu_supply") === "on";
+  if (euSupply && !buyer.ic_dph) return "Pri dodaní do EÚ bez DPH vyplňte IČ DPH odberateľa.";
+  const vatRate = number(form, "vat_rate");
+  const issue = text(form, "issue_date");
+  const row = {
+    customer_id: optional(form, "customer_id"),
+    buyer,
+    items,
+    issue_date: issue,
+    delivery_date: text(form, "delivery_date") || issue,
+    due_date: text(form, "due_date") || addDays(issue, settings.billing.due_days),
+    currency: settings.currency,
+    vat_rate: vatRate,
+    eu_supply: euSupply,
+    note: optional(form, "note"),
+    ...invoiceTotals(items, vatRate, euSupply),
+  };
+
+  if (id) {
+    const { error } = await supabase.from("invoices").update(row).eq("id", id);
+    if (error) throw error;
+    redirect(`/admin/invoices/${id}`);
+  }
+
+  // Numbering 2026xxxx; retry if two invoices are created at the same moment
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data: number } = await supabase.rpc("next_invoice_number", { p_year: Number(issue.slice(0, 4)) });
+    const { data, error } = await supabase
+      .from("invoices")
+      .insert({ ...row, number, seller: settings.billing })
+      .select("id")
+      .single();
+    if (!error) redirect(`/admin/invoices/${data.id}`);
+    if (error.code !== "23505") throw error;
+  }
+  return "Faktúru sa nepodarilo uložiť, skúste znova.";
+}
+
+export async function setInvoiceStatus(id: string, status: InvoiceStatus) {
+  const { supabase } = await requireAdmin();
+  await supabase
+    .from("invoices")
+    .update({ status, paid_at: status === "paid" ? new Date().toISOString().slice(0, 10) : null })
+    .eq("id", id);
   refresh();
 }

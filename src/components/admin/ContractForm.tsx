@@ -9,13 +9,13 @@ export default function ContractForm({
   customerId,
   contract,
   defaults,
-  fromQuote,
+  quoteId,
   submitLabel = "Uložiť zmluvu",
 }: {
   customerId: string;
   contract?: Contract;
   defaults?: { product?: string; qty?: string; price?: string };
-  fromQuote?: boolean;
+  quoteId?: string;
   submitLabel?: string;
 }) {
   const [schedule, setSchedule] = useState<Schedule>(contract?.schedule ?? "weekly");
@@ -25,7 +25,7 @@ export default function ContractForm({
     <form action={saveContract} className="adm-form">
       <input type="hidden" name="customer_id" value={customerId} />
       {contract && <input type="hidden" name="id" value={contract.id} />}
-      {fromQuote && <input type="hidden" name="from_quote" value="1" />}
+      {quoteId && <input type="hidden" name="quote_id" value={quoteId} />}
 
       <div className="form__row form__row--3">
         <label className="field">

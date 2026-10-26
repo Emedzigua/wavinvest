@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { markReplied, setQuoteStatus } from "@/app/admin/actions";
+import { markReplied } from "@/app/admin/actions";
 import { calculate } from "@/lib/admin/pricing";
 import { quoteEmail } from "@/lib/admin/email-templates";
 import { money, num } from "@/lib/admin/format";
@@ -84,12 +84,12 @@ export default function QuoteCalculator({
     setTimeout(() => setCopied(false), 2000);
   }
 
+  // Opens the contract form; saving it moves this request to the archive
   function won() {
-    start(async () => {
-      await setQuoteStatus(quote.id, "won");
+    start(() => {
       if (!customerId) return;
       const main = calc.lines[0];
-      const params = new URLSearchParams({ contract: "new" });
+      const params = new URLSearchParams({ contract: "new", quote: quote.id });
       if (main) {
         params.set("product", main.product);
         params.set("qty", String(main.qty));
@@ -249,11 +249,11 @@ export default function QuoteCalculator({
         </div>
       </div>
 
-      {quote.status !== "won" && (
+      {quote.status !== "archived" && customerId && (
         <div className="calc__won">
           <p>Zákazník súhlasil?</p>
           <button type="button" className="btn btn--dark btn--sm" onClick={won} disabled={pending}>
-            Získaný → vytvoriť zmluvu
+            Vytvoriť zmluvu
           </button>
         </div>
       )}

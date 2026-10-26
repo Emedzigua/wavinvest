@@ -22,7 +22,9 @@ const compactMoney = (v: number, currency: string) =>
 export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   const sp = await searchParams;
   const { supabase } = await requireAdmin();
-  const [{ data: contracts }, { data: quotes }, { count: newCount }, settings] = await Promise.all([
+  const fiveDaysAgo = new Date();
+  fiveDaysAgo.setUTCDate(fiveDaysAgo.getUTCDate() - 5);
+  const [{ data: contracts }, { data: quotes }, { count: newCount }, settings, { data: stale }, { data: unpaid }] = await Promise.all([
     supabase.from("contracts").select("*, customer:customers(id, company_name, city, depot, distances)"),
     supabase
       .from("quotes")
@@ -31,6 +33,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
       .limit(6),
     supabase.from("quotes").select("id", { count: "exact", head: true }).eq("status", "new"),
     getSettings(supabase),
+    // Replied 5+ days ago and still not closed: time to call
+    supabase.from("quotes").select("id, company, replied_at").eq("status", "replied").lt("replied_at", fiveDaysAgo.toISOString()),
+    supabase.from("invoices").select("id, number, due_date, total, currency, buyer").eq("status", "issued").lt("due_date", iso(new Date())),
   ]);
 
   const all = (contracts ?? []) as Row[];
@@ -70,6 +75,35 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   const isThisWeek = iso(monday) === iso(weekStart());
   const depotName = (id: string) => settings.depots.find((d) => d.id === id)?.name ?? id;
 
+  // Follow-ups: one short line each, most urgent first
+  const in30 = new Date(today);
+  in30.setUTCDate(in30.getUTCDate() + 30);
+  const todo = [
+    ...(unpaid ?? []).map((i) => ({
+      key: `i${i.id}`,
+      href: `/admin/invoices/${i.id}`,
+      title: i.buyer.name as string,
+      text: `Faktúra ${i.number} po splatnosti`,
+      tone: "bad",
+    })),
+    ...(stale ?? []).map((q) => ({
+      key: `q${q.id}`,
+      href: `/admin/quotes/${q.id}`,
+      title: q.company as string,
+      text: `Bez odpovede od ${date(q.replied_at)}`,
+      tone: "warn",
+    })),
+    ...all
+      .filter((k) => k.end_date && k.end_date >= iso(today) && k.end_date <= iso(in30))
+      .map((k) => ({
+        key: `c${k.id}`,
+        href: `/admin/customers/${k.customer.id}`,
+        title: k.customer.company_name,
+        text: `Zmluva končí ${date(k.end_date!)}`,
+        tone: "info",
+      })),
+  ];
+
   return (
     <>
       <header className="adm-head">
@@ -97,6 +131,22 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
           </Link>
         </div>
       </div>
+
+      {todo.length > 0 && (
+        <section className="card">
+          <h2 className="card__title">Na riešenie</h2>
+          <ul className="todo">
+            {todo.map((t) => (
+              <li key={t.key} className={`todo--${t.tone}`}>
+                <Link href={t.href}>
+                  <strong>{t.title}</strong>
+                  <span>{t.text}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="card" id="deliveries">
         <div className="card__head">

@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { address, date, money, num } from "@/lib/admin/format";
-import { productLabel, scheduleText } from "@/lib/admin/labels";
+import { invoiceStatusLabel, productLabel, scheduleText } from "@/lib/admin/labels";
 import { isRunning, monthlyValue } from "@/lib/admin/schedule";
-import type { Contact, Contract, Customer, Quote } from "@/lib/admin/types";
+import type { Contact, Contract, Customer, Invoice, Quote } from "@/lib/admin/types";
+import { invoiceState } from "@/lib/admin/invoice";
 import { deleteContact, deleteContract, deleteCustomer, saveContact, saveCustomer } from "../../../actions";
 import CustomerFields from "@/components/admin/CustomerFields";
 import DistanceList from "@/components/admin/DistanceList";
@@ -21,7 +22,12 @@ export const metadata: Metadata = { title: "Zákazník" };
 // Admin pages are personal and always rendered per request
 export const instant = false;
 
-type Full = Customer & { contacts: Contact[]; contracts: Contract[]; quotes: Quote[] };
+type Full = Customer & {
+  contacts: Contact[];
+  contracts: Contract[];
+  quotes: Quote[];
+  invoices: Pick<Invoice, "id" | "number" | "issue_date" | "due_date" | "total" | "status" | "currency">[];
+};
 
 export default async function CustomerPage({ params, searchParams }: PageProps<"/admin/customers/[id]">) {
   const [{ id }, sp] = await Promise.all([params, searchParams]);
@@ -29,11 +35,12 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
   const [{ data }, settings] = await Promise.all([
     supabase
       .from("customers")
-      .select("*, contacts(*), contracts(*), quotes(*)")
+      .select("*, contacts(*), contracts(*), quotes(*), invoices(id, number, issue_date, due_date, total, status, currency)")
       .eq("id", id)
       .order("created_at", { referencedTable: "contacts" })
       .order("start_date", { referencedTable: "contracts" })
       .order("created_at", { referencedTable: "quotes", ascending: false })
+      .order("number", { referencedTable: "invoices", ascending: false })
       .maybeSingle(),
     getSettings(supabase),
   ]);
@@ -61,12 +68,17 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
             {c.source === "quote" && <span className="muted">vytvorený z dopytu {date(c.created_at)}</span>}
           </p>
         </div>
-        <ConfirmButton
+        <div className="btn-row">
+          <Link href={`/admin/invoices/new?customer=${c.id}`} className="btn btn--dark">
+            Vystaviť faktúru
+          </Link>
+          <ConfirmButton
           action={deleteCustomer.bind(null, c.id)}
           message={`Naozaj vymazať zákazníka ${c.company_name} vrátane kontaktov a zmlúv?`}
         >
           Vymazať
         </ConfirmButton>
+        </div>
       </header>
 
       <div className="adm-grid">
@@ -172,12 +184,36 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
           <summary className="btn btn--ghost btn--sm">+ Pridať zmluvu</summary>
           <ContractForm
             customerId={c.id}
-            fromQuote={prefill}
+            quoteId={prefill ? str(sp.quote) : undefined}
             defaults={prefill ? { product: str(sp.product), qty: str(sp.qty), price: str(sp.price) } : undefined}
             submitLabel={prefill ? "Vytvoriť zmluvu a aktivovať" : "Pridať zmluvu"}
           />
         </details>
       </section>
+
+      {c.invoices.length > 0 && (
+        <section className="card">
+          <h2 className="card__title">Faktúry</h2>
+          <ul className="list">
+            {c.invoices.map((i) => {
+              const state = invoiceState(i);
+              return (
+                <li key={i.id}>
+                  <Link href={`/admin/invoices/${i.id}`}>
+                    <span>
+                      <strong>{i.number}</strong>
+                      <small className="muted">
+                        {date(i.issue_date)} · {money(Number(i.total), i.currency)}
+                      </small>
+                    </span>
+                    <span className={`pill pill--i-${state}`}>{invoiceStatusLabel[state]}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       {c.quotes.length > 0 && (
         <section className="card">

@@ -5,7 +5,7 @@ import type { Settings } from "./types";
 export async function getSettings(supabase: SupabaseClient): Promise<Settings> {
   const { data } = await supabase
     .from("settings")
-    .select("price_epal, price_collars, vat_rate, currency, discount_tiers, depots, transport_per_km")
+    .select("price_epal, price_collars, vat_rate, currency, discount_tiers, depots, transport_per_km, billing")
     .eq("id", 1)
     .single();
   return {
@@ -16,5 +16,6 @@ export async function getSettings(supabase: SupabaseClient): Promise<Settings> {
     discount_tiers: data?.discount_tiers ?? [],
     depots: data?.depots ?? [],
     transport_per_km: Number(data?.transport_per_km ?? 0),
+    billing: data?.billing,
   };
 }

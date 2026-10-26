@@ -7,6 +7,7 @@ const links = [
   { href: "/admin", label: "Prehľad" },
   { href: "/admin/customers", label: "Zákazníci" },
   { href: "/admin/quotes", label: "Dopyty" },
+  { href: "/admin/invoices", label: "Faktúry" },
   { href: "/admin/settings", label: "Nastavenia" },
 ];
 

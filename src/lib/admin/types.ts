@@ -1,6 +1,7 @@
 export type Product = "epal" | "collars";
 export type CustomerStatus = "active" | "inactive" | "lost";
-export type QuoteStatus = "new" | "replied" | "won" | "lost";
+export type QuoteStatus = "new" | "opened" | "replied" | "archived";
+export type InvoiceStatus = "issued" | "paid" | "cancelled";
 export type Schedule = "weekly" | "biweekly" | "monthly";
 
 export type DiscountTier = { min_qty: number; percent: number };
@@ -10,6 +11,60 @@ export type Depot = { id: string; name: string; address: string; lat: number; ln
 // Distance from each warehouse, keyed by depot id. road = false means straight line.
 export type Distances = Record<string, { km: number; min: number | null; road: boolean }>;
 
+export type Billing = {
+  name: string;
+  street: string;
+  postal_code: string;
+  city: string;
+  country: string;
+  ico: string;
+  dic: string;
+  ic_dph: string;
+  register: string;
+  iban: string;
+  swift: string;
+  bank: string;
+  email: string;
+  phone: string;
+  due_days: number;
+  note: string;
+};
+
+export type Party = {
+  name: string;
+  street: string;
+  postal_code: string;
+  city: string;
+  country: string;
+  ico: string;
+  dic: string;
+  ic_dph: string;
+};
+
+export type InvoiceItem = { description: string; qty: number; unit: string; unit_price: number };
+
+export type Invoice = {
+  id: string;
+  number: string;
+  customer_id: string | null;
+  buyer: Party;
+  seller: Billing;
+  items: InvoiceItem[];
+  issue_date: string;
+  delivery_date: string;
+  due_date: string;
+  currency: string;
+  vat_rate: number;
+  eu_supply: boolean;
+  subtotal: number;
+  vat: number;
+  total: number;
+  status: InvoiceStatus;
+  paid_at: string | null;
+  note: string | null;
+  created_at: string;
+};
+
 export type Settings = {
   price_epal: number;
   price_collars: number;
@@ -18,6 +73,7 @@ export type Settings = {
   discount_tiers: DiscountTier[];
   depots: Depot[];
   transport_per_km: number;
+  billing: Billing;
 };
 
 export type Contact = {
@@ -57,6 +113,9 @@ export type Customer = {
   language: string | null;
   notes: string | null;
   depot: string;
+  ico: string | null;
+  dic: string | null;
+  ic_dph: string | null;
   distances: Distances | null;
   geo_query: string | null;
   created_at: string;

@@ -2,24 +2,28 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin/auth";
 import { dateTime, num } from "@/lib/admin/format";
-import { productLabel, quoteStatusLabel } from "@/lib/admin/labels";
+import { productLabel } from "@/lib/admin/labels";
 import type { Quote, QuoteStatus } from "@/lib/admin/types";
-import { QuotePill } from "@/components/admin/StatusPill";
 
 export const metadata: Metadata = { title: "Dopyty" };
 // Admin pages are personal and always rendered per request
 export const instant = false;
 
-const FILTERS: (QuoteStatus | "all")[] = ["all", "new", "replied", "won", "lost"];
+const TABS: QuoteStatus[] = ["new", "opened", "replied", "archived"];
+const tabLabel: Record<QuoteStatus, string> = { new: "Nové", opened: "Otvorené", replied: "Odpovedané", archived: "Archív" };
 
 export default async function QuotesPage({ searchParams }: PageProps<"/admin/quotes">) {
   const sp = await searchParams;
-  const status = FILTERS.includes(sp.status as QuoteStatus) ? (sp.status as QuoteStatus | "all") : "all";
   const { supabase } = await requireAdmin();
-  let query = supabase.from("quotes").select("*").order("created_at", { ascending: false }).limit(300);
-  if (status !== "all") query = query.eq("status", status);
-  const { data } = await query;
-  const quotes = (data ?? []) as Quote[];
+  const { data } = await supabase.from("quotes").select("*").order("created_at", { ascending: false }).limit(500);
+  const all = (data ?? []) as Quote[];
+  const counts = Object.fromEntries(TABS.map((t) => [t, all.filter((q) => q.status === t).length])) as Record<QuoteStatus, number>;
+
+  // Without a choice, open the first category that has something in it
+  const status = TABS.includes(sp.status as QuoteStatus)
+    ? (sp.status as QuoteStatus)
+    : (TABS.find((t) => t !== "archived" && counts[t] > 0) ?? "new");
+  const quotes = all.filter((q) => q.status === status);
 
   return (
     <>
@@ -28,21 +32,18 @@ export default async function QuotesPage({ searchParams }: PageProps<"/admin/quo
       </header>
 
       <div className="toolbar">
-        <nav className="tabs" aria-label="Filter">
-          {FILTERS.map((f) => (
-            <Link
-              key={f}
-              href={f === "all" ? "/admin/quotes" : `/admin/quotes?status=${f}`}
-              aria-current={status === f ? "page" : undefined}
-            >
-              {f === "all" ? "Všetky" : quoteStatusLabel[f]}
+        <nav className="tabs" aria-label="Kategória">
+          {TABS.map((t) => (
+            <Link key={t} href={`/admin/quotes?status=${t}`} aria-current={status === t ? "page" : undefined}>
+              {tabLabel[t]}
+              {counts[t] > 0 && <span className="tabs__count">{counts[t]}</span>}
             </Link>
           ))}
         </nav>
       </div>
 
       {quotes.length === 0 ? (
-        <p className="card muted">Žiadne dopyty.</p>
+        <p className="card muted">Prázdne.</p>
       ) : (
         <div className="card card--flush scroll-x">
           <table className="tbl tbl--rows">
@@ -53,14 +54,12 @@ export default async function QuotesPage({ searchParams }: PageProps<"/admin/quo
                 <th>Produkt</th>
                 <th className="num">Množstvo</th>
                 <th>Dodanie</th>
-                <th>Jazyk</th>
-                <th>Stav</th>
               </tr>
             </thead>
             <tbody>
               {quotes.map((q) => (
                 <tr key={q.id} className={q.status === "new" ? "is-new" : ""}>
-                  <td className="nowrap">{dateTime(q.created_at)}</td>
+                  <td className="nowrap muted">{dateTime(q.created_at)}</td>
                   <td>
                     <Link href={`/admin/quotes/${q.id}`} className="stretch">
                       <strong>{q.company}</strong>
@@ -70,10 +69,6 @@ export default async function QuotesPage({ searchParams }: PageProps<"/admin/quo
                   <td>{productLabel[q.product]}</td>
                   <td className="num">{num(q.quantity)} ks</td>
                   <td>{q.delivery_location}</td>
-                  <td>{q.language.toUpperCase()}</td>
-                  <td>
-                    <QuotePill status={q.status} />
-                  </td>
                 </tr>
               ))}
             </tbody>
