@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { deletePushSubscription, savePushSubscription, sendTestPush } from "@/app/admin/actions";
 
 type State = "loading" | "unsupported" | "install" | "denied" | "off" | "on";
+type SubJson = { endpoint: string; keys: { p256dh: string; auth: string } };
 
 function toKey(base64: string) {
   const padded = (base64 + "=".repeat((4 - (base64.length % 4)) % 4)).replace(/-/g, "+").replace(/_/g, "/");
@@ -22,27 +23,46 @@ export default function PushToggle({ publicKey }: { publicKey: string }) {
 
   useEffect(() => {
     (async () => {
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        return setState(isIos() && !isInstalled() ? "install" : "unsupported");
+      try {
+        if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+          return setState(isIos() && !isInstalled() ? "install" : "unsupported");
+        }
+        if (Notification.permission === "denied") return setState("denied");
+        const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/admin" });
+        const sub = await reg.pushManager.getSubscription();
+        // Re-save an existing subscription, in case saving failed earlier
+        if (sub) await savePushSubscription(sub.toJSON() as SubJson, navigator.userAgent);
+        setState(sub ? "on" : "off");
+      } catch (e) {
+        setMessage(`Chyba: ${e instanceof Error ? e.message : String(e)}`);
+        setState("off");
       }
-      if (Notification.permission === "denied") return setState("denied");
-      const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/admin" });
-      const sub = await reg.pushManager.getSubscription();
-      setState(sub ? "on" : "off");
     })();
   }, []);
 
-  function enable() {
+  // Permission must be asked directly in the click (iPhone rejects it otherwise)
+  async function enable() {
+    setMessage("");
+    let permission: NotificationPermission;
+    try {
+      permission = await Notification.requestPermission();
+    } catch (e) {
+      return setMessage(`Chyba: ${e instanceof Error ? e.message : String(e)}`);
+    }
+    if (permission !== "granted") return setState("denied");
     start(async () => {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") return setState("denied");
-      const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/admin" });
-      await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: toKey(publicKey) });
-      const json = sub.toJSON() as { endpoint: string; keys: { p256dh: string; auth: string } };
-      await savePushSubscription(json, navigator.userAgent);
-      setState("on");
-      setMessage("");
+      try {
+        const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/admin" });
+        await navigator.serviceWorker.ready;
+        const sub =
+          (await reg.pushManager.getSubscription()) ??
+          (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: toKey(publicKey) }));
+        await savePushSubscription(sub.toJSON() as SubJson, navigator.userAgent);
+        setState("on");
+        setMessage(await sendTestPush());
+      } catch (e) {
+        setMessage(`Nepodarilo sa zapnúť: ${e instanceof Error ? e.message : String(e)}`);
+      }
     });
   }
 
@@ -82,7 +102,15 @@ export default function PushToggle({ publicKey }: { publicKey: string }) {
             type="button"
             className="btn btn--ghost btn--sm"
             disabled={pending}
-            onClick={() => start(async () => setMessage(await sendTestPush()))}
+            onClick={() =>
+              start(async () => {
+                try {
+                  setMessage(await sendTestPush());
+                } catch (e) {
+                  setMessage(`Chyba: ${e instanceof Error ? e.message : String(e)}`);
+                }
+              })
+            }
           >
             Poslať test
           </button>

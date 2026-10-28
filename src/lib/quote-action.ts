@@ -85,7 +85,7 @@ async function notifyPhones(id: string, q: Record<string, string | number>, secr
   const client = createPublicClient();
   const { data } = await client.rpc("push_targets", { p_secret: secret });
   if (!data?.config || !data.subscriptions?.length) return;
-  const gone = await sendPush(data.config, data.subscriptions, {
+  const { gone } = await sendPush(data.config, data.subscriptions, {
     title: `Nový dopyt: ${q.p_company}`,
     body: `${q.p_quantity} ks · ${productLabel[q.p_product as keyof typeof productLabel]} · ${q.p_location}`,
     url: `/admin/quotes/${id}`,

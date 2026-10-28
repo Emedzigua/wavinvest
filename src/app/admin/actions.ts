@@ -436,7 +436,9 @@ export async function sendTestPush(): Promise<string> {
     supabase.from("push_subscriptions").select("endpoint, keys"),
   ]);
   if (!config || !subs?.length) return "Žiadne zariadenie nemá zapnuté upozornenia.";
-  const gone = await sendPush(config, subs, { title: "WAV Invest", body: "Upozornenia fungujú ✓", url: "/admin" });
+  const { gone, failed } = await sendPush(config, subs, { title: "WAV Invest", body: "Upozornenia fungujú ✓", url: "/admin" });
   if (gone.length) await supabase.from("push_subscriptions").delete().in("endpoint", gone);
-  return `Odoslané na ${subs.length - gone.length} zariadenie(a).`;
+  const ok = subs.length - gone.length - failed.length;
+  if (failed.length) return `Odoslané: ${ok}, chyba: ${failed.join("; ")}`;
+  return `Testovacie upozornenie odoslané (${ok} ${ok === 1 ? "zariadenie" : "zariadenia"}).`;
 }
