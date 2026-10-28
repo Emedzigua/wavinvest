@@ -11,7 +11,7 @@ export default function LockedForm({
   saveLabel = "Uložiť zmeny",
 }: {
   action: (form: FormData) => Promise<string | void>;
-  title: ReactNode;
+  title?: ReactNode;
   children: ReactNode;
   saveLabel?: string;
 }) {
@@ -40,8 +40,8 @@ export default function LockedForm({
         })
       }
     >
-      <div className="card__head">
-        <h2 className="card__title">{title}</h2>
+      <div className={`card__head${title ? "" : " card__head--end"}`}>
+        {title && <h2 className="card__title">{title}</h2>}
         {!editing && (
           <button type="button" className="btn btn--ghost btn--sm" onClick={() => setEditing(true)}>
             Upraviť

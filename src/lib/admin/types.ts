@@ -97,6 +97,7 @@ export type Contract = {
   weekdays: number[];
   month_day: number | null;
   notes: string | null;
+  created_at: string;
 };
 
 export type Customer = {

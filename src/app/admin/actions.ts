@@ -4,6 +4,7 @@ import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { sendPush } from "@/lib/push";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { addressQuery, geocode, refreshGeo } from "@/lib/admin/geo";
@@ -241,7 +242,24 @@ export async function deleteQuote(id: string) {
 
 /* ───────────── Settings ───────────── */
 
-export async function saveSettings(form: FormData): Promise<string | void> {
+// Settings are saved per section, so a mistake in one can't touch the others
+export async function savePrices(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from("settings")
+    .update({
+      price_epal: number(form, "price_epal") || 0,
+      price_collars: number(form, "price_collars") || 0,
+      vat_rate: number(form, "vat_rate") || 0,
+      currency: text(form, "currency") || "EUR",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", 1);
+  if (error) throw error;
+  refresh();
+}
+
+export async function saveTiers(form: FormData): Promise<string | void> {
   const { supabase } = await requireAdmin();
   const mins = form.getAll("tier_min").map((v) => Number(String(v).replace(",", ".")));
   const pcts = form.getAll("tier_pct").map((v) => Number(String(v).replace(",", ".")));
@@ -249,7 +267,13 @@ export async function saveSettings(form: FormData): Promise<string | void> {
     .map((min_qty, i) => ({ min_qty: Math.round(min_qty), percent: pcts[i] }))
     .filter((t) => t.min_qty > 0 && t.percent > 0 && t.percent < 100)
     .sort((a, b) => a.min_qty - b.min_qty);
+  const { error } = await supabase.from("settings").update({ discount_tiers: tiers }).eq("id", 1);
+  if (error) throw error;
+  refresh();
+}
 
+export async function saveDepots(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
   const current = await getSettings(supabase);
   const names = form.getAll("depot_name").map((v) => String(v).trim());
   const addresses = form.getAll("depot_address").map((v) => String(v).trim());
@@ -270,16 +294,7 @@ export async function saveSettings(form: FormData): Promise<string | void> {
 
   const { error } = await supabase
     .from("settings")
-    .update({
-      depots,
-      transport_per_km: number(form, "transport_per_km") || 0,
-      price_epal: number(form, "price_epal") || 0,
-      price_collars: number(form, "price_collars") || 0,
-      vat_rate: number(form, "vat_rate") || 0,
-      currency: text(form, "currency") || "EUR",
-      discount_tiers: tiers,
-      updated_at: new Date().toISOString(),
-    })
+    .update({ depots, transport_per_km: number(form, "transport_per_km") || 0 })
     .eq("id", 1);
   if (error) throw error;
 
@@ -395,4 +410,33 @@ export async function setInvoiceStatus(id: string, status: InvoiceStatus) {
     .update({ status, paid_at: status === "paid" ? new Date().toISOString().slice(0, 10) : null })
     .eq("id", id);
   refresh();
+}
+
+/* ───────────── Phone notifications ───────────── */
+
+export async function savePushSubscription(sub: { endpoint: string; keys: { p256dh: string; auth: string } }, device: string) {
+  const { supabase, user } = await requireAdmin();
+  const { error } = await supabase
+    .from("push_subscriptions")
+    .upsert({ endpoint: sub.endpoint, keys: sub.keys, user_id: user.id, device: device.slice(0, 120) });
+  if (error) throw error;
+  refresh();
+}
+
+export async function deletePushSubscription(endpoint: string) {
+  const { supabase } = await requireAdmin();
+  await supabase.from("push_subscriptions").delete().eq("endpoint", endpoint);
+  refresh();
+}
+
+export async function sendTestPush(): Promise<string> {
+  const { supabase } = await requireAdmin();
+  const [{ data: config }, { data: subs }] = await Promise.all([
+    supabase.rpc("push_config_admin"),
+    supabase.from("push_subscriptions").select("endpoint, keys"),
+  ]);
+  if (!config || !subs?.length) return "Žiadne zariadenie nemá zapnuté upozornenia.";
+  const gone = await sendPush(config, subs, { title: "WAV Invest", body: "Upozornenia fungujú ✓", url: "/admin" });
+  if (gone.length) await supabase.from("push_subscriptions").delete().in("endpoint", gone);
+  return `Odoslané na ${subs.length - gone.length} zariadenie(a).`;
 }

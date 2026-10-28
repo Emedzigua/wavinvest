@@ -1,14 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import BackButton from "@/components/admin/BackButton";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { address, money, num } from "@/lib/admin/format";
-import { customerStatusLabel, productLabel, scheduleText } from "@/lib/admin/labels";
+import { customerStatusLabel } from "@/lib/admin/labels";
 import { isRunning, monthlyValue } from "@/lib/admin/schedule";
 import type { Contact, Contract, Customer, CustomerStatus } from "@/lib/admin/types";
 import { CustomerPill } from "@/components/admin/StatusPill";
 import MapView from "@/components/admin/MapView";
-import DistanceList from "@/components/admin/DistanceList";
+import { customerColor } from "@/lib/admin/colors";
 import { addressQuery, refreshGeo } from "@/lib/admin/geo";
 
 export const metadata: Metadata = { title: "Zákazníci" };
@@ -50,13 +51,16 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
       label: c.company_name,
       sub: address(c),
       href: `/admin/customers/${c.id}`,
-      status: c.status,
+      color: customerColor(c.id),
     }));
 
   return (
     <>
       <header className="adm-head">
-        <h1 className="display">Zákazníci</h1>
+        <div>
+          <BackButton href="/admin" label="Prehľad" />
+          <h1 className="display">Zákazníci</h1>
+        </div>
         <Link href="/admin/customers/new" className="btn btn--dark">
           + Nový zákazník
         </Link>
@@ -97,75 +101,20 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
             const depot = settings.depots.find((d) => d.id === c.depot);
             const km = c.distances?.[c.depot]?.km;
             return (
-              <details key={c.id} className="row">
-                <summary>
-                  <span className="row__name">
-                    <strong>{c.company_name}</strong>
-                    <small className="muted">{c.city ?? "—"}</small>
-                  </span>
-                  <span className="row__meta">{km != null ? `${num(km)} km${depot ? ` z ${depot.name}` : ""}` : "—"}</span>
-                  <span className="row__meta">{pieces > 0 ? `${num(pieces)} ks / mes.` : "—"}</span>
-                  <span className="row__meta">{monthly > 0 ? money(monthly, settings.currency) : ""}</span>
-                  <CustomerPill status={c.status} />
-                  <span className="row__icon" aria-hidden />
-                </summary>
-                <div className="row__body">
-                  <div>
-                    <h3 className="mini">Adresa</h3>
-                    <p>{address(c) || <span className="muted">Nevyplnená</span>}</p>
-                    <h3 className="mini">Vzdialenosť</h3>
-                    <DistanceList depots={settings.depots} distances={c.distances} selected={c.depot} />
-                    {c.notes && (
-                      <>
-                        <h3 className="mini">Poznámky</h3>
-                        <p className="pre">{c.notes}</p>
-                      </>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="mini">Kontaktné osoby</h3>
-                    {c.contacts.length === 0 ? (
-                      <p className="muted">Žiadne</p>
-                    ) : (
-                      <ul className="contacts">
-                        {c.contacts.map((p) => (
-                          <li key={p.id}>
-                            <strong>{p.name}</strong>
-                            {p.role && <span className="muted"> · {p.role}</span>}
-                            <br />
-                            {p.phone && <a href={`tel:${p.phone.replace(/\s/g, "")}`}>{p.phone}</a>}
-                            {p.phone && p.email && " · "}
-                            {p.email && <a href={`mailto:${p.email}`}>{p.email}</a>}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="mini">Zmluvy</h3>
-                    {c.contracts.length === 0 ? (
-                      <p className="muted">Žiadne</p>
-                    ) : (
-                      <ul className="contacts">
-                        {c.contracts.map((k) => (
-                          <li key={k.id} className={isRunning(k, today) ? "" : "muted"}>
-                            <strong>
-                              {num(k.monthly_qty)} ks / mes. · {productLabel[k.product]}
-                            </strong>
-                            <br />
-                            <span className="muted">{money(Number(k.unit_price), settings.currency)} / ks · {scheduleText(k)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                  <div className="row__actions">
-                    <Link href={`/admin/customers/${c.id}`} className="btn btn--dark btn--sm">
-                      Otvoriť
-                    </Link>
-                  </div>
-                </div>
-              </details>
+              <Link key={c.id} href={`/admin/customers/${c.id}`} className="row row--link" style={{ "--pin": customerColor(c.id) } as React.CSSProperties}>
+                <span className="dot" aria-hidden />
+                <span className="row__name">
+                  <strong>{c.company_name}</strong>
+                  <small className="muted">{c.city ?? "—"}</small>
+                </span>
+                <span className="row__meta">{km != null ? `${num(km)} km${depot ? ` · ${depot.name}` : ""}` : "—"}</span>
+                <span className="row__meta">{pieces > 0 ? `${num(pieces)} ks / mes.` : "—"}</span>
+                <span className="row__meta">{monthly > 0 ? money(monthly, settings.currency) : ""}</span>
+                <CustomerPill status={c.status} />
+                <span className="row__go" aria-hidden>
+                  →
+                </span>
+              </Link>
             );
           })}
         </div>

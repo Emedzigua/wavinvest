@@ -1,20 +1,34 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import "leaflet/dist/leaflet.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 import type { Depot } from "@/lib/admin/types";
 
-export type Pin = { id: string; lat: number; lng: number; label: string; sub?: string; href?: string; status?: string };
+export type Pin = { id: string; lat: number; lng: number; label: string; sub?: string; href?: string; color?: string };
+
+// Modern vector map (OpenFreeMap, free incl. commercial use, no key)
+const STYLE = "https://tiles.openfreemap.org/styles/positron";
 
 const escape = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
-// OpenStreetMap map with customer pins and the warehouses as dark squares.
-// Leaflet touches `window`, so it is loaded in the browser only.
+const FACTORY =
+  '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M2 21V10l6 3.5V10l6 3.5V4h3v4h3v13H2Zm4-3h2v-2H6v2Zm5 0h2v-2h-2v2Zm5 0h2v-2h-2v2Z"/></svg>';
+const CUSTOMER =
+  '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4 20.5c0-4.1 3.6-7 8-7s8 2.9 8 7v.5H4v-.5Z"/></svg>';
+
+function marker(html: string, className: string, color?: string) {
+  const el = document.createElement("div");
+  el.className = className;
+  if (color) el.style.setProperty("--pin", color);
+  el.innerHTML = html;
+  return el;
+}
+
 export default function MapView({
   pins,
   depots = [],
   height = 360,
-  zoom = 12,
+  zoom = 11,
 }: {
   pins: Pin[];
   depots?: Depot[];
@@ -23,52 +37,48 @@ export default function MapView({
 }) {
   const el = useRef<HTMLDivElement>(null);
   // Only rebuild the map when the data really changes, not on every render
-  const key = JSON.stringify([pins, depots.map((d) => [d.id, d.lat, d.lng])]);
+  const key = JSON.stringify([pins, depots.map((d) => [d.id, d.name, d.lat, d.lng])]);
 
   useEffect(() => {
     const node = el.current;
     if (!node || pins.length === 0) return;
-    let map: import("leaflet").Map | undefined;
-    let observer: ResizeObserver | undefined;
+    let map: import("maplibre-gl").Map | undefined;
     let cancelled = false;
 
-    import("leaflet").then((L) => {
+    import("maplibre-gl").then((ml) => {
       if (cancelled) return;
-      map = L.map(node, { scrollWheelZoom: false });
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
+      // The bundler can't resolve MapLibre's worker, so it is served from /public (same version)
+      ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
+      const m = new ml.Map({ container: node, style: STYLE, attributionControl: { compact: true }, cooperativeGestures: true });
+      map = m;
+      m.addControl(new ml.NavigationControl({ showCompass: false }), "top-left");
 
-      for (const p of pins) {
-        const icon = L.divIcon({ className: `map-pin map-pin--${p.status ?? "active"}`, iconSize: [18, 18] });
-        const title = p.href ? `<a href="${p.href}">${escape(p.label)}</a>` : escape(p.label);
-        L.marker([p.lat, p.lng], { icon, title: p.label })
-          .bindPopup(`<strong>${title}</strong>${p.sub ? `<br>${escape(p.sub)}` : ""}`)
-          .addTo(map);
-      }
       for (const d of depots) {
-        const icon = L.divIcon({ className: "map-depot", iconSize: [16, 16] });
-        L.marker([d.lat, d.lng], { icon, title: `Sklad ${d.name}` })
-          .bindPopup(`<strong>Sklad ${escape(d.name)}</strong>`)
-          .addTo(map);
+        new ml.Marker({ element: marker(FACTORY, "pin-depot") })
+          .setLngLat([d.lng, d.lat])
+          .setPopup(new ml.Popup({ offset: 18, closeButton: false }).setHTML(`<strong>Sklad ${escape(d.name)}</strong>`))
+          .addTo(m);
+      }
+      for (const p of pins) {
+        const title = p.href ? `<a href="${p.href}">${escape(p.label)}</a>` : escape(p.label);
+        new ml.Marker({ element: marker(CUSTOMER, "pin-customer", p.color) })
+          .setLngLat([p.lng, p.lat])
+          .setPopup(
+            new ml.Popup({ offset: 18, closeButton: false }).setHTML(
+              `<strong>${title}</strong>${p.sub ? `<br><span>${escape(p.sub)}</span>` : ""}`,
+            ),
+          )
+          .addTo(m);
       }
 
-      if (pins.length === 1 && depots.length === 0) map.setView([pins[0].lat, pins[0].lng], zoom);
-      else {
-        const points = [...pins.map((p) => [p.lat, p.lng]), ...depots.map((d) => [d.lat, d.lng])] as [number, number][];
-        map.fitBounds(L.latLngBounds(points).pad(0.15), { maxZoom: zoom });
-      }
-
-      // The container can still be resizing when the map starts (grid layout,
-      // fonts loading); without this, tiles only fill part of the box.
-      observer = new ResizeObserver(() => map?.invalidateSize());
-      observer.observe(node);
+      const bounds = new ml.LngLatBounds();
+      for (const p of pins) bounds.extend([p.lng, p.lat]);
+      for (const d of depots) bounds.extend([d.lng, d.lat]);
+      m.fitBounds(bounds, { padding: 56, maxZoom: zoom, duration: 0 });
     });
 
     return () => {
       cancelled = true;
-      observer?.disconnect();
       map?.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `key` covers pins and depots

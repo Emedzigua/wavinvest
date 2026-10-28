@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/admin/BackButton";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -31,9 +32,7 @@ export default async function InvoicePage({ params }: PageProps<"/admin/invoices
     <>
       <header className="adm-head">
         <div>
-          <p className="label">
-            <Link href="/admin/invoices">Faktúry</Link>
-          </p>
+          <BackButton href="/admin/invoices" label="Faktúry" />
           <h1 className="display">{inv.number}</h1>
           <p className="adm-head__meta">
             <span className={`pill pill--i-${state}`}>{invoiceStatusLabel[state]}</span>

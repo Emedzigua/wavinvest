@@ -5,7 +5,7 @@ import type { MonthPoint } from "@/lib/admin/schedule";
 
 const H = 140;
 
-// One headline number with a bar per month underneath. Hovering a bar shows
+// One headline number with a bar per month underneath. Clicking a bar shows
 // that month in the headline; the current month is the highlighted bar.
 export default function RevenueCard({
   data,
@@ -30,7 +30,13 @@ export default function RevenueCard({
     <section className="card rev">
       <div className="rev__head">
         <h2 className="card__title">Obrat</h2>
-        <span className="rev__period">{point.current ? "Tento mesiac" : point.label} · bez DPH</span>
+        {point.current ? (
+          <span className="rev__period">Tento mesiac · bez DPH</span>
+        ) : (
+          <button type="button" className="rev__reset" onClick={() => setActive(data.length - 1)}>
+            {point.label} · späť na tento mesiac ✕
+          </button>
+        )}
       </div>
 
       <div className="rev__value">
@@ -43,14 +49,14 @@ export default function RevenueCard({
         )}
       </div>
 
-      <div className="rev__bars" style={{ height: H }} onMouseLeave={() => setActive(data.length - 1)}>
+      <div className="rev__bars" style={{ height: H }}>
         {data.map((d, i) => (
           <button
             key={d.key}
             type="button"
             className={`rev__bar${d.current ? " is-current" : ""}${i === active ? " is-active" : ""}`}
-            onMouseEnter={() => setActive(i)}
-            onFocus={() => setActive(i)}
+            onClick={() => setActive(i === active ? data.length - 1 : i)}
+            aria-pressed={i === active}
             aria-label={`${d.label}: ${money(total(d))}`}
           >
             <span style={{ height: `${Math.max((total(d) / max) * 100, total(d) > 0 ? 3 : 0)}%` }} />

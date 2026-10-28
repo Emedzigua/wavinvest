@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/admin/BackButton";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -8,6 +9,7 @@ import { invoiceStatusLabel, productLabel, scheduleText } from "@/lib/admin/labe
 import { isRunning, monthlyValue } from "@/lib/admin/schedule";
 import type { Contact, Contract, Customer, Invoice, Quote } from "@/lib/admin/types";
 import { invoiceState } from "@/lib/admin/invoice";
+import { customerColor } from "@/lib/admin/colors";
 import { deleteContact, deleteContract, deleteCustomer, saveContact, saveCustomer } from "../../../actions";
 import CustomerFields from "@/components/admin/CustomerFields";
 import DistanceList from "@/components/admin/DistanceList";
@@ -52,15 +54,14 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
   const today = new Date();
   const monthly = c.contracts.filter((k) => isRunning(k, today)).reduce((s, k) => s + monthlyValue(k), 0);
   const prefill = sp.contract === "new";
+  const unpaid = c.invoices.filter((i) => i.status === "issued").reduce((t, i) => t + Number(i.total), 0);
   const str = (v: string | string[] | undefined) => (typeof v === "string" ? v : undefined);
 
   return (
     <>
       <header className="adm-head">
         <div>
-          <p className="label">
-            <Link href="/admin/customers">Zákazníci</Link>
-          </p>
+          <BackButton href="/admin/customers" label="Zákazníci" />
           <h1 className="display">{c.company_name}</h1>
           <p className="adm-head__meta">
             <CustomerPill status={c.status} />
@@ -69,9 +70,6 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
           </p>
         </div>
         <div className="btn-row">
-          <Link href={`/admin/invoices/new?customer=${c.id}`} className="btn btn--dark">
-            Vystaviť faktúru
-          </Link>
           <ConfirmButton
           action={deleteCustomer.bind(null, c.id)}
           message={`Naozaj vymazať zákazníka ${c.company_name} vrátane kontaktov a zmlúv?`}
@@ -108,7 +106,7 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
           </div>
           {c.lat != null && c.lng != null ? (
             <MapView
-              pins={[{ id: c.id, lat: c.lat, lng: c.lng, label: c.company_name, sub: address(c), status: c.status }]}
+              pins={[{ id: c.id, lat: c.lat, lng: c.lng, label: c.company_name, sub: address(c), color: customerColor(c.id) }]}
               depots={settings.depots}
               height={380}
             />
@@ -121,6 +119,43 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
           )}
         </section>
       </div>
+
+      <section className="card" id="invoices">
+        <div className="card__head">
+          <h2 className="card__title">
+            Faktúry
+            {unpaid > 0 && <span className="muted"> · čaká {money(unpaid, cur)}</span>}
+          </h2>
+          <Link href={`/admin/invoices/new?customer=${c.id}`} className="btn btn--dark btn--sm">
+            + Faktúra
+          </Link>
+        </div>
+        {c.invoices.length === 0 ? (
+          <p className="muted">Zatiaľ žiadne faktúry.</p>
+        ) : (
+          <ul className="list">
+            {c.invoices.map((i) => {
+              const state = invoiceState(i);
+              return (
+                <li key={i.id}>
+                  <Link href={`/admin/invoices/${i.id}`}>
+                    <span>
+                      <strong>{i.number}</strong>
+                      <small className="muted">
+                        {date(i.issue_date)} · splatná {date(i.due_date)}
+                      </small>
+                    </span>
+                    <span className="list__end">
+                      <span className="num">{money(Number(i.total), i.currency)}</span>
+                      <span className={`pill pill--i-${state}`}>{invoiceStatusLabel[state]}</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <section className="card" id="contacts">
         <h2 className="card__title">Kontaktné osoby</h2>
@@ -190,30 +225,6 @@ export default async function CustomerPage({ params, searchParams }: PageProps<"
           />
         </details>
       </section>
-
-      {c.invoices.length > 0 && (
-        <section className="card">
-          <h2 className="card__title">Faktúry</h2>
-          <ul className="list">
-            {c.invoices.map((i) => {
-              const state = invoiceState(i);
-              return (
-                <li key={i.id}>
-                  <Link href={`/admin/invoices/${i.id}`}>
-                    <span>
-                      <strong>{i.number}</strong>
-                      <small className="muted">
-                        {date(i.issue_date)} · {money(Number(i.total), i.currency)}
-                      </small>
-                    </span>
-                    <span className={`pill pill--i-${state}`}>{invoiceStatusLabel[state]}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
 
       {c.quotes.length > 0 && (
         <section className="card">

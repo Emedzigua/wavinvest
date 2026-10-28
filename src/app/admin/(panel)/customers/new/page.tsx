@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackButton from "@/components/admin/BackButton";
 import type { Metadata } from "next";
 import { saveCustomer } from "../../../actions";
 import CustomerFields from "@/components/admin/CustomerFields";
@@ -16,9 +16,7 @@ export default async function NewCustomerPage() {
     <>
       <header className="adm-head">
         <div>
-          <p className="label">
-            <Link href="/admin/customers">Zákazníci</Link>
-          </p>
+          <BackButton href="/admin/customers" label="Zákazníci" />
           <h1 className="display">Nový zákazník</h1>
         </div>
       </header>

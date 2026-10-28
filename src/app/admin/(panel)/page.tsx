@@ -3,112 +3,119 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { date, money, num } from "@/lib/admin/format";
+import { invoiceState } from "@/lib/admin/invoice";
 import { productLabel, weekdayLong } from "@/lib/admin/labels";
-import { deliversOn, isRunning, monthlyHistory, monthlyValue, perDelivery, weekDays, weekStart } from "@/lib/admin/schedule";
-import type { Contract, Customer, Quote } from "@/lib/admin/types";
-import { QuotePill } from "@/components/admin/StatusPill";
+import { deliversOn, isRunning, monthlyHistory, monthlyValue, perDelivery } from "@/lib/admin/schedule";
+import type { Contract, Customer, Invoice, Quote } from "@/lib/admin/types";
 import RevenueCard from "@/components/admin/RevenueCard";
 
 export const metadata: Metadata = { title: "Prehľad" };
 // Admin pages are personal and always rendered per request
 export const instant = false;
 
-type Row = Contract & { customer: Pick<Customer, "id" | "company_name" | "city" | "depot" | "distances"> };
+type Row = Contract & { customer: Pick<Customer, "id" | "company_name" | "city"> };
+type InvoiceRow = Pick<Invoice, "id" | "number" | "issue_date" | "due_date" | "total" | "status" | "paid_at" | "created_at" | "buyer">;
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 const compactMoney = (v: number, currency: string) =>
   new Intl.NumberFormat("sk-SK", { style: "currency", currency, notation: "compact", maximumFractionDigits: 1 }).format(v);
+const plural = (n: number, one: string, few: string, many: string) => (n === 1 ? one : n >= 2 && n <= 4 ? few : many);
 
-export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
-  const sp = await searchParams;
+export default async function Dashboard() {
   const { supabase } = await requireAdmin();
-  const fiveDaysAgo = new Date();
+  const today = new Date();
+  const fiveDaysAgo = new Date(today);
   fiveDaysAgo.setUTCDate(fiveDaysAgo.getUTCDate() - 5);
-  const [{ data: contracts }, { data: quotes }, { count: newCount }, settings, { data: stale }, { data: unpaid }] = await Promise.all([
-    supabase.from("contracts").select("*, customer:customers(id, company_name, city, depot, distances)"),
+
+  const [{ data: contracts }, { data: quotes }, { data: invoices }, settings, { data: stats }] = await Promise.all([
+    supabase.from("contracts").select("*, customer:customers(id, company_name, city)"),
+    supabase.from("quotes").select("id, company, quantity, status, created_at, replied_at").order("created_at", { ascending: false }).limit(200),
     supabase
-      .from("quotes")
-      .select("id, company, product, quantity, status, created_at")
+      .from("invoices")
+      .select("id, number, issue_date, due_date, total, status, paid_at, created_at, buyer")
       .order("created_at", { ascending: false })
-      .limit(6),
-    supabase.from("quotes").select("id", { count: "exact", head: true }).eq("status", "new"),
+      .limit(500),
     getSettings(supabase),
-    // Replied 5+ days ago and still not closed: time to call
-    supabase.from("quotes").select("id, company, replied_at").eq("status", "replied").lt("replied_at", fiveDaysAgo.toISOString()),
-    supabase.from("invoices").select("id, number, due_date, total, currency, buyer").eq("status", "issued").lt("due_date", iso(new Date())),
+    supabase.rpc("visitor_stats", { p_days: 30 }),
   ]);
 
   const all = (contracts ?? []) as Row[];
-  const today = new Date();
-  const running = all.filter((k) => isRunning(k, today));
+  const allQuotes = (quotes ?? []) as Pick<Quote, "id" | "company" | "quantity" | "status" | "created_at" | "replied_at">[];
+  const allInvoices = (invoices ?? []) as InvoiceRow[];
   const cur = settings.currency;
+  const running = all.filter((k) => isRunning(k, today));
 
   const monthly = running.reduce((s, k) => s + monthlyValue(k), 0);
   const epal = running.filter((k) => k.product === "epal").reduce((s, k) => s + k.monthly_qty, 0);
   const collars = running.filter((k) => k.product === "collars").reduce((s, k) => s + k.monthly_qty, 0);
   const customers = new Set(running.map((k) => k.customer_id)).size;
   const history = monthlyHistory(all, 12, today);
+  const newQuotes = allQuotes.filter((q) => q.status === "new");
 
-  // Revenue per customer
-  const byCustomer = [...Map.groupBy(running, (k) => k.customer_id).values()]
-    .map((list) => ({
-      customer: list[0].customer,
-      epal: list.filter((k) => k.product === "epal").reduce((s, k) => s + k.monthly_qty, 0),
-      collars: list.filter((k) => k.product === "collars").reduce((s, k) => s + k.monthly_qty, 0),
-      monthly: list.reduce((s, k) => s + monthlyValue(k), 0),
-    }))
-    .sort((a, b) => b.monthly - a.monthly);
-
-  // Deliveries of the selected week, one row per delivery
-  const monday = weekStart(typeof sp.week === "string" ? sp.week : undefined);
-  const prev = new Date(monday);
-  prev.setUTCDate(prev.getUTCDate() - 7);
-  const next = new Date(monday);
-  next.setUTCDate(next.getUTCDate() + 7);
-  const days = weekDays(monday).map((d) => {
+  // Upcoming deliveries: next 14 days, only days that have something
+  const upcoming = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + i));
     const items = all
       .filter((k) => deliversOn(k, d))
       .map((k) => ({ k, qty: perDelivery(k) }))
-      .sort((a, b) => a.k.customer.company_name.localeCompare(b.k.customer.company_name, "sk"));
-    return { d, items, qty: items.reduce((s, x) => s + x.qty, 0) };
-  });
-  const isThisWeek = iso(monday) === iso(weekStart());
-  const depotName = (id: string) => settings.depots.find((d) => d.id === id)?.name ?? id;
+      .sort((a, b) => b.qty - a.qty);
+    return { d, i, items, qty: items.reduce((s, x) => s + x.qty, 0) };
+  }).filter((day) => day.items.length > 0);
+  const dayName = (d: Date, i: number) =>
+    i === 0 ? "Dnes" : i === 1 ? "Zajtra" : weekdayLong[((d.getUTCDay() + 6) % 7) + 1];
+
+  // Invoices this month
+  const month = iso(today).slice(0, 7);
+  const live = allInvoices.filter((i) => i.status !== "cancelled");
+  const thisMonth = live.filter((i) => i.issue_date.startsWith(month));
+  const waiting = live.filter((i) => i.status === "issued");
+  const overdue = waiting.filter((i) => invoiceState(i) === "overdue");
+  const sum = (xs: InvoiceRow[]) => xs.reduce((s, i) => s + Number(i.total), 0);
 
   // Follow-ups: one short line each, most urgent first
   const in30 = new Date(today);
   in30.setUTCDate(in30.getUTCDate() + 30);
   const todo = [
-    ...(unpaid ?? []).map((i) => ({
-      key: `i${i.id}`,
-      href: `/admin/invoices/${i.id}`,
-      title: i.buyer.name as string,
-      text: `Faktúra ${i.number} po splatnosti`,
-      tone: "bad",
-    })),
-    ...(stale ?? []).map((q) => ({
-      key: `q${q.id}`,
-      href: `/admin/quotes/${q.id}`,
-      title: q.company as string,
-      text: `Bez odpovede od ${date(q.replied_at)}`,
-      tone: "warn",
-    })),
+    ...overdue.map((i) => ({ key: `i${i.id}`, href: `/admin/invoices/${i.id}`, title: i.buyer.name, text: `Faktúra ${i.number} po splatnosti`, tone: "bad" })),
+    ...allQuotes
+      .filter((q) => q.status === "replied" && q.replied_at && q.replied_at < fiveDaysAgo.toISOString())
+      .map((q) => ({ key: `q${q.id}`, href: `/admin/quotes/${q.id}`, title: q.company, text: `Bez odpovede od ${date(q.replied_at!)}`, tone: "warn" })),
     ...all
       .filter((k) => k.end_date && k.end_date >= iso(today) && k.end_date <= iso(in30))
-      .map((k) => ({
-        key: `c${k.id}`,
-        href: `/admin/customers/${k.customer.id}`,
-        title: k.customer.company_name,
-        text: `Zmluva končí ${date(k.end_date!)}`,
-        tone: "info",
-      })),
+      .map((k) => ({ key: `c${k.id}`, href: `/admin/customers/${k.customer.id}`, title: k.customer.company_name, text: `Zmluva končí ${date(k.end_date!)}`, tone: "info" })),
   ];
+
+  // Recent activity, newest first
+  const activity = [
+    ...allQuotes.map((q) => ({ at: q.created_at, href: `/admin/quotes/${q.id}`, title: q.company, text: `Nový dopyt · ${num(q.quantity)} ks` })),
+    ...allInvoices.map((i) => ({ at: i.created_at, href: `/admin/invoices/${i.id}`, title: i.buyer.name, text: `Faktúra ${i.number} vystavená` })),
+    ...allInvoices
+      .filter((i) => i.paid_at)
+      .map((i) => ({ at: `${i.paid_at}T12:00:00Z`, href: `/admin/invoices/${i.id}`, title: i.buyer.name, text: `Faktúra ${i.number} uhradená` })),
+    ...all.map((k) => ({ at: k.created_at, href: `/admin/customers/${k.customer.id}`, title: k.customer.company_name, text: `Nová zmluva · ${productLabel[k.product]}` })),
+  ]
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .slice(0, 6);
 
   return (
     <>
       <header className="adm-head">
         <h1 className="display">Prehľad</h1>
+        <p className="visits" title={`${num(stats?.views ?? 0)} zobrazení stránok`}>
+          <strong>{num(stats?.visitors ?? 0)}</strong> návštevníkov webu za 30 dní
+        </p>
       </header>
+
+      {newQuotes.length > 0 && (
+        <Link href="/admin/quotes?status=new" className="alert-new">
+          <span className="alert-new__count">{newQuotes.length}</span>
+          <span className="alert-new__text">
+            <strong>{plural(newQuotes.length, "Nový dopyt", "Nové dopyty", "Nových dopytov")}</strong>
+            <span>{newQuotes.slice(0, 3).map((q) => q.company).join(", ")}{newQuotes.length > 3 ? " …" : ""}</span>
+          </span>
+          <span className="alert-new__go">Otvoriť →</span>
+        </Link>
+      )}
 
       <div className="dash">
         <RevenueCard
@@ -125,9 +132,10 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
             <span>Aktívni zákazníci</span>
             <strong className="fit">{customers}</strong>
           </Link>
-          <Link href="/admin/quotes?status=new" className={`card stat${(newCount ?? 0) > 0 ? " stat--alert" : ""}`}>
-            <span>Nové dopyty</span>
-            <strong className="fit">{newCount ?? 0}</strong>
+          <Link href="/admin/invoices?status=issued" className={`card stat${overdue.length ? " stat--alert" : ""}`}>
+            <span>Čaká na úhradu</span>
+            <strong className="fit fit--money">{compactMoney(sum(waiting), cur)}</strong>
+            <small>{overdue.length ? `${overdue.length} po splatnosti` : `${waiting.length} ${plural(waiting.length, "faktúra", "faktúry", "faktúr")}`}</small>
           </Link>
         </div>
       </div>
@@ -148,116 +156,74 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
         </section>
       )}
 
-      <section className="card" id="deliveries">
+      <section className="card">
         <div className="card__head">
-          <h2 className="card__title">
-            Dodávky <span className="muted">{date(monday)} – {date(weekDays(monday)[6])}</span>
-          </h2>
-          <nav className="seg" aria-label="Týždeň">
-            <Link href={`/admin?week=${iso(prev)}#deliveries`} aria-label="Predchádzajúci týždeň">←</Link>
-            <Link href="/admin#deliveries" aria-current={isThisWeek ? "page" : undefined}>Tento týždeň</Link>
-            <Link href={`/admin?week=${iso(next)}#deliveries`} aria-label="Ďalší týždeň">→</Link>
-          </nav>
+          <h2 className="card__title">Najbližšie dodávky</h2>
+          <span className="muted small">14 dní</span>
         </div>
-
-        <div className="agenda">
-          {days.map(({ d, items, qty }) => {
-            const dow = ((d.getUTCDay() + 6) % 7) + 1;
-            const isToday = iso(d) === iso(today);
-            return (
-              <div key={iso(d)} className={`agenda__day${isToday ? " is-today" : ""}${items.length === 0 ? " is-empty" : ""}`}>
-                <div className="agenda__date">
-                  <strong>{weekdayLong[dow]}</strong>
-                  <span>{isToday ? "Dnes" : date(d).slice(0, -5)}</span>
-                  {items.length > 0 && <em>{num(qty)} ks</em>}
+        {upcoming.length === 0 ? (
+          <p className="muted">Žiadne dodávky v najbližších dvoch týždňoch.</p>
+        ) : (
+          <div className="next">
+            {upcoming.map(({ d, i, items, qty }) => (
+              <div key={iso(d)} className={`next__day${i === 0 ? " is-today" : ""}`}>
+                <div className="next__date">
+                  <strong>{dayName(d, i)}</strong>
+                  <span>{date(d).slice(0, -5)}</span>
                 </div>
-                {items.length === 0 ? (
-                  <p className="agenda__none">—</p>
-                ) : (
-                  <div className="agenda__list">
-                    <table className="tbl tbl--compact">
-                      <tbody>
-                        {items.map(({ k, qty }) => {
-                          const km = k.customer.distances?.[k.customer.depot]?.km;
-                          return (
-                            <tr key={k.id}>
-                              <td>
-                                <Link href={`/admin/customers/${k.customer.id}`}>{k.customer.company_name}</Link>
-                              </td>
-                              <td className="muted">{k.customer.city ?? ""}</td>
-                              <td>{productLabel[k.product]}</td>
-                              <td className="num">{num(qty)} ks</td>
-                              <td className="num muted">
-                                {km != null ? `${num(km)} km · ${depotName(k.customer.depot)}` : ""}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <ul className="next__list">
+                  {items.map(({ k, qty }) => (
+                    <li key={k.id}>
+                      <Link href={`/admin/customers/${k.customer.id}`}>{k.customer.company_name}</Link>
+                      <span className="muted">{productLabel[k.product]}</span>
+                      <span className="next__qty">{num(qty)} ks</span>
+                    </li>
+                  ))}
+                </ul>
+                <span className="next__total">{num(qty)} ks</span>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="adm-grid">
         <section className="card">
-          <h2 className="card__title">Zákazníci</h2>
-          {byCustomer.length === 0 ? (
-            <p className="muted">Zatiaľ žiadne zmluvy.</p>
-          ) : (
-            <table className="tbl">
-              <thead>
-                <tr>
-                  <th>Zákazník</th>
-                  <th className="num">Palety</th>
-                  <th className="num">Nadstavce</th>
-                  <th className="num">Mesačne</th>
-                </tr>
-              </thead>
-              <tbody>
-                {byCustomer.map((r) => (
-                  <tr key={r.customer.id}>
-                    <td>
-                      <Link href={`/admin/customers/${r.customer.id}`}>{r.customer.company_name}</Link>
-                    </td>
-                    <td className="num">{num(r.epal)}</td>
-                    <td className="num">{num(r.collars)}</td>
-                    <td className="num">{money(r.monthly, cur)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>Spolu</td>
-                  <td className="num">{num(epal)}</td>
-                  <td className="num">{num(collars)}</td>
-                  <td className="num">{money(monthly, cur)}</td>
-                </tr>
-              </tfoot>
-            </table>
-          )}
+          <div className="card__head">
+            <h2 className="card__title">Faktúry tento mesiac</h2>
+            <Link href="/admin/invoices" className="btn btn--ghost btn--sm">
+              Všetky
+            </Link>
+          </div>
+          <dl className="mini-stats">
+            <div>
+              <dt>Vystavené</dt>
+              <dd>{money(sum(thisMonth), cur)}</dd>
+            </div>
+            <div>
+              <dt>Uhradené</dt>
+              <dd>{money(sum(thisMonth.filter((i) => i.status === "paid")), cur)}</dd>
+            </div>
+            <div>
+              <dt>Počet</dt>
+              <dd>{thisMonth.length}</dd>
+            </div>
+          </dl>
         </section>
 
         <section className="card">
-          <h2 className="card__title">Dopyty</h2>
-          {(quotes ?? []).length === 0 ? (
-            <p className="muted">Zatiaľ žiadne dopyty.</p>
+          <h2 className="card__title">Posledná aktivita</h2>
+          {activity.length === 0 ? (
+            <p className="muted">Zatiaľ nič.</p>
           ) : (
-            <ul className="list">
-              {(quotes as Quote[]).map((q) => (
-                <li key={q.id}>
-                  <Link href={`/admin/quotes/${q.id}`}>
+            <ul className="activity">
+              {activity.map((a) => (
+                <li key={a.href + a.text}>
+                  <Link href={a.href}>
                     <span>
-                      <strong>{q.company}</strong>
-                      <small className="muted">
-                        {productLabel[q.product]} · {num(q.quantity)} ks · {date(q.created_at)}
-                      </small>
+                      <strong>{a.title}</strong> <span className="muted">· {a.text}</span>
                     </span>
-                    <QuotePill status={q.status} />
+                    <time className="muted">{date(a.at)}</time>
                   </Link>
                 </li>
               ))}

@@ -149,7 +149,7 @@
     "sections": [
       { "h": "Kdo jsme", "p": "Správcem osobních údajů zpracovávaných na tomto webu je WAV Invest. Kontaktní údaje najdete v zápatí stránky." },
       { "h": "Poptávky", "p": "Po odeslání formuláře obdržíme vaše jméno, firmu, e-mail, telefon a podrobnosti poptávky. Používáme je pouze k odpovědi a přípravě nabídky (čl. 6 odst. 1 písm. b GDPR). Poptávka se ukládá do naší databáze zákazníků hostované v EU (Supabase, Frankfurt) a o jejím přijetí jsme informováni e-mailem (Resend). K ochraně formuláře před spamem používáme Cloudflare Turnstile, který ověřuje, že formulář odesílá člověk; nenastavuje reklamní cookies. Údaje uchováváme po dobu obchodního vztahu a zákonných archivačních lhůt." },
-      { "h": "Cookies", "p": "Nastavujeme nezbytnou cookie pro zapamatování jazyka (NEXT_LOCALE) a cookie pro vaši volbu cookies (wav_consent). Analytické cookies nastavujeme jen s vaším souhlasem, který můžete kdykoli změnit v „Nastavení cookies“ v zápatí." },
+      { "h": "Cookies", "p": "Nastavujeme nezbytnou cookie pro zapamatování jazyka (NEXT_LOCALE) a cookie pro vaši volbu cookies (wav_consent). Analytické cookies nastavujeme jen s vaším souhlasem, který můžete kdykoli změnit v „Nastavení cookies“ v zápatí. Návštěvy také počítáme anonymně, bez cookies a bez ukládání vaší IP adresy (denně se měnící, nevratný kód), pouze abychom věděli, kolik lidí web navštíví." },
       { "h": "Vaše práva", "p": "Máte právo na přístup k údajům, jejich opravu, výmaz, omezení zpracování, přenositelnost a právo vznést námitku. Můžete také podat stížnost u Úřadu pro ochranu osobních údajů." }
     ],
     "back": "Zpět na hlavní stránku"

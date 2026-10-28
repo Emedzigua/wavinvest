@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import BackButton from "@/components/admin/BackButton";
+import RowLink from "@/components/admin/RowLink";
 import { requireAdmin } from "@/lib/admin/auth";
 import { dateTime, num } from "@/lib/admin/format";
 import { productLabel } from "@/lib/admin/labels";
@@ -28,7 +30,10 @@ export default async function QuotesPage({ searchParams }: PageProps<"/admin/quo
   return (
     <>
       <header className="adm-head">
-        <h1 className="display">Dopyty</h1>
+        <div>
+          <BackButton href="/admin" label="Prehľad" />
+          <h1 className="display">Dopyty</h1>
+        </div>
       </header>
 
       <div className="toolbar">
@@ -58,10 +63,10 @@ export default async function QuotesPage({ searchParams }: PageProps<"/admin/quo
             </thead>
             <tbody>
               {quotes.map((q) => (
-                <tr key={q.id} className={q.status === "new" ? "is-new" : ""}>
+                <RowLink key={q.id} href={`/admin/quotes/${q.id}`} className={q.status === "new" ? "is-new" : ""}>
                   <td className="nowrap muted">{dateTime(q.created_at)}</td>
                   <td>
-                    <Link href={`/admin/quotes/${q.id}`} className="stretch">
+                    <Link href={`/admin/quotes/${q.id}`}>
                       <strong>{q.company}</strong>
                     </Link>
                     <small className="muted"> · {q.name}</small>
@@ -69,7 +74,7 @@ export default async function QuotesPage({ searchParams }: PageProps<"/admin/quo
                   <td>{productLabel[q.product]}</td>
                   <td className="num">{num(q.quantity)} ks</td>
                   <td>{q.delivery_location}</td>
-                </tr>
+                </RowLink>
               ))}
             </tbody>
           </table>

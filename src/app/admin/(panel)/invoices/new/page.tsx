@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/admin/BackButton";
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
@@ -19,9 +20,7 @@ export default async function NewInvoicePage({ searchParams }: PageProps<"/admin
     <>
       <header className="adm-head">
         <div>
-          <p className="label">
-            <Link href="/admin/invoices">Faktúry</Link>
-          </p>
+          <BackButton href="/admin/invoices" label="Faktúry" />
           <h1 className="display">Nová faktúra</h1>
         </div>
       </header>

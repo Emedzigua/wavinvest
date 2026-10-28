@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/admin/BackButton";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -37,9 +38,7 @@ export default async function QuotePage({ params }: PageProps<"/admin/quotes/[id
     <>
       <header className="adm-head">
         <div>
-          <p className="label">
-            <Link href="/admin/quotes">Dopyty</Link>
-          </p>
+          <BackButton href="/admin/quotes" label="Dopyty" />
           <h1 className="display">{q.company}</h1>
           <p className="adm-head__meta">
             <QuotePill status={q.status} />

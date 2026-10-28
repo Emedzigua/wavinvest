@@ -5,6 +5,7 @@ import { hasLocale } from "@/i18n/config";
 import { createPublicClient, supabaseConfigured } from "@/lib/supabase/server";
 import { productLabel } from "@/lib/admin/labels";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { sendPush } from "@/lib/push";
 
 export type QuoteResult = "success" | "error" | "missing-config" | "captcha";
 
@@ -43,7 +44,7 @@ export async function submitQuote(form: FormData): Promise<QuoteResult> {
 
   const details: Record<string, string | number> = { ...quote };
   delete details.p_secret;
-  after(() => notify(id as string, details));
+  after(() => Promise.all([notify(id as string, details), notifyPhones(id as string, details, secret)]));
   return "success";
 }
 
@@ -77,4 +78,17 @@ async function notify(id: string, q: Record<string, string | number>) {
     }),
   });
   if (!res.ok) console.error("Quote email failed", res.status, await res.text());
+}
+
+// Push notification to every admin phone that turned notifications on
+async function notifyPhones(id: string, q: Record<string, string | number>, secret: string) {
+  const client = createPublicClient();
+  const { data } = await client.rpc("push_targets", { p_secret: secret });
+  if (!data?.config || !data.subscriptions?.length) return;
+  const gone = await sendPush(data.config, data.subscriptions, {
+    title: `Nový dopyt: ${q.p_company}`,
+    body: `${q.p_quantity} ks · ${productLabel[q.p_product as keyof typeof productLabel]} · ${q.p_location}`,
+    url: `/admin/quotes/${id}`,
+  });
+  for (const endpoint of gone) await client.rpc("drop_push_subscription", { p_secret: secret, p_endpoint: endpoint });
 }
