@@ -1607,7 +1607,8 @@
   background: var(--paper);
   font-size: 14px;
 }
-.lines__row input[type="number"] {
+.lines__row input[name="item_qty"],
+.lines__row input[name="item_price"] {
   text-align: right;
 }
 .lines__total {
@@ -2214,4 +2215,187 @@
 .visits strong {
   color: var(--carbon);
   font-weight: 500;
+}
+
+/* Loading placeholder */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.skeleton__title,
+.skeleton__card {
+  border-radius: var(--card);
+  background: linear-gradient(90deg, var(--paper) 0%, #f7f6f2 50%, var(--paper) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+.skeleton__title {
+  width: 240px;
+  height: 44px;
+  border-radius: 12px;
+}
+.skeleton__row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+.skeleton__card {
+  height: 180px;
+}
+.skeleton__card--big {
+  height: 280px;
+}
+.skeleton__card--wide {
+  height: 220px;
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton__title,
+  .skeleton__card {
+    animation: none;
+  }
+}
+@media (max-width: 800px) {
+  .skeleton__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Phones: the top bar keeps its own height; the page takes the rest */
+@media (max-width: 800px) {
+  .adm-shell {
+    grid-template-rows: auto 1fr;
+    align-content: start;
+  }
+  .adm-side {
+    align-self: start;
+    min-height: 0;
+  }
+}
+
+/* Filters: same white pill as the tabs next to them */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: var(--paper);
+  border-radius: var(--r-pill);
+}
+.filters .pill-select,
+.filters .search__input {
+  height: 34px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background-color: transparent;
+  font-size: 14px;
+  color: var(--carbon);
+}
+.filters .pill-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 34px 0 16px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--carbon) 50%),
+    linear-gradient(135deg, var(--carbon) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 52%, calc(100% - 14px) 52%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+.filters .pill-select:hover,
+.filters .pill-select:focus-visible {
+  background-color: var(--vellum);
+  outline: none;
+}
+.filters .search__input {
+  width: 180px;
+  padding: 0 16px;
+  background: var(--vellum);
+}
+.filters .search__input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--carbon);
+}
+@media (max-width: 800px) {
+  .filters {
+    width: 100%;
+  }
+  .filters .search__input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+}
+
+/* Mail */
+.adm-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.adm-grid--3 .mini-stats {
+  grid-template-columns: 1fr 1fr;
+}
+.mail-new {
+  align-self: flex-start;
+  margin-top: auto;
+}
+.mail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 24px;
+  align-items: start;
+}
+.mail__list li + li {
+  border-top: 1px solid var(--hair);
+}
+.mail__list summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+}
+.mail__list summary::-webkit-details-marker {
+  display: none;
+}
+.mail__who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.mail__who .muted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mail__list time {
+  white-space: nowrap;
+  font-size: 13px;
+}
+.mail__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0 16px;
+  font-size: 14px;
+}
+.compose small {
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .adm-grid--3,
+  .mail {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

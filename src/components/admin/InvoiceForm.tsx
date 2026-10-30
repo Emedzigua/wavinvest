@@ -9,7 +9,11 @@ export type InvoiceCustomer = Party & { id: string; lines: InvoiceItem[] };
 
 const SLOVAKIA = /^(sk|slovensko|slovakia|slovenská republika)$/i;
 const emptyParty: Party = { name: "", street: "", postal_code: "", city: "", country: "", ico: "", dic: "", ic_dph: "" };
-const emptyLine = (): InvoiceItem => ({ description: "", qty: 1, unit: "ks", unit_price: 0 });
+// Quantities and prices are kept as typed (so "8," or an empty field stay as they are)
+type Line = { description: string; qty: string; unit: string; unit_price: string };
+const emptyLine = (): Line => ({ description: "", qty: "1", unit: "ks", unit_price: "" });
+const toLine = (i: InvoiceItem): Line => ({ ...i, qty: String(i.qty), unit_price: String(i.unit_price) });
+const toNum = (s: string) => Number.parseFloat(s.replace(",", ".")) || 0;
 const today = () => new Date().toISOString().slice(0, 10);
 
 // Goods for a VAT payer outside Slovakia go without VAT (§ 43)
@@ -34,8 +38,8 @@ export default function InvoiceForm({
   const [customerId, setCustomerId] = useState(invoice?.customer_id ?? initial?.id ?? "");
   const [buyer, setBuyer] = useState<Party>(invoice?.buyer ?? initial ?? emptyParty);
   const [editBuyer, setEditBuyer] = useState(!invoice && !initial);
-  const [items, setItems] = useState<InvoiceItem[]>(
-    invoice?.items ?? (initial?.lines.length ? initial.lines : [emptyLine()]),
+  const [items, setItems] = useState<Line[]>(
+    (invoice?.items ?? initial?.lines ?? []).map(toLine).concat(invoice?.items.length || initial?.lines.length ? [] : [emptyLine()]),
   );
   const [issue, setIssue] = useState(invoice?.issue_date ?? today());
   const [due, setDue] = useState(invoice?.due_date ?? addDays(today(), dueDays));
@@ -45,7 +49,10 @@ export default function InvoiceForm({
     return (await saveInvoice(form)) ?? null;
   }, null);
 
-  const totals = useMemo(() => invoiceTotals(items, Number(vat) || 0, eu), [items, vat, eu]);
+  const totals = useMemo(
+    () => invoiceTotals(items.map((i) => ({ ...i, qty: toNum(i.qty), unit_price: toNum(i.unit_price) })), toNum(vat), eu),
+    [items, vat, eu],
+  );
   const money = (v: number) => new Intl.NumberFormat("sk-SK", { style: "currency", currency }).format(v);
 
   function pickCustomer(id: string) {
@@ -60,10 +67,10 @@ export default function InvoiceForm({
     setEu(isEu(c));
     setEditBuyer(false);
     const untouched = items.every((i) => !i.description);
-    if (untouched && c.lines.length) setItems(c.lines);
+    if (untouched && c.lines.length) setItems(c.lines.map(toLine));
   }
 
-  const setItem = (i: number, patch: Partial<InvoiceItem>) =>
+  const setItem = (i: number, patch: Partial<Line>) =>
     setItems((list) => list.map((it, j) => (j === i ? { ...it, ...patch } : it)));
 
   return (
@@ -154,11 +161,9 @@ export default function InvoiceForm({
               />
               <input
                 name="item_qty"
-                type="number"
-                step="any"
-                min={0}
+                inputMode="decimal"
                 value={it.qty}
-                onChange={(e) => setItem(i, { qty: Number(e.target.value) })}
+                onChange={(e) => setItem(i, { qty: e.target.value.replace(/[^\d.,]/g, "") })}
                 aria-label="Množstvo"
               />
               <input
@@ -169,13 +174,13 @@ export default function InvoiceForm({
               />
               <input
                 name="item_price"
-                type="number"
-                step="0.01"
+                inputMode="decimal"
+                placeholder="0,00"
                 value={it.unit_price}
-                onChange={(e) => setItem(i, { unit_price: Number(e.target.value) })}
+                onChange={(e) => setItem(i, { unit_price: e.target.value.replace(/[^\d.,-]/g, "") })}
                 aria-label="Cena za jednotku"
               />
-              <span className="lines__total">{money(it.qty * it.unit_price)}</span>
+              <span className="lines__total">{money(toNum(it.qty) * toNum(it.unit_price))}</span>
               <button
                 type="button"
                 className="lines__remove"
@@ -220,7 +225,13 @@ export default function InvoiceForm({
           <div className="form__row">
             <label className="field">
               <span>DPH (%)</span>
-              <input name="vat_rate" type="number" step="0.01" value={eu ? "0" : vat} onChange={(e) => setVat(e.target.value)} disabled={eu} />
+              <input
+                name="vat_rate"
+                inputMode="decimal"
+                value={eu ? "0" : vat}
+                onChange={(e) => setVat(e.target.value.replace(/[^\d.,]/g, ""))}
+                disabled={eu}
+              />
               {eu && <input type="hidden" name="vat_rate" value={vat} />}
             </label>
             <label className="toggle">

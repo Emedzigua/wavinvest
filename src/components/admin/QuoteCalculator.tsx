@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { markReplied } from "@/app/admin/actions";
+import { logEmail, markReplied } from "@/app/admin/actions";
 import { calculate } from "@/lib/admin/pricing";
 import { quoteEmail } from "@/lib/admin/email-templates";
 import { money, num } from "@/lib/admin/format";
@@ -22,8 +22,11 @@ export default function QuoteCalculator({
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
-  const [epal, setEpal] = useState(quote.product === "collars" ? 0 : quote.quantity);
-  const [collars, setCollars] = useState(quote.product === "epal" ? 0 : quote.quantity);
+  // Kept as typed so a field can be emptied while editing
+  const [epalText, setEpal] = useState(String(quote.product === "collars" ? 0 : quote.quantity));
+  const [collarsText, setCollars] = useState(String(quote.product === "epal" ? 0 : quote.quantity));
+  const epal = Number.parseInt(epalText, 10) || 0;
+  const collars = Number.parseInt(collarsText, 10) || 0;
 
   // Nearest warehouse first
   const nearest = useMemo(() => {
@@ -75,7 +78,10 @@ export default function QuoteCalculator({
     if (transportMissing && !window.confirm("Cena dopravy nie je vyplnená. Otvoriť e-mail aj tak?")) return;
     const href = `mailto:${quote.email}?subject=${encodeURIComponent(email.subject)}&body=${encodeURIComponent(email.body)}`;
     window.location.href = href;
-    start(() => markReplied(quote.id));
+    start(async () => {
+      await markReplied(quote.id);
+      await logEmail({ to: quote.email, subject: email.subject, body: email.body, customer_id: customerId, quote_id: quote.id });
+    });
   }
 
   async function copy() {
@@ -112,11 +118,11 @@ export default function QuoteCalculator({
       <div className="form__row">
         <label className="field">
           <span>{productLabel.epal} (ks)</span>
-          <input type="number" min={0} value={epal} onChange={(e) => setEpal(Math.max(0, Number(e.target.value)))} />
+          <input inputMode="numeric" value={epalText} onChange={(e) => setEpal(e.target.value.replace(/\D/g, ""))} />
         </label>
         <label className="field">
           <span>{productLabel.collars} (ks)</span>
-          <input type="number" min={0} value={collars} onChange={(e) => setCollars(Math.max(0, Number(e.target.value)))} />
+          <input inputMode="numeric" value={collarsText} onChange={(e) => setCollars(e.target.value.replace(/\D/g, ""))} />
         </label>
       </div>
 
@@ -138,13 +144,10 @@ export default function QuoteCalculator({
         <label className={`field${transportMissing ? " field--attention" : ""}`}>
           <span>Doprava ({cur})</span>
           <input
-            type="number"
-            min={0}
-            step="0.01"
             inputMode="decimal"
             value={transport}
             placeholder="Doplniť"
-            onChange={(e) => setTransport(e.target.value)}
+            onChange={(e) => setTransport(e.target.value.replace(/[^\d.,]/g, ""))}
           />
         </label>
       </div>

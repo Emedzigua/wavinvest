@@ -442,3 +442,32 @@ export async function sendTestPush(): Promise<string> {
   if (failed.length) return `Odoslané: ${ok}, chyba: ${failed.join("; ")}`;
   return `Testovacie upozornenie odoslané (${ok} ${ok === 1 ? "zariadenie" : "zariadenia"}).`;
 }
+
+/* ───────────── Email history ───────────── */
+
+export type EmailDraft = {
+  to: string;
+  subject: string;
+  body: string;
+  customer_id?: string | null;
+  quote_id?: string | null;
+  invoice_id?: string | null;
+};
+
+// Records an email opened in the mail app, so it shows in Pošta and on the customer
+export async function logEmail(draft: EmailDraft) {
+  const { supabase } = await requireAdmin();
+  let customer = draft.customer_id ?? null;
+  if (!customer && draft.to) {
+    const { data } = await supabase.from("contacts").select("customer_id").ilike("email", draft.to.trim()).limit(1).maybeSingle();
+    customer = data?.customer_id ?? null;
+  }
+  await supabase.from("emails").insert({
+    to_email: draft.to.trim().toLowerCase(),
+    subject: draft.subject.slice(0, 300),
+    body: draft.body.slice(0, 20000),
+    customer_id: customer,
+    quote_id: draft.quote_id ?? null,
+    invoice_id: draft.invoice_id ?? null,
+  });
+}

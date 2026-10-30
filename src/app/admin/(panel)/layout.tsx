@@ -3,6 +3,7 @@ import Link from "next/link";
 import Logo from "@/components/Logo";
 import AdminNav from "@/components/admin/AdminNav";
 import PathTracker from "@/components/admin/PathTracker";
+import Loading from "./loading";
 import { requireAdmin } from "@/lib/admin/auth";
 import { signOut } from "../actions";
 
@@ -26,7 +27,7 @@ export default function PanelLayout({ children }: LayoutProps<"/admin">) {
         <PathTracker />
       </Suspense>
       <main className="adm-main">
-        <Suspense fallback={<p className="muted">Načítavam…</p>}>{children}</Suspense>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
       </main>
     </div>
   );

@@ -9,6 +9,7 @@ import { invoiceStatusLabel } from "@/lib/admin/labels";
 import type { Invoice } from "@/lib/admin/types";
 import { setInvoiceStatus } from "../../../actions";
 import ConfirmButton from "@/components/admin/ConfirmButton";
+import MailtoButton from "@/components/admin/MailtoButton";
 
 export const metadata: Metadata = { title: "Faktúra" };
 // Admin pages are personal and always rendered per request
@@ -24,9 +25,13 @@ export default async function InvoicePage({ params }: PageProps<"/admin/invoices
   const money = (v: number) => new Intl.NumberFormat("sk-SK", { style: "currency", currency: inv.currency }).format(v);
 
   const to = inv.customer?.contacts.find((c) => c.email)?.email ?? "";
-  const mail = `mailto:${to}?subject=${encodeURIComponent(`Faktúra ${inv.number} – ${inv.seller.name}`)}&body=${encodeURIComponent(
-    `Dobrý deň,\n\nv prílohe posielame faktúru č. ${inv.number} na sumu ${money(Number(inv.total))} so splatnosťou ${date(inv.due_date)}.\n\nS pozdravom\n${inv.seller.name}`,
-  )}`;
+  const draft = {
+    to,
+    subject: `Faktúra ${inv.number} – ${inv.seller.name}`,
+    body: `Dobrý deň,\n\nv prílohe posielame faktúru č. ${inv.number} na sumu ${money(Number(inv.total))} so splatnosťou ${date(inv.due_date)}.\n\nS pozdravom\n${inv.seller.name}`,
+    customer_id: inv.customer_id,
+    invoice_id: inv.id,
+  };
 
   return (
     <>
@@ -44,9 +49,9 @@ export default async function InvoicePage({ params }: PageProps<"/admin/invoices
           <a href={`/admin/invoices/${inv.id}/pdf?download`} className="btn btn--dark">
             Stiahnuť PDF
           </a>
-          <a href={mail} className="btn btn--ghost">
+          <MailtoButton draft={draft} className="btn btn--ghost">
             E-mail
-          </a>
+          </MailtoButton>
         </div>
       </header>
 

@@ -8,6 +8,7 @@ const links = [
   { href: "/admin/customers", label: "Zákazníci" },
   { href: "/admin/quotes", label: "Dopyty" },
   { href: "/admin/invoices", label: "Faktúry" },
+  { href: "/admin/mail", label: "Pošta" },
   { href: "/admin/settings", label: "Nastavenia" },
 ];
 

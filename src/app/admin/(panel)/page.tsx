@@ -27,7 +27,7 @@ export default async function Dashboard() {
   const fiveDaysAgo = new Date(today);
   fiveDaysAgo.setUTCDate(fiveDaysAgo.getUTCDate() - 5);
 
-  const [{ data: contracts }, { data: quotes }, { data: invoices }, settings, { data: stats }] = await Promise.all([
+  const [{ data: contracts }, { data: quotes }, { data: invoices }, settings, { data: stats }, { data: mails }] = await Promise.all([
     supabase.from("contracts").select("*, customer:customers(id, company_name, city)"),
     supabase.from("quotes").select("id, company, quantity, status, created_at, replied_at").order("created_at", { ascending: false }).limit(200),
     supabase
@@ -37,7 +37,13 @@ export default async function Dashboard() {
       .limit(500),
     getSettings(supabase),
     supabase.rpc("visitor_stats", { p_days: 30 }),
+    supabase
+      .from("emails")
+      .select("id, to_email, subject, created_at, customer:customers(company_name)")
+      .order("created_at", { ascending: false })
+      .limit(4),
   ]);
+  const recentMail = (mails ?? []) as unknown as { id: string; to_email: string; subject: string; created_at: string; customer: { company_name: string } | null }[];
 
   const all = (contracts ?? []) as Row[];
   const allQuotes = (quotes ?? []) as Pick<Quote, "id" | "company" | "quantity" | "status" | "created_at" | "replied_at">[];
@@ -187,7 +193,35 @@ export default async function Dashboard() {
         )}
       </section>
 
-      <div className="adm-grid">
+      <div className="adm-grid adm-grid--3">
+        <section className="card">
+          <div className="card__head">
+            <h2 className="card__title">Pošta</h2>
+            <Link href="/admin/mail" className="btn btn--ghost btn--sm">
+              Otvoriť
+            </Link>
+          </div>
+          {recentMail.length === 0 ? (
+            <p className="muted">Schránka zatiaľ nie je pripojená. Odoslané e-maily z administrácie sa zobrazia tu.</p>
+          ) : (
+            <ul className="activity">
+              {recentMail.map((m) => (
+                <li key={m.id}>
+                  <Link href="/admin/mail">
+                    <span>
+                      <strong>{m.customer?.company_name ?? m.to_email}</strong> <span className="muted">· {m.subject}</span>
+                    </span>
+                    <time className="muted">{date(m.created_at)}</time>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          <Link href="/admin/mail" className="btn btn--dark btn--sm mail-new">
+            Napísať e-mail
+          </Link>
+        </section>
+
         <section className="card">
           <div className="card__head">
             <h2 className="card__title">Faktúry tento mesiac</h2>

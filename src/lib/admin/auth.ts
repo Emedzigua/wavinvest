@@ -1,10 +1,12 @@
 import "server-only";
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 // Every admin page and action calls this: a valid session alone is not
 // enough, the user must also be listed in the admins table.
-export async function requireAdmin() {
+// Cached per request, so layout + page share one check instead of three.
+export const requireAdmin = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
@@ -16,4 +18,4 @@ export async function requireAdmin() {
     redirect("/admin/login?e=forbidden");
   }
   return { supabase, user: { id: userId, name: admin.name as string, email: data.claims.email as string } };
-}
+});
