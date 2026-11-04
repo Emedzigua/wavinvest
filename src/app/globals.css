@@ -256,6 +256,12 @@ textarea {
 .logo--lg img {
   height: 52px;
 }
+/* WAV sits low in the image (the ears rise above it): lift it so the letters,
+   not the whole picture, line up with the header text */
+.logo--header img {
+  height: 40px;
+  transform: translateY(-20%);
+}
 
 /* ───────────────────────── Nav ───────────────────────── */
 .nav {

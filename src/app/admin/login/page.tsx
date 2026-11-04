@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <main className="adm-login">
       <div className="adm-login__card">
-        <Logo onLight />
+        <Logo on="light" />
         <h1 className="heading">Administrácia</h1>
         <LoginForm />
       </div>
