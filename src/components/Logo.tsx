@@ -1,10 +1,17 @@
-// Placeholder wordmark until there is a real logo
-export default function Logo({ className = "" }: { className?: string }) {
+import Image from "next/image";
+
+// Pick the version for the background: light logo on dark, dark logo with `onLight`
+export default function Logo({ className = "", onLight = false }: { className?: string; onLight?: boolean }) {
   return (
-    <span className={`logo ${className}`} aria-label="WAV Invest">
-      <span className="logo__mark">WAV</span>
-      <span className="logo__sq" aria-hidden />
-      <span className="logo__sub">INVEST</span>
+    <span className={`logo ${className}`}>
+      <Image
+        src={onLight ? "/brand/logo-dark-on-light.png" : "/brand/logo-light-on-dark.png"}
+        alt="WAV Invest"
+        width={1200}
+        height={293}
+        sizes="240px"
+        loading="eager"
+      />
     </span>
   );
 }

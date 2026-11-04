@@ -27,6 +27,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         "@id": `${siteUrl}/#org`,
         name: company.name,
         url: siteUrl,
+        logo: `${siteUrl}/brand/logo-dark-on-light.png`,
         email: company.email,
         telephone: company.phone,
         areaServed: ["DE", "AT", "PL", "CZ", "SK"],

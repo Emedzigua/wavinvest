@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { createPublicClient } from "@/lib/supabase/server";
+import { adminEnabled } from "@/lib/features";
 
 const BOTS = /bot|crawl|spider|slurp|preview|lighthouse|headless|monitor|curl|wget/i;
 
@@ -8,7 +9,7 @@ const BOTS = /bot|crawl|spider|slurp|preview|lighthouse|headless|monitor|curl|wg
 // so it can't be reversed and changes every day.
 export async function POST(request: Request) {
   const ua = request.headers.get("user-agent") ?? "";
-  if (!ua || BOTS.test(ua)) return new Response(null, { status: 204 });
+  if (!adminEnabled || !ua || BOTS.test(ua)) return new Response(null, { status: 204 });
 
   let path = "";
   try {

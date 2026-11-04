@@ -7,6 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { media } from "@/lib/media";
 import CookieConsent from "@/components/CookieConsent";
 import VisitTracker from "@/components/VisitTracker";
+import { adminEnabled } from "@/lib/features";
 import "../globals.css";
 
 const inter = Inter({
@@ -48,7 +49,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       <body>
         {children}
         <CookieConsent dict={dict.cookies} lang={lang} />
-        <VisitTracker />
+        {adminEnabled && <VisitTracker />}
       </body>
     </html>
   );

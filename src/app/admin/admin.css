@@ -150,9 +150,6 @@
 .adm-side__logo {
   padding: 0 12px;
 }
-.adm-side .logo span {
-  color: var(--paper);
-}
 .adm-nav {
   display: flex;
   flex-direction: column;

@@ -36,6 +36,10 @@ account, verify the domain (a few DNS records), then set `RESEND_API_KEY` (and o
 
 ## Admin (`/admin`)
 
+Set `ADMIN_ENABLED=false` and redeploy to switch it off (website-only package): `/admin` returns 404,
+the visitor count and phone alerts stop, and the quote form needs `RESEND_API_KEY`, because email is
+then the only way to see a request. The code stays, so it can be switched back on at any time.
+
 Slovak-language back office, login only (no sign-up). See `supabase/README.md` for adding the second
 account.
 

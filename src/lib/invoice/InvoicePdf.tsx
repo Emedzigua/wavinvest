@@ -1,9 +1,11 @@
 import path from "node:path";
-import { Document, Font, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { readFileSync } from "node:fs";
+import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { Invoice } from "@/lib/admin/types";
 
 // Inter, the site font. Two subsets: basic latin + Slovak/Czech/Polish/German letters.
 const dir = path.join(process.cwd(), "assets/fonts");
+const logo = readFileSync(path.join(process.cwd(), "assets/brand/logo-dark-on-light.png"));
 for (const [family, subset] of [
   ["Inter", "latin"],
   ["InterExt", "latin-ext"],
@@ -21,10 +23,7 @@ const s = StyleSheet.create({
   page: { fontFamily: ["Inter", "InterExt"], fontSize: 9, color: C.ink, padding: 44, lineHeight: 1.45 },
   row: { flexDirection: "row" },
   between: { flexDirection: "row", justifyContent: "space-between" },
-  logo: { flexDirection: "row", alignItems: "center", gap: 5 },
-  logoMark: { fontSize: 15, fontWeight: 600, letterSpacing: 0.5, lineHeight: 1 },
-  logoSq: { width: 5, height: 5, backgroundColor: C.ink },
-  logoSub: { fontSize: 7, letterSpacing: 2.5, lineHeight: 1 },
+  logo: { width: 148, height: 36 },
   title: { fontSize: 22, fontWeight: 400, textAlign: "right", lineHeight: 1.1 },
   number: { fontSize: 10, color: C.muted, textAlign: "right", marginTop: 6 },
   label: { fontSize: 7, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
@@ -112,11 +111,8 @@ export default function InvoicePdf({ invoice: inv }: { invoice: Invoice }) {
       <Page size="A4" style={s.page}>
         {/* Header */}
         <View style={s.between}>
-          <View style={s.logo}>
-            <Text style={s.logoMark}>WAV</Text>
-            <View style={s.logoSq} />
-            <Text style={s.logoSub}>INVEST</Text>
-          </View>
+          {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf image, not an HTML img */}
+          <Image style={s.logo} src={{ data: logo, format: "png" }} />
           <View style={{ alignItems: "flex-end" }}>
             <Text style={s.title}>Faktúra</Text>
             <Text style={s.number}>Invoice č. {inv.number}</Text>

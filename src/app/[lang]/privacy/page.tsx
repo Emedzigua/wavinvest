@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageMetadata } from "@/lib/seo";
+import { adminEnabled } from "@/lib/features";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SectionLabel from "@/components/SectionLabel";
@@ -30,10 +31,14 @@ export default async function Privacy({ params }: PageProps<"/[lang]/privacy">) 
         <p className="muted">
           {t.privacy.updated}: <time dateTime={UPDATED}>{UPDATED}</time>
         </p>
-        {t.privacy.sections.map((s) => (
+        {t.privacy.sections.map((s, i) => (
           <section key={s.h}>
             <h2 className="subheading">{s.h}</h2>
-            <p>{s.p}</p>
+            <p>
+              {s.p}
+              {/* The cookies section also explains the visitor count, while it runs */}
+              {adminEnabled && i === 2 && ` ${t.privacy.visits}`}
+            </p>
           </section>
         ))}
         <a href={`/${lang}`} className="btn btn--ghost">

@@ -241,25 +241,20 @@ textarea {
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  line-height: 1;
+  line-height: 0;
 }
-.logo__mark {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+.logo img {
+  display: block;
+  width: auto;
+  height: 40px;
 }
-.logo__sq {
-  width: 6px;
-  height: 6px;
-  background: currentColor;
+@media (max-width: 560px) {
+  .logo img {
+    height: 36px;
+  }
 }
-.logo__sub {
-  font-size: 11px;
-  letter-spacing: 0.24em;
-}
-.logo--lg .logo__mark {
-  font-size: 28px;
+.logo--lg img {
+  height: 52px;
 }
 
 /* ───────────────────────── Nav ───────────────────────── */
@@ -951,9 +946,6 @@ textarea {
 }
 .footer__grid span {
   color: rgba(255, 255, 255, 0.5);
-}
-.footer__grid .logo span {
-  color: var(--paper);
 }
 .footer__tagline {
   margin-top: 12px;
