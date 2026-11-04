@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { LOCALE_COOKIE, localeNames, localeTags, locales, type Locale } from "@/i18n/config";
 
 // Remembers the choice for a year so the auto-detection never overrides it
@@ -16,8 +17,25 @@ export default function LanguageSwitcher({
   label: string;
   path?: string;
 }) {
+  const menu = useRef<HTMLDetailsElement>(null);
+
+  // A click elsewhere or Escape closes the menu
+  useEffect(() => {
+    const close = (e: Event) => {
+      const el = menu.current;
+      if (!el?.open) return;
+      if (e instanceof KeyboardEvent ? e.key === "Escape" : !el.contains(e.target as Node)) el.open = false;
+    };
+    document.addEventListener("click", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("click", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, []);
+
   return (
-    <details className="lang">
+    <details className="lang" ref={menu}>
       <summary aria-label={label}>
         {lang.toUpperCase()}
         <span className="lang__caret" aria-hidden />

@@ -47,7 +47,7 @@ export default async function Footer({
       </div>
       <div className="container footer__bottom">
         <span>
-          © {await currentYear()} {company.name}. {dict.rights}
+          © {await currentYear()} {company.name} {dict.rights}
         </span>
       </div>
     </footer>

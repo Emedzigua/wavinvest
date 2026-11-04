@@ -10,7 +10,15 @@ import { localeTags } from "@/i18n/config";
 
 type Status = "idle" | "sending" | "success" | "error" | "missing-config" | "captcha";
 
-export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; lang: Locale }) {
+export default function QuoteForm({
+  dict,
+  lang,
+  privacyLabel,
+}: {
+  dict: Dictionary["quote"];
+  lang: Locale;
+  privacyLabel: string;
+}) {
   const [product, setProduct] = useState("epal");
   const [status, setStatus] = useState<Status>("idle");
   const [attempt, setAttempt] = useState(0);
@@ -50,7 +58,7 @@ export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; l
   }
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate={false}>
+    <form className="form" onSubmit={onSubmit}>
       {/* Spam trap: real people never see or fill this */}
       <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
 
@@ -89,7 +97,7 @@ export default function QuoteForm({ dict, lang }: { dict: Dictionary["quote"]; l
       <label className="check">
         <input type="checkbox" name="consent" value="yes" required />
         <span>
-          {f.consent} <a href={`/${lang}/privacy`}>↗</a>
+          {f.consent} <a href={`/${lang}/privacy`} className="check__link" aria-label={privacyLabel}>↗</a>
         </span>
       </label>
 

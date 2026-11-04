@@ -8,7 +8,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SectionLabel from "@/components/SectionLabel";
 
-const UPDATED = "2026-10-28";
+const UPDATED = "2026-11-04";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/privacy">): Promise<Metadata> {
   const { lang } = await params;

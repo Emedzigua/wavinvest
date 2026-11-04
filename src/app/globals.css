@@ -4,7 +4,7 @@
   --paper: #ffffff;
   --carbon: #322d2a;
   --onyx: #0f0e12;
-  --mercury: #8b8b8b;
+  --mercury: #6f6c68;
   --hair: rgba(50, 45, 42, 0.18);
   --hair-light: rgba(255, 255, 255, 0.18);
 
@@ -112,6 +112,20 @@ textarea {
 .muted {
   color: var(--mercury);
 }
+::selection {
+  background: var(--carbon);
+  color: var(--paper);
+}
+.quote ::selection,
+.footer ::selection,
+.nav ::selection,
+.cookies ::selection {
+  background: var(--paper);
+  color: var(--carbon);
+}
+html {
+  scrollbar-color: rgba(50, 45, 42, 0.45) transparent;
+}
 
 .container {
   width: 100%;
@@ -178,6 +192,7 @@ textarea {
   padding: 18px 22px;
   border-radius: var(--r-pill);
   border: 1px solid transparent;
+  background: transparent;
   font-size: var(--text-body-sm);
   line-height: 1;
   white-space: nowrap;
@@ -538,6 +553,9 @@ textarea {
   font-weight: 300;
   line-height: 1;
 }
+.stat dd {
+  font-variant-numeric: tabular-nums;
+}
 .stat dt {
   font-size: var(--text-body-sm);
   color: var(--mercury);
@@ -857,7 +875,21 @@ textarea {
 }
 .field input::placeholder,
 .field textarea::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.58);
+}
+/* Browser-drawn parts of the dark form: spinners, caret and autofill */
+.form input[type="number"] {
+  color-scheme: dark;
+}
+.field input,
+.field textarea {
+  caret-color: currentColor;
+}
+.form input:-webkit-autofill,
+.form input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--paper);
+  box-shadow: inset 0 0 0 100px #443e3a;
+  caret-color: var(--paper);
 }
 .field input:focus,
 .field select:focus,
@@ -884,6 +916,10 @@ textarea {
 }
 .check a {
   color: var(--paper);
+}
+.check__link {
+  display: inline-block;
+  padding: 2px 6px;
 }
 .form__msg {
   font-size: var(--text-body-sm);
@@ -953,17 +989,22 @@ textarea {
 .footer__grid > nav {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
   align-items: flex-start;
 }
 .footer__grid a,
 .footer__grid .linklike {
+  /* Same 32px rhythm as before, but the whole row can be tapped */
+  padding-block: 6px;
   color: rgba(255, 255, 255, 0.72);
   transition: color 0.2s;
 }
 .footer__grid a:hover,
 .footer__grid .linklike:hover {
   color: var(--paper);
+}
+.footer__grid > div > span {
+  padding-block: 6px;
 }
 .footer__grid span {
   color: rgba(255, 255, 255, 0.5);
@@ -1008,6 +1049,11 @@ textarea {
   border-radius: var(--r-nav);
   font-size: var(--text-body-sm);
   animation: rise 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cookies {
+    animation: none;
+  }
 }
 .cookies .label {
   margin-bottom: 12px;
@@ -1116,4 +1162,20 @@ textarea {
 }
 .legal .btn {
   margin-top: 48px;
+}
+
+/* 404 */
+.lost {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+}
+.lost .logo {
+  margin-bottom: 32px;
+}
+.lost p {
+  max-width: 44ch;
 }

@@ -198,7 +198,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 <a href={`tel:${company.phone.replace(/\s/g, "")}`}>{company.phone}</a>
               </p>
             </div>
-            <QuoteForm dict={t.quote} lang={lang} />
+            <QuoteForm dict={t.quote} lang={lang} privacyLabel={t.footer.privacy} />
           </div>
         </section>
       </main>

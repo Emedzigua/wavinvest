@@ -48,7 +48,7 @@ export function proxy(request: NextRequest) {
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     if (adminEnabled) return updateSession(request);
     // Admin switched off: no route has this path, so visitors get the normal 404
-    return NextResponse.rewrite(new URL("/_admin-disabled", request.url));
+    return NextResponse.rewrite(new URL(`/${defaultLocale}/_admin-disabled`, request.url));
   }
 
   const hasPrefix = locales.some(
