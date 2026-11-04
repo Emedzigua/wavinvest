@@ -36,7 +36,7 @@
     "title": "Co dostarczamy",
     "intro": "Dwa produkty wykonane według tego samego europejskiego standardu. Zamów je osobno lub razem jako kompletny ładunek.",
     "specsLabel": "Specyfikacja",
-    "cta": "Zapytaj o cenę",
+    "cta": "Zapytaj o ofertę",
     "items": {
       "epal": {
         "name": "Europalety EPAL",
@@ -91,7 +91,7 @@
   "quote": {
     "label": "Zapytaj o ofertę",
     "title": "Powiedz nam, czego potrzebujesz. Odpowiemy w ciągu 24 godzin.",
-    "intro": "Wypełnij formularz, a Twój opiekun odezwie się z ceną, dostępnością i terminem dostawy.",
+    "intro": "Otrzymasz cenę, dostępność i termin dostawy.",
     "trust": [
       { "title": "100 % nowe", "text": "Licencjonowane palety EPAL i nadstawki" },
       { "title": "Odpowiedź w 24 h", "text": "W dni robocze" },
@@ -107,7 +107,7 @@
       "location": "Miejsce dostawy (miasto, kraj)",
       "message": "Wiadomość",
       "messagePlaceholder": "Ilość miesięczna, częstotliwość dostaw, terminy…",
-      "consent": "Wyrażam zgodę na wykorzystanie moich danych przez WAV Invest w celu odpowiedzi na to zapytanie, zgodnie z polityką prywatności."
+      "consent": "Wyrażam zgodę na wykorzystanie moich danych przez WAV Invest w celu odpowiedzi na to zapytanie, zgodnie z [polityką prywatności]."
     },
     "productOptions": {
       "epal": "Europalety EPAL (nowe)",
@@ -116,10 +116,10 @@
     },
     "submit": "Wyślij zapytanie",
     "sending": "Wysyłanie…",
-    "success": "Dziękujemy — Twoje zapytanie zostało wysłane. Odezwiemy się w ciągu 24 godzin.",
-    "error": "Coś poszło nie tak. Spróbuj ponownie lub napisz do nas bezpośrednio.",
-    "notConfigured": "Formularz nie jest jeszcze podłączony. Napisz do nas bezpośrednio.",
-    "captcha": "Potwierdź, że nie jesteś robotem (weryfikacja nad przyciskiem), i wyślij ponownie.",
+    "success": "Dziękujemy — Twoje zapytanie zostało wysłane. Odpowiemy w ciągu jednego dnia roboczego.",
+    "error": "Zapytanie nie zostało wysłane. Twoje dane pozostały w formularzu — spróbuj ponownie lub zadzwoń do nas: {phone}.",
+    "notConfigured": "Ten formularz chwilowo nie przyjmuje zapytań. Zadzwoń do nas: {phone}.",
+    "captcha": "Ukończ weryfikację nad przyciskiem i wyślij ponownie.",
     "required": "Wymagane"
   },
   "footer": {

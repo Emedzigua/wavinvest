@@ -7,17 +7,18 @@ import { PRODUCT_EVENT } from "./ProductCta";
 import { submitQuote } from "@/lib/quote-action";
 import Turnstile from "./Turnstile";
 import { localeTags } from "@/i18n/config";
+import { company } from "@/lib/media";
 
 type Status = "idle" | "sending" | "success" | "error" | "missing-config" | "captcha";
 
 export default function QuoteForm({
   dict,
   lang,
-  privacyLabel,
+  available,
 }: {
   dict: Dictionary["quote"];
   lang: Locale;
-  privacyLabel: string;
+  available: boolean;
 }) {
   const [product, setProduct] = useState("epal");
   const [status, setStatus] = useState<Status>("idle");
@@ -59,6 +60,13 @@ export default function QuoteForm({
 
   return (
     <form className="form" onSubmit={onSubmit}>
+      {/* Say it before anyone spends time filling this in */}
+      {!available && <p className="form__notice"><WithPhone text={dict.notConfigured} /></p>}
+      <p className="form__hint">
+        <span aria-hidden>* </span>
+        {dict.required}
+      </p>
+
       {/* Spam trap: real people never see or fill this */}
       <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
 
@@ -97,20 +105,41 @@ export default function QuoteForm({
       <label className="check">
         <input type="checkbox" name="consent" value="yes" required />
         <span>
-          {f.consent} <a href={`/${lang}/privacy`} className="check__link" aria-label={privacyLabel}>↗</a>
+          {/* The [marked] words link to the policy; a new tab keeps what was typed here */}
+          {f.consent.split(/\[(.+?)\]/).map((part, i) =>
+            i % 2 ? (
+              <a key={i} href={`/${lang}/privacy`} target="_blank" rel="noopener">
+                {part}
+              </a>
+            ) : (
+              part
+            ),
+          )}
         </span>
       </label>
 
-      <Turnstile language={localeTags[lang]} theme="dark" resetKey={attempt} />
+      {available && <Turnstile language={localeTags[lang]} theme="dark" resetKey={attempt} />}
 
-      <button type="submit" className="btn btn--light btn--block" disabled={status === "sending"}>
+      <button type="submit" className="btn btn--light btn--block" disabled={!available || status === "sending"}>
         {status === "sending" ? dict.sending : dict.submit}
       </button>
 
-      {status === "error" && <p className="form__msg" role="alert">{dict.error}</p>}
-      {status === "missing-config" && <p className="form__msg" role="alert">{dict.notConfigured}</p>}
+      {status === "error" && <p className="form__msg" role="alert"><WithPhone text={dict.error} /></p>}
+      {status === "missing-config" && <p className="form__msg" role="alert"><WithPhone text={dict.notConfigured} /></p>}
       {status === "captcha" && <p className="form__msg" role="alert">{dict.captcha}</p>}
     </form>
+  );
+}
+
+// Puts the callable phone number into a translated sentence
+function WithPhone({ text }: { text: string }) {
+  const [before, after] = text.split("{phone}");
+  return (
+    <>
+      {before}
+      <a href={`tel:${company.phone.replace(/\s/g, "")}`}>{company.phone}</a>
+      {after}
+    </>
   );
 }
 

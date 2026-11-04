@@ -91,7 +91,7 @@
   "quote": {
     "label": "Angebot anfordern",
     "title": "Sagen Sie uns, was Sie brauchen. Wir antworten innerhalb von 24 Stunden.",
-    "intro": "Füllen Sie das Formular aus — Ihr Kundenbetreuer meldet sich mit Preis, Verfügbarkeit und Liefertermin.",
+    "intro": "Sie erhalten Preis, Verfügbarkeit und Liefertermin.",
     "trust": [
       { "title": "100 % neu", "text": "Lizenzierte EPAL Paletten & Rahmen" },
       { "title": "Antwort in 24 h", "text": "An Werktagen" },
@@ -107,7 +107,7 @@
       "location": "Lieferort (Stadt, Land)",
       "message": "Nachricht",
       "messagePlaceholder": "Monatsmenge, Liefertakt, Fristen…",
-      "consent": "Ich bin einverstanden, dass WAV Invest meine Angaben zur Bearbeitung dieser Anfrage gemäß Datenschutzerklärung verwendet."
+      "consent": "Ich bin einverstanden, dass WAV Invest meine Angaben zur Bearbeitung dieser Anfrage gemäß [Datenschutzerklärung] verwendet."
     },
     "productOptions": {
       "epal": "EPAL Europaletten (neu)",
@@ -116,10 +116,10 @@
     },
     "submit": "Anfrage senden",
     "sending": "Wird gesendet…",
-    "success": "Vielen Dank — Ihre Anfrage wurde gesendet. Wir melden uns innerhalb von 24 Stunden.",
-    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt eine E-Mail.",
-    "notConfigured": "Das Formular ist noch nicht verbunden. Bitte schreiben Sie uns direkt eine E-Mail.",
-    "captcha": "Bitte bestätigen Sie, dass Sie kein Roboter sind (Prüfung über der Schaltfläche), und senden Sie erneut.",
+    "success": "Vielen Dank — Ihre Anfrage wurde gesendet. Wir antworten innerhalb eines Werktags.",
+    "error": "Ihre Anfrage wurde nicht gesendet. Ihre Angaben bleiben im Formular erhalten — bitte versuchen Sie es erneut oder rufen Sie uns an: {phone}.",
+    "notConfigured": "Dieses Formular nimmt derzeit keine Anfragen an. Bitte rufen Sie uns an: {phone}.",
+    "captcha": "Bitte schließen Sie die Sicherheitsprüfung über der Schaltfläche ab und senden Sie erneut.",
     "required": "Pflichtfeld"
   },
   "footer": {

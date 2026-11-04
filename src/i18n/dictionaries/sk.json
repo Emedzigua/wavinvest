@@ -36,7 +36,7 @@
     "title": "Čo dodávame",
     "intro": "Dva produkty vyrobené podľa rovnakého európskeho štandardu. Objednajte ich samostatne alebo spolu ako kompletný náklad.",
     "specsLabel": "Parametre",
-    "cta": "Vyžiadať cenu",
+    "cta": "Vyžiadať ponuku",
     "items": {
       "epal": {
         "name": "Europalety EPAL",
@@ -91,7 +91,7 @@
   "quote": {
     "label": "Vyžiadať ponuku",
     "title": "Napíšte nám, čo potrebujete. Odpovieme do 24 hodín.",
-    "intro": "Vyplňte formulár a váš obchodný zástupca sa ozve s cenou, dostupnosťou a termínom dodania.",
+    "intro": "Dostanete cenu, dostupnosť a termín dodania.",
     "trust": [
       { "title": "100 % nové", "text": "Licencované palety EPAL a nadstavce" },
       { "title": "Odpoveď do 24 h", "text": "V pracovné dni" },
@@ -107,7 +107,7 @@
       "location": "Miesto dodania (mesto, krajina)",
       "message": "Správa",
       "messagePlaceholder": "Mesačné množstvo, frekvencia dodávok, termíny…",
-      "consent": "Súhlasím, aby WAV Invest použil moje údaje na vybavenie tejto požiadavky podľa zásad ochrany osobných údajov."
+      "consent": "Súhlasím, aby WAV Invest použil moje údaje na vybavenie tejto požiadavky podľa [zásad ochrany osobných údajov]."
     },
     "productOptions": {
       "epal": "Europalety EPAL (nové)",
@@ -116,10 +116,10 @@
     },
     "submit": "Odoslať požiadavku",
     "sending": "Odosiela sa…",
-    "success": "Ďakujeme — vaša požiadavka bola odoslaná. Ozveme sa do 24 hodín.",
-    "error": "Niečo sa pokazilo. Skúste to znova alebo nám napíšte priamo e-mailom.",
-    "notConfigured": "Formulár ešte nie je pripojený. Napíšte nám prosím priamo e-mailom.",
-    "captcha": "Potvrďte, prosím, že nie ste robot (overenie nad tlačidlom), a odošlite znova.",
+    "success": "Ďakujeme — vaša požiadavka bola odoslaná. Odpovieme do jedného pracovného dňa.",
+    "error": "Požiadavka nebola odoslaná. Vaše údaje vo formulári zostali — skúste to znova alebo nám zavolajte: {phone}.",
+    "notConfigured": "Tento formulár momentálne neprijíma požiadavky. Zavolajte nám, prosím: {phone}.",
+    "captcha": "Dokončite, prosím, bezpečnostné overenie nad tlačidlom a odošlite znova.",
     "required": "Povinné"
   },
   "footer": {

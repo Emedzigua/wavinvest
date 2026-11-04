@@ -36,7 +36,7 @@
     "title": "What we supply",
     "intro": "Two products, built to the same European standard. Order them separately or together as a complete load.",
     "specsLabel": "Specifications",
-    "cta": "Get a quote",
+    "cta": "Request a quote",
     "items": {
       "epal": {
         "name": "EPAL Euro pallets",
@@ -54,7 +54,7 @@
       "collars": {
         "name": "Pallet collars",
         "tagline": "Turn a pallet into a stackable crate.",
-        "description": "Foldable wooden side covers that fit on a 1200 × 800 Euro pallet. Stack several collars to reach the height you need, then fold them flat when empty to save space on the return trip.",
+        "description": "Foldable wooden collars that fit on a 1200 × 800 Euro pallet. Stack several to reach the height you need, then fold them flat when empty to save space on the return trip.",
         "specs": [
           ["Fits", "EPAL 1200 × 800 mm"],
           ["Height per collar", "200 mm"],
@@ -91,7 +91,7 @@
   "quote": {
     "label": "Request a quote",
     "title": "Tell us what you need. We will reply within 24 hours.",
-    "intro": "Fill in the form and your account manager will get back to you with price, availability and delivery date.",
+    "intro": "You will get a price, availability and a delivery date.",
     "trust": [
       { "title": "100 % new", "text": "Licensed EPAL pallets & collars" },
       { "title": "Reply within 24 h", "text": "On business days" },
@@ -107,7 +107,7 @@
       "location": "Delivery location (city, country)",
       "message": "Message",
       "messagePlaceholder": "Monthly volume, delivery frequency, deadlines…",
-      "consent": "I agree that WAV Invest may use my details to answer this request, as described in the privacy policy."
+      "consent": "I agree that WAV Invest may use my details to answer this request, as described in the [privacy policy]."
     },
     "productOptions": {
       "epal": "EPAL Euro pallets (new)",
@@ -116,10 +116,10 @@
     },
     "submit": "Send request",
     "sending": "Sending…",
-    "success": "Thank you — your request was sent. We will get back to you within 24 hours.",
-    "error": "Something went wrong. Please try again or email us directly.",
-    "notConfigured": "The form is not connected yet. Please email us directly.",
-    "captcha": "Please confirm you are not a robot (the check above the button) and send again.",
+    "success": "Thank you — your request was sent. We will reply within one business day.",
+    "error": "Your request was not sent. Your details are still in the form — please try again or call us: {phone}.",
+    "notConfigured": "This form is not taking requests right now. Please call us: {phone}.",
+    "captcha": "Please complete the security check above the button, then send again.",
     "required": "Required"
   },
   "footer": {

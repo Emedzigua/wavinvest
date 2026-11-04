@@ -9,6 +9,7 @@ import SectionLabel from "@/components/SectionLabel";
 import ProductCta from "@/components/ProductCta";
 import QuoteForm from "@/components/QuoteForm";
 import Footer from "@/components/Footer";
+import { quoteFormReady } from "@/lib/features";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -125,7 +126,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                       </div>
                     ))}
                   </dl>
-                  <ProductCta product={p.product}>{t.products.cta}</ProductCta>
+                  <ProductCta product={p.product} label={`${t.products.cta}: ${p.name}`}>
+                    {t.products.cta}
+                  </ProductCta>
                 </div>
               </article>
             ))}
@@ -198,7 +201,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 <a href={`tel:${company.phone.replace(/\s/g, "")}`}>{company.phone}</a>
               </p>
             </div>
-            <QuoteForm dict={t.quote} lang={lang} privacyLabel={t.footer.privacy} />
+            <QuoteForm dict={t.quote} lang={lang} available={quoteFormReady} />
           </div>
         </section>
       </main>

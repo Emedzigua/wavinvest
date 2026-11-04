@@ -28,7 +28,7 @@ export default function GlobalNotFound() {
             Page not found. The link may be old or mistyped.
           </p>
           <Link href="/" className="btn btn--dark">
-            WAV Invest →
+            Úvodná stránka · Home
           </Link>
         </main>
       </body>

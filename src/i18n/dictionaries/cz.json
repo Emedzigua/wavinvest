@@ -36,7 +36,7 @@
     "title": "Co dodáváme",
     "intro": "Dva produkty vyrobené podle stejného evropského standardu. Objednejte je zvlášť, nebo společně jako kompletní náklad.",
     "specsLabel": "Parametry",
-    "cta": "Poptat cenu",
+    "cta": "Poptat nabídku",
     "items": {
       "epal": {
         "name": "Europalety EPAL",
@@ -91,7 +91,7 @@
   "quote": {
     "label": "Poptat nabídku",
     "title": "Napište nám, co potřebujete. Odpovíme do 24 hodin.",
-    "intro": "Vyplňte formulář a váš obchodní zástupce se ozve s cenou, dostupností a termínem dodání.",
+    "intro": "Dostanete cenu, dostupnost a termín dodání.",
     "trust": [
       { "title": "100 % nové", "text": "Licencované palety EPAL a nástavce" },
       { "title": "Odpověď do 24 h", "text": "V pracovní dny" },
@@ -107,7 +107,7 @@
       "location": "Místo dodání (město, země)",
       "message": "Zpráva",
       "messagePlaceholder": "Měsíční množství, četnost dodávek, termíny…",
-      "consent": "Souhlasím s tím, že WAV Invest použije mé údaje k vyřízení této poptávky podle zásad ochrany osobních údajů."
+      "consent": "Souhlasím s tím, že WAV Invest použije mé údaje k vyřízení této poptávky podle [zásad ochrany osobních údajů]."
     },
     "productOptions": {
       "epal": "Europalety EPAL (nové)",
@@ -116,10 +116,10 @@
     },
     "submit": "Odeslat poptávku",
     "sending": "Odesílání…",
-    "success": "Děkujeme — vaše poptávka byla odeslána. Ozveme se do 24 hodin.",
-    "error": "Něco se pokazilo. Zkuste to prosím znovu nebo nám napište přímo e-mailem.",
-    "notConfigured": "Formulář zatím není připojen. Napište nám prosím přímo e-mailem.",
-    "captcha": "Potvrďte prosím, že nejste robot (ověření nad tlačítkem), a odešlete znovu.",
+    "success": "Děkujeme — vaše poptávka byla odeslána. Odpovíme do jednoho pracovního dne.",
+    "error": "Poptávka nebyla odeslána. Vaše údaje ve formuláři zůstaly — zkuste to prosím znovu nebo nám zavolejte: {phone}.",
+    "notConfigured": "Tento formulář momentálně nepřijímá poptávky. Zavolejte nám prosím: {phone}.",
+    "captcha": "Dokončete prosím bezpečnostní ověření nad tlačítkem a odešlete znovu.",
     "required": "Povinné"
   },
   "footer": {

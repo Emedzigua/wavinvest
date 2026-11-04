@@ -237,7 +237,7 @@ html {
 }
 .btn:disabled {
   opacity: 0.6;
-  cursor: progress;
+  cursor: not-allowed;
 }
 .btn-row {
   display: flex;
@@ -917,13 +917,30 @@ html {
 .check a {
   color: var(--paper);
 }
-.check__link {
-  display: inline-block;
-  padding: 2px 6px;
+.check a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .form__msg {
   font-size: var(--text-body-sm);
   color: #ffb4a6;
+}
+.form__msg a,
+.form__notice a {
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.form__notice {
+  padding: 14px 16px;
+  border: 1px solid var(--hair-light);
+  border-radius: var(--r-body);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+}
+.form__hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
 }
 .form--done {
   align-items: flex-start;
