@@ -259,36 +259,44 @@ textarea {
 /* WAV sits low in the image (the ears rise above it): lift it so the letters,
    not the whole picture, line up with the header text */
 .logo--header img {
-  height: 40px;
+  height: var(--nav-logo);
   transform: translateY(-20%);
+  transition: height 0.2s;
 }
 
 /* ───────────────────────── Nav ───────────────────────── */
+/* Full-width bar, tall enough for the logo's ears. It slims down on scroll. */
 .nav {
+  --nav-height: 88px;
+  --nav-logo: 56px;
   position: fixed;
   z-index: 50;
-  top: 16px;
+  top: 0;
   left: 0;
   right: 0;
-  padding-inline: var(--gutter);
-  pointer-events: none;
+  background: var(--carbon);
+  color: var(--paper);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nav--scrolled {
+  --nav-height: 68px;
+  --nav-logo: 44px;
 }
 .nav__bar {
-  pointer-events: auto;
-  max-width: var(--max);
+  max-width: calc(var(--max) + var(--gutter) * 2);
   margin-inline: auto;
+  padding-inline: var(--gutter);
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 10px 10px 10px 24px;
-  background: var(--carbon);
-  color: var(--paper);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--r-nav);
   flex-wrap: wrap;
 }
 .nav__logo {
+  display: flex;
+  align-items: center;
+  height: var(--nav-height);
   margin-right: auto;
+  transition: height 0.2s;
 }
 .nav__links {
   display: flex;
@@ -339,9 +347,16 @@ textarea {
 }
 
 @media (max-width: 900px) {
+  .nav {
+    --nav-height: 72px;
+    --nav-logo: 46px;
+  }
+  .nav--scrolled {
+    --nav-height: 62px;
+    --nav-logo: 40px;
+  }
   .nav__bar {
-    padding: 8px 8px 8px 20px;
-    gap: 8px;
+    gap: 0 8px;
   }
   .nav__toggle {
     display: block;

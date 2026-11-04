@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import Logo from "./Logo";
@@ -16,6 +16,19 @@ export default function Nav({
   path?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", update, { passive: true });
+    // A reload can restore the page further down
+    const frame = requestAnimationFrame(update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   // On sub-pages the section links point back to the homepage
   const home = path ? `/${lang}` : "";
   const links = [
@@ -26,7 +39,7 @@ export default function Nav({
   ];
 
   return (
-    <header className={`nav${open ? " nav--open" : ""}`}>
+    <header className={`nav${open ? " nav--open" : ""}${scrolled ? " nav--scrolled" : ""}`}>
       <div className="nav__bar">
         <a href={`/${lang}`} className="nav__logo">
           <Logo on="header" className="logo--header" />
