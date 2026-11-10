@@ -2,18 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MENU, MENU_KEYS, type MenuKey } from "@/lib/admin/menu";
 
-const links = [
-  { href: "/admin", label: "Prehľad" },
-  { href: "/admin/customers", label: "Zákazníci" },
-  { href: "/admin/quotes", label: "Dopyty" },
-  { href: "/admin/invoices", label: "Faktúry" },
-  { href: "/admin/mail", label: "Pošta" },
-  { href: "/admin/settings", label: "Nastavenia" },
-];
-
-export default function AdminNav({ newQuotes }: { newQuotes: number }) {
+export default function AdminNav({ newQuotes, visible = MENU_KEYS }: { newQuotes: number; visible?: MenuKey[] }) {
   const path = usePathname();
+  const links = [...MENU.filter((m) => visible.includes(m.key)), { key: "settings", href: "/admin/settings", label: "Nastavenia" }];
   return (
     <nav className="adm-nav" aria-label="Administrácia">
       {links.map((l) => {
@@ -21,7 +14,7 @@ export default function AdminNav({ newQuotes }: { newQuotes: number }) {
         return (
           <Link key={l.href} href={l.href} aria-current={active ? "page" : undefined}>
             {l.label}
-            {l.href === "/admin/quotes" && newQuotes > 0 && (
+            {l.key === "quotes" && newQuotes > 0 && (
               <span className="adm-badge" aria-label={`${newQuotes} nových`}>{newQuotes}</span>
             )}
           </Link>

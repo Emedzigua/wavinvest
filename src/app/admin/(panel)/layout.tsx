@@ -5,6 +5,7 @@ import AdminNav from "@/components/admin/AdminNav";
 import PathTracker from "@/components/admin/PathTracker";
 import Loading from "./loading";
 import { requireAdmin } from "@/lib/admin/auth";
+import { homeHref, visibleMenu } from "@/lib/admin/menu";
 import { signOut } from "../actions";
 
 export const instant = false;
@@ -13,9 +14,9 @@ export default function PanelLayout({ children }: LayoutProps<"/admin">) {
   return (
     <div className="adm-shell">
       <aside className="adm-side">
-        <Link href="/admin" className="adm-side__logo">
-          <Logo />
-        </Link>
+        <Suspense fallback={<HomeLink href="/admin" />}>
+          <UserHomeLink />
+        </Suspense>
         <Suspense fallback={<AdminNav newQuotes={0} />}>
           <NavWithCount />
         </Suspense>
@@ -34,9 +35,25 @@ export default function PanelLayout({ children }: LayoutProps<"/admin">) {
 }
 
 async function NavWithCount() {
-  const { supabase } = await requireAdmin();
-  const { count } = await supabase.from("quotes").select("id", { count: "exact", head: true }).eq("status", "new");
-  return <AdminNav newQuotes={count ?? 0} />;
+  const { supabase, user } = await requireAdmin();
+  const visible = visibleMenu(user.menu);
+  const { count } = visible.includes("quotes")
+    ? await supabase.from("quotes").select("id", { count: "exact", head: true }).eq("status", "new")
+    : { count: 0 };
+  return <AdminNav newQuotes={count ?? 0} visible={visible} />;
+}
+
+function HomeLink({ href }: { href: string }) {
+  return (
+    <Link href={href} className="adm-side__logo">
+      <Logo />
+    </Link>
+  );
+}
+
+async function UserHomeLink() {
+  const { user } = await requireAdmin();
+  return <HomeLink href={homeHref(user.menu)} />;
 }
 
 async function UserBox() {

@@ -12,10 +12,16 @@ export const requireAdmin = cache(async () => {
   const userId = data?.claims?.sub;
   if (!userId) redirect("/admin/login");
 
-  const { data: admin } = await supabase.from("admins").select("name").eq("user_id", userId).maybeSingle();
+  const { data: admin } = await supabase.from("admins").select("name, menu").eq("user_id", userId).maybeSingle();
   if (!admin) {
     await supabase.auth.signOut();
     redirect("/admin/login?e=forbidden");
   }
-  return { supabase, user: { id: userId, name: admin.name as string, email: data.claims.email as string } };
+  return { supabase, user: {
+      id: userId,
+      name: admin.name as string,
+      email: data.claims.email as string,
+      menu: (admin.menu as string[] | null) ?? null,
+    },
+  };
 });

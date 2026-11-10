@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
+import { homeHref, visibleMenu } from "@/lib/admin/menu";
 import { getSettings } from "@/lib/admin/data";
 import { date, money, num } from "@/lib/admin/format";
 import { invoiceState } from "@/lib/admin/invoice";
@@ -22,7 +24,9 @@ const compactMoney = (v: number, currency: string) =>
 const plural = (n: number, one: string, few: string, many: string) => (n === 1 ? one : n >= 2 && n <= 4 ? few : many);
 
 export default async function Dashboard() {
-  const { supabase } = await requireAdmin();
+  const { supabase, user } = await requireAdmin();
+  // Overview hidden from the menu: start on the first tab this admin uses
+  if (!visibleMenu(user.menu).includes("overview")) redirect(homeHref(user.menu));
   const today = new Date();
   const fiveDaysAgo = new Date(today);
   fiveDaysAgo.setUTCDate(fiveDaysAgo.getUTCDate() - 5);

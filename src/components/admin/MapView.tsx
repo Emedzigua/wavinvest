@@ -9,6 +9,8 @@ export type Pin = { id: string; lat: number; lng: number; label: string; sub?: s
 // Modern vector map (OpenFreeMap, free incl. commercial use, no key)
 const STYLE = "https://tiles.openfreemap.org/styles/positron";
 
+const MAX_MARKERS = 150;
+
 const escape = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 const FACTORY =
@@ -59,16 +61,52 @@ export default function MapView({
           .setPopup(new ml.Popup({ offset: 18, closeButton: false }).setHTML(`<strong>Sklad ${escape(d.name)}</strong>`))
           .addTo(m);
       }
-      for (const p of pins) {
+      const popup = (p: Pin) => {
         const title = p.href ? `<a href="${p.href}">${escape(p.label)}</a>` : escape(p.label);
-        new ml.Marker({ element: marker(CUSTOMER, "pin-customer", p.color) })
-          .setLngLat([p.lng, p.lat])
-          .setPopup(
-            new ml.Popup({ offset: 18, closeButton: false }).setHTML(
-              `<strong>${title}</strong>${p.sub ? `<br><span>${escape(p.sub)}</span>` : ""}`,
-            ),
-          )
-          .addTo(m);
+        return `<strong>${title}</strong>${p.sub ? `<br><span>${escape(p.sub)}</span>` : ""}`;
+      };
+      if (pins.length <= MAX_MARKERS) {
+        for (const p of pins) {
+          new ml.Marker({ element: marker(CUSTOMER, "pin-customer", p.color) })
+            .setLngLat([p.lng, p.lat])
+            .setPopup(new ml.Popup({ offset: 18, closeButton: false }).setHTML(popup(p)))
+            .addTo(m);
+        }
+      } else {
+        // Thousands of points: one drawn layer instead of a page element per pin
+        m.on("load", () => {
+          m.addSource("pins", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: pins.map((p, i) => ({
+                type: "Feature",
+                id: i,
+                properties: { i, color: p.color ?? "#322d2a" },
+                geometry: { type: "Point", coordinates: [p.lng, p.lat] },
+              })),
+            },
+          });
+          m.addLayer({
+            id: "pins",
+            type: "circle",
+            source: "pins",
+            paint: {
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 10, 6],
+              "circle-color": ["get", "color"],
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": 1,
+            },
+          });
+          m.on("click", "pins", (e) => {
+            const f = e.features?.[0];
+            if (!f) return;
+            const p = pins[f.properties.i as number];
+            new ml.Popup({ closeButton: false }).setLngLat([p.lng, p.lat]).setHTML(popup(p)).addTo(m);
+          });
+          m.on("mouseenter", "pins", () => (m.getCanvas().style.cursor = "pointer"));
+          m.on("mouseleave", "pins", () => (m.getCanvas().style.cursor = ""));
+        });
       }
 
       const bounds = new ml.LngLatBounds();

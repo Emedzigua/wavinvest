@@ -10,6 +10,8 @@ import TierRows from "@/components/admin/TierRows";
 import DepotRows from "@/components/admin/DepotRows";
 import PasswordForm from "@/components/admin/PasswordForm";
 import PushToggle from "@/components/admin/PushToggle";
+import MenuPicker from "@/components/admin/MenuPicker";
+import { MENU, MENU_PRESETS, visibleMenu } from "@/lib/admin/menu";
 
 export const metadata: Metadata = { title: "Nastavenia" };
 // Admin pages are personal and always rendered per request
@@ -24,18 +26,26 @@ export default async function SettingsPage() {
   ]);
   const b = s.billing;
   const cur = s.currency;
+  const menu = visibleMenu(user.menu);
+  const preset = MENU_PRESETS.find((p) => p.keys.length === menu.length && p.keys.every((k) => menu.includes(k)));
+  const menuSummary = 
+    preset?.label ?? (MENU.filter((m) => menu.includes(m.key)).map((m) => m.label).join(" · ") || "Len nastavenia");
   const billingMissing = [!b.ico && "IČO", !b.iban && "IBAN"].filter(Boolean).join(" a ");
 
   return (
     <>
       <header className="adm-head">
         <div>
-          <BackButton href="/admin" label="Prehľad" />
+          {menu.includes("overview") && <BackButton href="/admin" label="Prehľad" />}
           <h1 className="display">Nastavenia</h1>
         </div>
       </header>
 
       <div className="acc-list">
+        <Section title="Menu" summary={menuSummary}>
+          <MenuPicker initial={menu} />
+        </Section>
+
         <Section title="Ceny" summary={`EPAL ${money(s.price_epal, cur)} · Nadstavec ${money(s.price_collars, cur)} · DPH ${num(s.vat_rate)} %`}>
           <LockedForm action={savePrices}>
             <div className="form__row form__row--4">

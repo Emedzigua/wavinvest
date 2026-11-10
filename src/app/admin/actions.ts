@@ -9,6 +9,8 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { addressQuery, geocode, refreshGeo } from "@/lib/admin/geo";
 import { addDays, invoiceTotals } from "@/lib/admin/invoice";
+import { OUTCOMES, type Outcome } from "@/lib/admin/prospects";
+import { MENU_KEYS, type MenuKey } from "@/lib/admin/menu";
 import type { Billing, Depot, DiscountTier, InvoiceItem, InvoiceStatus, Party, QuoteStatus } from "@/lib/admin/types";
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
@@ -470,4 +472,109 @@ export async function logEmail(draft: EmailDraft) {
     quote_id: draft.quote_id ?? null,
     invoice_id: draft.invoice_id ?? null,
   });
+}
+
+/* ───────────── Prospects ───────────── */
+
+// Records a call (or visit/note) and moves the prospect to the matching status
+export async function logProspectActivity(form: FormData): Promise<string | void> {
+  const { supabase, user } = await requireAdmin();
+  const id = text(form, "prospect_id");
+  const kind = (text(form, "kind") || "call") as "call" | "visit" | "email" | "note";
+  const outcome = optional(form, "outcome") as Outcome | null;
+  const note = optional(form, "note");
+  let nextAction = optional(form, "next_action");
+  if (!outcome && !note) return "Vyberte výsledok alebo napíšte poznámku.";
+
+  const result = outcome ? OUTCOMES[outcome] : null;
+  if (result?.days && !nextAction) nextAction = addDays(new Date().toISOString().slice(0, 10), result.days);
+  if ((outcome === "call_back" || outcome === "meeting") && !nextAction) return "Zadajte dátum.";
+
+  const { error: logError } = await supabase
+    .from("prospect_activities")
+    .insert({ prospect_id: id, kind, outcome, note, user_id: user.id });
+  if (logError) throw logError;
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (result) patch.status = result.status;
+  if (result) patch.next_action = result.status === "not_interested" || result.status === "unreachable" ? null : nextAction;
+  const { error } = await supabase.from("prospects").update(patch).eq("id", id);
+  if (error) throw error;
+  refresh();
+}
+
+export async function saveProspect(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from("prospects")
+    .update({
+      phone: optional(form, "phone"),
+      website: optional(form, "website"),
+      email: optional(form, "email")?.toLowerCase() ?? null,
+      street: optional(form, "street"),
+      city: optional(form, "city"),
+      postal_code: optional(form, "postal_code"),
+      contact_name: optional(form, "contact_name"),
+      contact_role: optional(form, "contact_role"),
+      contact_phone: optional(form, "contact_phone"),
+      contact_email: optional(form, "contact_email")?.toLowerCase() ?? null,
+      notes: optional(form, "notes"),
+      next_action: optional(form, "next_action"),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", text(form, "id"));
+  if (error) throw error;
+  refresh();
+}
+
+export async function setProspectStatus(id: string, status: string) {
+  const { supabase } = await requireAdmin();
+  await supabase.from("prospects").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
+  refresh();
+}
+
+// A won prospect becomes a real customer, with its contact person
+export async function convertProspect(id: string) {
+  const { supabase } = await requireAdmin();
+  const { data: p, error } = await supabase.from("prospects").select("*").eq("id", id).single();
+  if (error) throw error;
+  if (p.customer_id) redirect(`/admin/customers/${p.customer_id}`);
+  const country = { PL: "Poľsko", SK: "Slovensko", CZ: "Česko", HU: "Maďarsko", AT: "Rakúsko" }[p.country as string];
+  const { data: c, error: e2 } = await supabase
+    .from("customers")
+    .insert({
+      company_name: p.name,
+      street: p.street,
+      city: p.city,
+      postal_code: p.postal_code,
+      country,
+      lat: p.lat,
+      lng: p.lng,
+      status: "active",
+      depot: p.nearest_depot ?? "rzeszow",
+      notes: p.notes,
+    })
+    .select("id")
+    .single();
+  if (e2) throw e2;
+  if (p.contact_name || p.contact_phone || p.contact_email) {
+    await supabase.from("contacts").insert({
+      customer_id: c.id,
+      name: p.contact_name ?? p.name,
+      role: p.contact_role,
+      phone: p.contact_phone ?? p.phone,
+      email: p.contact_email ?? p.email,
+    });
+  }
+  await supabase.from("prospects").update({ status: "customer", customer_id: c.id, next_action: null }).eq("id", id);
+  redirect(`/admin/customers/${c.id}`);
+}
+
+/* ───────────── Menu ───────────── */
+
+export async function saveMenu(keys: string[]) {
+  const { supabase } = await requireAdmin();
+  const menu = MENU_KEYS.filter((k: MenuKey) => keys.includes(k));
+  const { error } = await supabase.rpc("set_admin_menu", { p_menu: menu });
+  if (error) throw error;
+  refresh();
 }
