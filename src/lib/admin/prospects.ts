@@ -11,7 +11,7 @@ export type ProspectStatus =
 export type Prospect = {
   id: string;
   source_id: string;
-  country: "PL" | "SK" | "CZ" | "HU" | "AT";
+  country: "PL" | "SK" | "CZ" | "HU" | "AT" | "DE" | "LT" | "LV";
   name: string;
   sector: string;
   street: string | null;
@@ -33,6 +33,29 @@ export type Prospect = {
   contact_email: string | null;
   notes: string | null;
   customer_id: string | null;
+  web_emails: string[] | null;
+  web_phones: string[] | null;
+  web_contact_url: string | null;
+  web_signals: string[] | null;
+  web_checked_at: string | null;
+  web_status: "ok" | "no_contacts" | "unreachable" | "blocked" | "error" | null;
+};
+
+// What the contact finder saw on the company's website (stored keys are Polish)
+export const signalLabel: Record<string, string> = {
+  palety: "spomína palety",
+  magazyn: "sklad",
+  logistyka: "logistika",
+  produkcja: "výroba",
+  "wysyłka": "expedícia",
+  hurt: "veľkoobchod",
+};
+
+export const webStatusLabel: Record<string, string> = {
+  no_contacts: "Na webe nie sú kontakty",
+  unreachable: "Web sa nedá otvoriť",
+  blocked: "Web nepúšťa automatické čítanie",
+  error: "Web sa nepodarilo prečítať",
 };
 
 export type Activity = {

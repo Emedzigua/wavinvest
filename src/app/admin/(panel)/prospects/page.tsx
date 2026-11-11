@@ -34,7 +34,8 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
   const country = COUNTRIES.includes(str("country") as (typeof COUNTRIES)[number]) ? str("country") : "";
   const sector = sectorLabel[str("sector")] ? str("sector") : "";
   const dist = Number(str("dist")) || 0;
-  const phoneOnly = str("phone") === "1";
+  // Ways to reach them: any, phone, email, or the site mentions pallets
+  const reach = ["1", "email", "pallets"].includes(str("phone")) ? str("phone") : "";
   const q = str("q").trim();
   const sort = ["score", "distance", "name"].includes(str("sort")) ? str("sort") : "score";
   const page = Math.max(1, Number(str("page")) || 1);
@@ -51,7 +52,9 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
     if (country) qq = qq.eq("country", country);
     if (sector) qq = qq.eq("sector", sector);
     if (dist) qq = qq.lte("distance_km", dist);
-    if (phoneOnly) qq = qq.not("phone", "is", null);
+    if (reach === "1") qq = qq.not("phone", "is", null);
+    if (reach === "email") qq = qq.not("email", "is", null);
+    if (reach === "pallets") qq = qq.contains("web_signals", ["palety"]);
     if (q) qq = qq.ilike("name", `%${q.replace(/[%_,()]/g, "")}%`);
     return qq as T;
   };
@@ -60,7 +63,7 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
     filter(
       supabase
         .from("prospects")
-        .select("id, country, name, sector, city, distance_km, nearest_depot, phone, website, status, next_action, score", {
+        .select("id, country, name, sector, city, distance_km, nearest_depot, phone, website, status, next_action, score, web_signals", {
           count: "exact",
         }),
     )
@@ -79,7 +82,7 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
   );
 
   const link = (patch: Record<string, string | number>) => {
-    const p = new URLSearchParams({ tab, ...(country && { country }), ...(sector && { sector }), ...(dist && { dist: String(dist) }), ...(phoneOnly && { phone: "1" }), ...(q && { q }), ...(sort !== "score" && { sort }) });
+    const p = new URLSearchParams({ tab, ...(country && { country }), ...(sector && { sector }), ...(dist && { dist: String(dist) }), ...(reach && { phone: reach }), ...(q && { q }), ...(sort !== "score" && { sort }) });
     for (const [k, v] of Object.entries(patch)) p.set(k, String(v));
     for (const [k, v] of [...p]) if (!v || v === "0") p.delete(k);
     return `/admin/prospects?${p}`;
@@ -145,9 +148,11 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
               </option>
             ))}
           </select>
-          <select name="phone" defaultValue={phoneOnly ? "1" : ""} aria-label="Telefón" className="pill-select">
-            <option value="">S aj bez telefónu</option>
-            <option value="1">Len s telefónom</option>
+          <select name="phone" defaultValue={reach} aria-label="Kontakt" className="pill-select">
+            <option value="">Všetky kontakty</option>
+            <option value="1">S telefónom</option>
+            <option value="email">S e-mailom</option>
+            <option value="pallets">Web spomína palety</option>
           </select>
           <select name="sort" defaultValue={sort} aria-label="Zoradiť" className="pill-select">
             <option value="score">Najlepšie skóre</option>
@@ -186,6 +191,7 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
                     <Link href={`/admin/prospects/${p.id}`}>
                       <strong>{p.name}</strong>
                     </Link>
+                    {p.web_signals?.includes("palety") && <span className="tag">palety</span>}
                     <small className="muted">
                       {" "}
                       · {p.country}

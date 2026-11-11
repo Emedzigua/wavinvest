@@ -15,7 +15,9 @@ import {
   OUTCOMES,
   prospectStatusLabel,
   sectorLabel,
+  signalLabel,
   statusColor,
+  webStatusLabel,
   type Activity,
   type Outcome,
   type Prospect,
@@ -42,6 +44,9 @@ export default async function ProspectPage({ params }: PageProps<"/admin/prospec
   const address = [p.street, [p.postal_code, p.city].filter(Boolean).join(" "), countryLabel[p.country]].filter(Boolean).join(", ");
   const search = `https://www.google.com/search?q=${encodeURIComponent(`${p.name} ${p.city ?? countryLabel[p.country]}`)}`;
   const route = `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+  const tel = (n: string) => `tel:${n.replace(/[^\d+]/g, "")}`;
+  const otherPhones = (p.web_phones ?? []).filter((n) => n !== p.phone);
+  const emails = [p.email, ...(p.web_emails ?? [])].filter((e, i, all): e is string => !!e && all.indexOf(e) === i);
 
   return (
     <>
@@ -96,8 +101,31 @@ export default async function ProspectPage({ params }: PageProps<"/admin/prospec
           <dl className="call-facts">
             <div>
               <dt>Telefón</dt>
-              <dd>{p.phone ? <a href={`tel:${p.phone.replace(/\s/g, "")}`}>{p.phone}</a> : <span className="muted">Doplňte po vyhľadaní</span>}</dd>
+              <dd>
+                {p.phone ? <a href={tel(p.phone)}>{p.phone}</a> : <span className="muted">Doplňte po vyhľadaní</span>}
+                {otherPhones.length > 0 && (
+                  <span className="also">
+                    {otherPhones.map((n) => (
+                      <a key={n} href={tel(n)}>
+                        {n}
+                      </a>
+                    ))}
+                  </span>
+                )}
+              </dd>
             </div>
+            {emails.length > 0 && (
+              <div>
+                <dt>E-mail</dt>
+                <dd className="also also--stack">
+                  {emails.map((e) => (
+                    <a key={e} href={`mailto:${e}`}>
+                      {e}
+                    </a>
+                  ))}
+                </dd>
+              </div>
+            )}
             {p.contact_name && (
               <div>
                 <dt>Kontakt</dt>
@@ -125,6 +153,33 @@ export default async function ProspectPage({ params }: PageProps<"/admin/prospec
                 )}
               </dd>
             </div>
+            {p.web_checked_at && (
+              <div>
+                <dt>Z webu</dt>
+                <dd>
+                  {p.web_status && webStatusLabel[p.web_status] ? (
+                    <span className="muted">{webStatusLabel[p.web_status]}</span>
+                  ) : (
+                    <span className="tags">
+                      {(p.web_signals ?? []).map((s) => (
+                        <span key={s} className={`tag${s === "palety" ? " tag--strong" : ""}`}>
+                          {signalLabel[s] ?? s}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                  {p.web_contact_url && (
+                    <>
+                      {" "}
+                      <a href={p.web_contact_url} target="_blank" rel="noreferrer">
+                        Kontakty na webe ↗
+                      </a>
+                    </>
+                  )}
+                  <small className="muted"> · čítané {date(p.web_checked_at)}</small>
+                </dd>
+              </div>
+            )}
             <div>
               <dt>Adresa</dt>
               <dd>

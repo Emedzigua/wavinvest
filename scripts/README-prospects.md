@@ -55,6 +55,21 @@ The import is an upsert on `source_id`, so running it again updates the OSM fiel
 
 The tables are defined in `supabase/migrations/20261110_prospects.sql`.
 
+## 4. Find contacts on company websites
+
+`scripts/enrich-contacts.py` reads each company's own website. It starts at the homepage and opens up to four contact, about or imprint pages. From those it collects phone numbers, email addresses and words that show the company ships goods (pallets, warehouse, production, dispatch, wholesale).
+
+It follows robots.txt, and when a site blocks bots (403 or 429) it marks the company "blocked" and leaves it. It keeps only emails on the company's own domain or a free-mail service, so web agencies' addresses are dropped. Purchasing and logistics addresses (zakupy@, zaopatrzenie@, magazyn@, einkauf@) come first.
+
+A phone or email you entered in the admin is never overwritten. Everything found is stored in `web_phones`, `web_emails`, `web_signals` and `web_contact_url`. A mention of pallets adds up to 15 to the score, and a newly found phone or email adds a bit more.
+
+Like the import, it goes through two temporary token-protected functions, `enrich_list(p_token, p_country)` and `enrich_save(p_token, p_rows)`. Create them first and drop them when the run is done. It only reads companies not checked yet (`web_checked_at is null`), so an interrupted run carries on where it stopped.
+
+```bash
+ENRICH_TOKEN=... NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... \
+  python3 scripts/enrich-contacts.py PL            # add --limit 40 --dry to test without saving
+```
+
 ## Contacting prospects
 
 Phone calls and in-person visits to companies are fine. Marketing email in all five countries needs the recipient's prior consent, so don't send unsolicited bulk email from this list.
