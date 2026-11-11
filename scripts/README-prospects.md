@@ -17,6 +17,12 @@ for c in PL SK CZ HU AT; do
 done
 ```
 
+**Germany:** only the eastern states nearest the depots are included. Use one file per state, selected with `area["ISO3166-2"="DE-SN"][admin_level=4]` in place of the country area: DE-SN, DE-BB, DE-BE, DE-TH and DE-ST. The build merges `DE-*.json` into DE.
+
+**Lithuania and Latvia:** few factories are mapped there, so add a second file per country (`LT-extra.json`, `LV-extra.json`) with `office=company`, `shop=trade` and crafts such as sawmills, breweries and joiners.
+
+**Belarus is left out on purpose.** EU sanctions restrict trade with Belarus, so get a legal check before adding it.
+
 Overpass sometimes answers 502 or 429 when it's busy. Wait a minute and run the failed country again. The place files are optional: they fill in the nearest town when a company has no address.
 
 ## 2. Clean and score

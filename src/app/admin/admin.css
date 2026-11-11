@@ -2400,10 +2400,11 @@
 /* Prospects */
 .prospect-counts {
   display: flex;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 0 4px;
   padding: 4px;
   background: var(--paper);
-  border-radius: var(--r-pill);
+  border-radius: 20px;
 }
 .prospect-counts div {
   display: flex;

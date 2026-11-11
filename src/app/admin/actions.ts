@@ -9,7 +9,7 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { addressQuery, geocode, refreshGeo } from "@/lib/admin/geo";
 import { addDays, invoiceTotals } from "@/lib/admin/invoice";
-import { OUTCOMES, type Outcome } from "@/lib/admin/prospects";
+import { OUTCOMES, countryLabel, type Outcome } from "@/lib/admin/prospects";
 import { MENU_KEYS, type MenuKey } from "@/lib/admin/menu";
 import type { Billing, Depot, DiscountTier, InvoiceItem, InvoiceStatus, Party, QuoteStatus } from "@/lib/admin/types";
 
@@ -538,7 +538,7 @@ export async function convertProspect(id: string) {
   const { data: p, error } = await supabase.from("prospects").select("*").eq("id", id).single();
   if (error) throw error;
   if (p.customer_id) redirect(`/admin/customers/${p.customer_id}`);
-  const country = { PL: "Poľsko", SK: "Slovensko", CZ: "Česko", HU: "Maďarsko", AT: "Rakúsko" }[p.country as string];
+  const country = countryLabel[p.country as string];
   const { data: c, error: e2 } = await supabase
     .from("customers")
     .insert({

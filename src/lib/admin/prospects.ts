@@ -43,7 +43,7 @@ export type Activity = {
   created_at: string;
 };
 
-export const COUNTRIES = ["PL", "SK", "CZ", "HU", "AT"] as const;
+export const COUNTRIES = ["PL", "SK", "CZ", "HU", "AT", "DE", "LT", "LV"] as const;
 
 export const countryLabel: Record<string, string> = {
   PL: "Poľsko",
@@ -51,6 +51,9 @@ export const countryLabel: Record<string, string> = {
   CZ: "Česko",
   HU: "Maďarsko",
   AT: "Rakúsko",
+  DE: "Nemecko",
+  LT: "Litva",
+  LV: "Lotyšsko",
 };
 
 export const sectorLabel: Record<string, string> = {

@@ -30,23 +30,24 @@ TAG_SECTOR = {
     "agriculture": "agri", "grain": "agri", "feed": "agri", "fertilizer": "agri", "greenhouse": "agri",
     "electronics": "electronics", "electrical": "electronics", "textile": "textile", "pharmaceutical": "pharma",
     "medical": "pharma", "factory": "manufacturing", "manufacture": "manufacturing",
+    "joiner": "wood", "cooper": "wood", "metal_construction": "metal", "cheese": "food",
 }
 NAME_HINTS = [
-    (r"logist|magazyn|sklad|lager|raktár|distribu|fulfil", "logistics"),
-    (r"food|potravin|żywno|mleka|mlek|mięs|maso|mäso|piekar|pekár|browar|pivovar|brauerei|sörgyár|tejüzem|hús|nápoj|napoj|getränk|dairy|bakery|masarn|wędlin|ubojn|piekarn|cukr|cukier|młyn|mlyn|mühle|malom|chłodni|mlékár|mliekár|molkerei", "food"),
-    (r"drew|drev|dřev|holz|fa(?:ipar|feldolg)|tartak|píla|pila|sägewerk|nábytk|mebl|möbel", "wood"),
-    (r"beton|cement|ceg[łl]|tehl|cihl|ziegel|tégla|stavebn|budowl|baustoff|kamen", "building"),
+    (r"logist|magazyn|sklad|lager|raktár|distribu|fulfil|sandėl|noliktav|spedic|transport", "logistics"),
+    (r"food|potravin|żywno|mleka|mlek|mięs|maso|mäso|piekar|pekár|browar|pivovar|brauerei|sörgyár|tejüzem|hús|nápoj|napoj|getränk|dairy|bakery|masarn|wędlin|ubojn|piekarn|cukr|cukier|młyn|mlyn|mühle|malom|chłodni|mlékár|mliekár|molkerei|maist|pārtik|mėsa|gaļa|pien|duon|maiz|alus|alaus|konserv|fleisch|bäckerei|lebensmittel|milch|wurst|brot", "food"),
+    (r"drew|drev|dřev|holz|fa(?:ipar|feldolg)|tartak|píla|pila|sägewerk|nábytk|mebl|möbel|medien|kokapstr|kokzāģ|mēbel|baldų|baldai|lentpj|zimmerei|tischlerei", "wood"),
+    (r"beton|cement|ceg[łl]|tehl|cihl|ziegel|tégla|stavebn|budowl|baustoff|kamen|statyb|būvmat|betonas|plyt|ķieģe", "building"),
     (r"pap[ií]er|karton|obal|opakow|verpack|csomagol|druk|print", "paper"),
-    (r"chem|plast|gum|kunststoff|műanyag|farb", "chemical"),
-    (r"stal|ocel|oceľ|metal|kov|stahl|acél|fém|maszyn|strojár|strojír|maschinen|gépgyár", "metal"),
+    (r"chem|plast|gum|kunststoff|műanyag|farb|chemij|ķīmij|plastik", "chemical"),
+    (r"stal|ocel|oceľ|metal|kov|stahl|acél|fém|maszyn|strojár|strojír|maschinen|gépgyár|metalo|metāl|mašīn|stakl", "metal"),
     (r"auto|motor|car |kfz", "automotive"),
-    (r"agro|rolnic|poľnohosp|zemědě|landwirt|mezőgazd|zbo[żz]|obil|pasz|krmiv", "agri"),
+    (r"agro|rolnic|poľnohosp|zemědě|landwirt|mezőgazd|zbo[żz]|obil|pasz|krmiv|grūd|graud|lauksaimn|žemės ūk", "agri"),
     (r"pharm|farm|medic|med\b", "pharma"),
-    (r"hurtow|veľkoobch|velkoobch|großhandel|nagyker|wholesale", "wholesale"),
+    (r"hurtow|veľkoobch|velkoobch|großhandel|nagyker|wholesale|didmen|vairumtirdz", "wholesale"),
 ]
 # Places that are not one company: parks, zones, plants for utilities, public services
 SKIP_NAME = re.compile(
-    r"park|zóna|zona|strefa|areál|areal|gewerbe|industrie(gebiet|zone)|ipari|terület|"
+    r"park|zóna|zona|strefa|areál|areal|gewerbe|industrie(gebiet|zone)|ipari|terület|pramoninis|rajonas|industriālais|"
     r"oczyszczal|čistiar|čistír|kläranlage|szennyvíz|ciepłown|teplár|výhrev|heizwerk|"
     r"elektrown|elektrár|kraftwerk|erőmű|rozdzielni|rozvodň|umspann|trafost|"
     r"wodociąg|vodár|wasserwerk|vízmű|kotłown|kotol|uzdatnian|ujęcie wody|úpravň|wasseraufbereit|"
@@ -56,7 +57,8 @@ SKIP_NAME = re.compile(
     r"szkoła|škola|schule|iskola|urząd|úrad|úřad|amt\b|poczta|pošta|kościół|cmentarz|"
     r"agencja rezerw|správa hmotných rezerv|składnica|przepompown|ścieków|zlewcz|^szyb|"
     r"\bstk\b|výměník|výmenník|gázfogad|waterworks|^station|városgazd|gästezimmer|pension|penzión|hotel|"
-    r"bringó|kemping|camping|fitnes|wellness|sportov|^ev?n$|rozvodna|regulační stanice|"
+    r"bringó|kemping|camping|fitnes|wellness|sportov|muziej|muzej|museum|muzeum|skola|mokykla|schacht|bergwerk|gimnazij|korpusas|pastatas|\bēka\b|"
+    r"^ev?n$|rozvodna|regulační stanice|"
     r"^budynek|^budova|^gebäude|^épület|^hala |^hala$|^objekt|"
     r"^(magazyn|sklad|lager|hala|warehouse|raktár|garaž|garáž|garage|depot)( \d+)?$",
     re.I,
@@ -69,7 +71,7 @@ SKIP_INDUSTRIAL = {"power", "heating_station", "water", "wastewater", "sewage", 
 def norm(s):
     s = unicodedata.normalize("NFKD", s.lower())
     s = "".join(c for c in s if not unicodedata.combining(c))
-    s = re.sub(r"\b(s\.?r\.?o\.?|sp\.? ?z ?o\.?o\.?|spolka|a\.?s\.?|gmbh|kft\.?|zrt\.?|s\.?a\.?|ag|kg|co)\b", "", s)
+    s = re.sub(r"\b(s\.?r\.?o\.?|sp\.? ?z ?o\.?o\.?|spolka|a\.?s\.?|gmbh|kft\.?|zrt\.?|s\.?a\.?|ag|kg|co|uab|sia|ab)\b", "", s)
     return re.sub(r"[^a-z0-9]+", " ", s).strip()
 
 
@@ -87,6 +89,8 @@ def sector_of(t):
                 return TAG_SECTOR[v]
     if t.get("shop") == "wholesale":
         return "wholesale"
+    if t.get("shop") == "trade":  # builders' merchants
+        return "building"
     if t.get("office") == "logistics" or t.get("building") == "warehouse":
         return "logistics"
     n = t.get("name", "").lower()
@@ -126,17 +130,17 @@ def build(src_dir, places_dir=None):
     out, seen = [], {}
     places = load_places(places_dir)
     for path in sorted(Path(src_dir).glob("*.json")):
-        country = path.stem
+        country = path.stem.split("-")[0]  # DE-SN, DE-BB … are German states
         for e in json.load(open(path))["elements"]:
             t = e.get("tags", {})
             name = (t.get("name") or "").strip()
             if len(name) < 3 or SKIP_NAME.search(name):
                 continue
-            if t.get("industrial", "").lower() in SKIP_INDUSTRIAL or t.get("power") or t.get("amenity"):
+            if t.get("industrial", "").lower() in SKIP_INDUSTRIAL or t.get("power") or t.get("amenity") or t.get("shop") == "car_repair":
                 continue
             # A named industrial area is only useful when it carries a company name
             if t.get("landuse") == "industrial" and not (t.get("operator") or t.get("website") or t.get("industrial")):
-                if not re.search(r"[A-Z]{2,}|s\.r\.o|sp\. ?z|gmbh|kft|a\.s\.", name):
+                if not re.search(r"[A-Z]{2,}|s\.r\.o|sp\. ?z|gmbh|kft|a\.s\.|\bUAB\b|\bSIA\b", name):
                     continue
             lat = e.get("lat") or e.get("center", {}).get("lat")
             lng = e.get("lon") or e.get("center", {}).get("lon")
@@ -186,6 +190,6 @@ if __name__ == "__main__":
     from collections import Counter
     print(len(rows), Counter(r["country"] for r in rows))
     print(Counter(r["sector"] for r in rows).most_common())
-    for c in ("PL", "SK", "CZ", "HU", "AT"):
+    for c in sorted({r["country"] for r in rows}):
         rs = [r for r in rows if r["country"] == c]
         print(c, "with phone", sum(1 for r in rs if r["phone"]), "website", sum(1 for r in rs if r["website"]), "city", sum(1 for r in rs if r["city"]))
