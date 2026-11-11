@@ -52,7 +52,33 @@ EMAIL_RANK = [
     (re.compile(r"sprzeda|handel|sales|biuro|office|info|kontakt|contact|obchod|vertrieb|zamow|order"), 1),
     (re.compile(r"rodo|iod|gdpr|privacy|praca|rekrut|kariera|career|jobs|hr@|dpo|datenschutz|bewerbung"), 3),
 ]
-PHONE_CONTEXT_SKIP = re.compile(r"nip|regon|krs|konto|rachunek|iban|bdo|kapita|fax|ičo|dič|ust-id|hrb|swift|bic", re.I)
+PHONE_CONTEXT_SKIP = re.compile(r"nip|regon|krs|konto|rachunek|iban|bdo|kapita|fax|ičo|dič|ust-id|ust\.|hrb|hra|swift|bic|steuer|registernummer|cégjegyzék|adószám|fn ", re.I)
+
+# Imprint pages name who runs the company (German law requires it); used only when no contact is set
+PERSON = re.compile(
+    r"(Geschäftsführer(?:in)?|Geschäftsführung|Inhaber(?:in)?|Vertreten durch|Vertretungsberechtigt(?:er)?|"
+    r"konateľ(?:ka)?|jednatel(?:ka)?|ügyvezető|direktorius|valdes loceklis)\s*[:\-–]?\s*"
+    r"((?:(?:Herr|Frau|Dr\.|Prof\.|Dipl\.-[A-Za-zä]+\.?|Ing\.|Mag\.|Mgr\.|Bc\.)\s+)*)"
+    r"([A-ZÄÖÜÁČĎÉÍĽŇÓŠŤÚÝŽŁŚŻ][a-zäöüßáčďéíľňóšťúýžłśżąęőű]+(?:-[A-ZÄÖÜÁČĎÉÍĽŇÓŠŤÚÝŽŁŚŻ][a-zäöüßáčďéíľňóšťúýžłśżąęőű]+)?(?:\s+[A-ZÄÖÜÁČĎÉÍĽŇÓŠŤÚÝŽŁŚŻ][a-zäöüßáčďéíľňóšťúýžłśżąęőű]+(?:-[A-ZÄÖÜÁČĎÉÍĽŇÓŠŤÚÝŽŁŚŻ][a-zäöüßáčďéíľňóšťúýžłśżąęőű]+)?){1,2})"
+)
+ROLE = {"geschäftsführ": "Geschäftsführer", "inhaber": "Inhaber", "vertret": "Geschäftsführer", "konate": "konateľ",
+        "jednatel": "jednatel", "ügyvezető": "ügyvezető", "direktor": "direktorius", "valdes": "valdes loceklis"}
+NOT_A_NAME = re.compile(r"GmbH|Gesellschaft|Straße|Strasse|Telefon|Amtsgericht|Handelsregister|Sitz|Firma|Der|Die|Und|Kontakt|Impressum|Email|Mail")
+
+
+def find_person(text):
+    for m in PERSON.finditer(text):
+        words = []
+        for w in m.group(3).split():
+            if NOT_A_NAME.fullmatch(w) or w in ("Amtsgericht", "Registergericht", "Telefon", "Tel", "Sitz", "Handelsregister"):
+                break  # the name ends where the imprint's next field starts
+            words.append(w)
+        if len(words) < 2 or words[0] in ("Ihre", "Ihr", "Unsere", "Unser", "Wir", "Sie", "Herr", "Frau"):
+            continue
+        name = " ".join(words[:2])  # first and last name; a third word is usually the next field
+        role = next((v for k, v in ROLE.items() if k in m.group(1).lower()), m.group(1))
+        return name[:80], role
+    return None, None
 
 # Words that show the company makes, stores or ships goods
 SIGNALS = [
@@ -154,7 +180,16 @@ def find_phones(page, text, country):
             digits = digits[len(code):]
         elif intl:
             continue  # another country's number
-        digits = digits.lstrip("0") if country in ("DE", "AT", "HU") else digits
+        if country == "HU":
+            if not intl and not digits.startswith("06"):
+                continue  # Hungarian numbers are written 06 … or +36 …
+            digits = digits[2:] if not intl else digits
+        elif country in ("DE", "AT"):
+            if not intl and not digits.startswith("0"):
+                continue  # without the area code (0351 …) it's a year, a local number or an ID
+            digits = digits.lstrip("0")
+        if digits in "12345678901234567890":
+            continue  # placeholder 123456789
         if len(digits) not in lengths or digits[0] == "0" or len(set(digits)) < 3:
             continue
         n = f"+{code} {group(digits, country)}"
@@ -178,7 +213,7 @@ def enrich(row, country):
     if not re.match(r"https?://", site, re.I):
         site = "https://" + site.lstrip("/")
     out = {"id": row["id"], "emails": [], "phones": [], "signals": [], "contact_url": None, "status": "ok",
-           "phone": None, "email": None, "score": row["score"]}
+           "phone": None, "email": None, "score": row["score"], "contact_name": None, "contact_role": None}
     try:
         try:
             url, page = fetch(site)
@@ -231,6 +266,7 @@ def enrich(row, country):
     out["emails"] = find_emails(" ".join(f"mailto:{e}" for e in out["emails"]), "", site_host)[:6] if out["emails"] else []
     out["phones"] = out["phones"][:5]
 
+    out["contact_name"], out["contact_role"] = find_person(all_text)
     bonus = 0
     for label, rx, points in SIGNALS:
         if rx.search(all_text):
