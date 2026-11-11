@@ -49,9 +49,19 @@
   box-sizing: border-box;
 }
 html {
+  /* Height of the slim header once the page has scrolled (it shrinks past 40px) */
+  --nav-offset: 68px;
   scroll-behavior: smooth;
-  scroll-padding-top: 96px;
   -webkit-text-size-adjust: 100%;
+}
+@media (max-width: 900px) {
+  html {
+    --nav-offset: 62px;
+  }
+}
+/* Menu links land with the section's heading just under the header, not its top padding */
+section[id] {
+  scroll-margin-top: calc(var(--nav-offset) + 40px - var(--section));
 }
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -808,8 +818,33 @@ html {
 .trust span {
   color: rgba(255, 255, 255, 0.6);
 }
+.quote__people {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin: 48px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.quote__people li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.quote__people strong {
+  font-weight: 500;
+}
+.quote__people a {
+  align-self: flex-start;
+  font-size: var(--text-subheading);
+  font-weight: 300;
+  border-bottom: 1px solid var(--hair-light);
+}
+.quote__people a:hover {
+  border-color: var(--paper);
+}
 .quote__direct {
-  margin-top: 48px;
+  margin-top: 24px;
   font-size: var(--text-subheading);
   font-weight: 300;
   line-height: 1.5;

@@ -36,7 +36,11 @@ export default async function Footer({
         <div>
           <p className="footer__head">{dict.contact}</p>
           <a href={`mailto:${company.email}`}>{company.email}</a>
-          <a href={`tel:${company.phone.replace(/\s/g, "")}`}>{company.phone}</a>
+          {company.people.map((person) => (
+            <a key={person.name} href={`tel:${person.phone.replace(/\s/g, "")}`}>
+              {person.name} · {person.phone}
+            </a>
+          ))}
           <span>{company.address}</span>
         </div>
         <div>

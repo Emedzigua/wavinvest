@@ -66,10 +66,7 @@ export default function CookieConsent({ dict, lang }: { dict: Dictionary["cookie
       )}
 
       {open && (
-        <div className="cookies" role="dialog" aria-modal="false" aria-labelledby="cookies-title">
-          <p className="label label--light" id="cookies-title">
-            {dict.title}
-          </p>
+        <div className="cookies" role="dialog" aria-modal="false" aria-label={dict.title}>
           <p className="cookies__text">
             {dict.text} <a href={`/${lang}/privacy`}>{dict.policy}</a>
           </p>

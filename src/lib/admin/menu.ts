@@ -6,6 +6,7 @@ export const MENU = [
   { key: "quotes", href: "/admin/quotes", label: "Dopyty" },
   { key: "invoices", href: "/admin/invoices", label: "Faktúry" },
   { key: "mail", href: "/admin/mail", label: "Pošta" },
+  { key: "products", href: "/admin/products", label: "Produkty na webe" },
 ] as const;
 
 export type MenuKey = (typeof MENU)[number]["key"];
@@ -14,7 +15,7 @@ export const MENU_KEYS = MENU.map((m) => m.key) as MenuKey[];
 // Quick switches between the two ways the admin is used
 export const MENU_PRESETS: { label: string; keys: MenuKey[] }[] = [
   { label: "Všetko", keys: MENU_KEYS },
-  { label: "Obchod", keys: ["overview", "customers", "quotes", "invoices", "mail"] },
+  { label: "Obchod", keys: ["overview", "customers", "quotes", "invoices", "mail", "products"] },
   { label: "Prospekty", keys: ["prospects"] },
 ];
 

@@ -24,4 +24,9 @@ export const company = {
   email: "info@wavinvest.eu",
   phone: "+421 910 279 990",
   address: "Štefana Moyzesa 30, 071 01 Michalovce, Slovakia",
+  // Customers know the owners by name, so they are listed with their own numbers
+  people: [
+    { name: "Verner Zajac", phone: "+421 903 269 406" },
+    { name: "Werner Zajac", phone: "+421 910 279 990" },
+  ],
 };

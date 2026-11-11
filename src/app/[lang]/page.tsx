@@ -10,15 +10,13 @@ import ProductCta from "@/components/ProductCta";
 import QuoteForm from "@/components/QuoteForm";
 import Footer from "@/components/Footer";
 import { quoteFormReady } from "@/lib/features";
+import { getSiteProducts } from "@/lib/site-products";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const t = await getDictionary(lang);
-  const products = [
-    { id: "epal", product: "epal", image: media.products.epal, ...t.products.items.epal },
-    { id: "collars", product: "collars", image: media.products.collars, ...t.products.items.collars },
-  ] as const;
+  const products = await getSiteProducts(lang);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -32,13 +30,21 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         email: company.email,
         telephone: company.phone,
         areaServed: ["DE", "AT", "PL", "CZ", "SK"],
+        employee: company.people.map((person) => ({ "@id": `${siteUrl}/#${person.name.split(" ")[0].toLowerCase()}` })),
       },
+      ...company.people.map((person) => ({
+        "@type": "Person",
+        "@id": `${siteUrl}/#${person.name.split(" ")[0].toLowerCase()}`,
+        name: person.name,
+        telephone: person.phone,
+        worksFor: { "@id": `${siteUrl}/#org` },
+      })),
       ...products.map((p) => ({
         "@type": "Product",
         name: p.name,
         description: p.description,
-        image: p.image,
-        brand: { "@type": "Brand", name: "EPAL" },
+        ...(p.image && { image: p.image }),
+        ...(p.quoteKey === "epal" && { brand: { "@type": "Brand", name: "EPAL" } }),
         seller: { "@id": `${siteUrl}/#org` },
       })),
       {
@@ -80,7 +86,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
         {/* Intro + stats */}
         <section className="section container intro">
-          <SectionLabel>{t.intro.label}</SectionLabel>
           <div className="split">
             <h2 className="display">{t.intro.title}</h2>
             <p className="lead">{t.intro.body}</p>
@@ -97,36 +102,34 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
         {/* Products */}
         <section id="products" className="section container">
-          <SectionLabel>{t.products.label}</SectionLabel>
           <div className="split">
             <h2 className="display">{t.products.title}</h2>
             <p className="lead">{t.products.intro}</p>
           </div>
           <div className="products">
             {products.map((p) => (
-              <article key={p.id} className="product" id={`product-${p.id}`}>
+              <article key={p.slug} className="product" id={`product-${p.slug}`}>
                 <div className="product__media">
-                  <Image
-                    src={p.image}
-                    alt={p.imageAlt}
-                    fill
-                    sizes="(max-width: 900px) 100vw, 50vw"
-                  />
+                  {p.image && <Image src={p.image} alt={p.imageAlt} fill sizes="(max-width: 900px) 100vw, 50vw" />}
                 </div>
                 <div className="product__body">
                   <h3 className="heading">{p.name}</h3>
                   <p className="product__tagline">{p.tagline}</p>
                   <p>{p.description}</p>
-                  <SectionLabel as="h4">{t.products.specsLabel}</SectionLabel>
-                  <dl className="specs">
-                    {p.specs.map(([k, v]) => (
-                      <div key={k}>
-                        <dt>{k}</dt>
-                        <dd>{v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <ProductCta product={p.product} label={`${t.products.cta}: ${p.name}`}>
+                  {p.specs.length > 0 && (
+                    <>
+                      <SectionLabel as="h4">{t.products.specsLabel}</SectionLabel>
+                      <dl className="specs">
+                        {p.specs.map(([k, v]) => (
+                          <div key={k}>
+                            <dt>{k}</dt>
+                            <dd>{v}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </>
+                  )}
+                  <ProductCta product={p.slug} label={`${t.products.cta}: ${p.name}`}>
                     {t.products.cta}
                   </ProductCta>
                 </div>
@@ -142,7 +145,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               <Image src={media.why} alt={t.why.imageAlt} fill sizes="(max-width: 900px) 100vw, 50vw" />
             </div>
             <div>
-              <SectionLabel>{t.why.label}</SectionLabel>
               <h2 className="display">{t.why.title}</h2>
               <ol className="why__list">
                 {t.why.items.map((item, i) => (
@@ -163,7 +165,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <section id="faq" className="section container">
           <div className="faq">
             <div>
-              <SectionLabel>{t.faq.label}</SectionLabel>
               <h2 className="display">{t.faq.title}</h2>
             </div>
             <div className="accordion">
@@ -184,7 +185,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <section id="quote" className="section quote">
           <div className="container quote__grid">
             <div className="quote__intro">
-              <SectionLabel light>{t.quote.label}</SectionLabel>
               <h2 className="display">{t.quote.title}</h2>
               <p className="lead">{t.quote.intro}</p>
               <ul className="trust">
@@ -195,13 +195,24 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                   </li>
                 ))}
               </ul>
+              <ul className="quote__people">
+                {company.people.map((person) => (
+                  <li key={person.name}>
+                    <strong>{person.name}</strong>
+                    <a href={`tel:${person.phone.replace(/\s/g, "")}`}>{person.phone}</a>
+                  </li>
+                ))}
+              </ul>
               <p className="quote__direct">
                 <a href={`mailto:${company.email}`}>{company.email}</a>
-                <br />
-                <a href={`tel:${company.phone.replace(/\s/g, "")}`}>{company.phone}</a>
               </p>
             </div>
-            <QuoteForm dict={t.quote} lang={lang} available={quoteFormReady} />
+            <QuoteForm
+              dict={t.quote}
+              lang={lang}
+              available={quoteFormReady}
+              products={products.map((p) => ({ value: p.slug, label: p.name }))}
+            />
           </div>
         </section>
       </main>

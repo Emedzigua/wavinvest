@@ -6,7 +6,6 @@ import { pageMetadata } from "@/lib/seo";
 import { adminEnabled } from "@/lib/features";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import SectionLabel from "@/components/SectionLabel";
 
 const UPDATED = "2026-11-04";
 
@@ -26,7 +25,6 @@ export default async function Privacy({ params }: PageProps<"/[lang]/privacy">) 
     <>
       <Nav dict={t.nav} lang={lang} path="/privacy" />
       <main className="container legal">
-        <SectionLabel>WAV Invest</SectionLabel>
         <h1 className="display">{t.privacy.title}</h1>
         <p className="muted">
           {t.privacy.updated}: <time dateTime={UPDATED}>{UPDATED}</time>

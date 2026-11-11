@@ -7,6 +7,7 @@ import { productLabel } from "@/lib/admin/labels";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendPush } from "@/lib/push";
 import { adminEnabled } from "@/lib/features";
+import { productForQuote } from "@/lib/site-products";
 
 export type QuoteResult = "success" | "error" | "missing-config" | "captcha";
 
@@ -37,17 +38,19 @@ export async function submitQuote(form: FormData): Promise<QuoteResult> {
   if (form.get("botcheck")) return "success";
   if (!(await verifyTurnstile(form))) return "captcha";
 
-  const product = text(form, "product_key") as (typeof PRODUCTS)[number];
+  // Any product currently on the site; one without its own price goes in as "mixed", named in the message
+  const chosen = await productForQuote(text(form, "product_key").slice(0, 40));
   const language = text(form, "language");
+  const message = text(form, "message").slice(0, 5000);
   const quote: Quote = {
     name: text(form, "name").slice(0, 200),
     company: text(form, "company").slice(0, 200),
     email: text(form, "email").slice(0, 200),
     phone: text(form, "phone").slice(0, 50),
-    product: PRODUCTS.includes(product) ? product : "epal",
+    product: PRODUCTS.includes(chosen.quoteKey) ? chosen.quoteKey : "mixed",
     quantity: Number.parseInt(text(form, "quantity"), 10) || 0,
     location: text(form, "delivery_location").slice(0, 300),
-    message: text(form, "message").slice(0, 5000),
+    message: chosen.name ? `Produkt: ${chosen.name}${message ? `\n\n${message}` : ""}` : message,
     language: hasLocale(language) ? language : "en",
   };
   // The database checks this too, but email must not depend on it

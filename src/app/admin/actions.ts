@@ -1,6 +1,6 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -11,6 +11,8 @@ import { addressQuery, geocode, refreshGeo } from "@/lib/admin/geo";
 import { addDays, invoiceTotals } from "@/lib/admin/invoice";
 import { OUTCOMES, countryLabel, type Outcome } from "@/lib/admin/prospects";
 import { MENU_KEYS, type MenuKey } from "@/lib/admin/menu";
+import { PRODUCT_LANGS, type ProductText } from "@/lib/site-products-shared";
+
 import type { Billing, Depot, DiscountTier, InvoiceItem, InvoiceStatus, Party, QuoteStatus } from "@/lib/admin/types";
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
@@ -577,4 +579,125 @@ export async function saveMenu(keys: string[]) {
   const { error } = await supabase.rpc("set_admin_menu", { p_menu: menu });
   if (error) throw error;
   refresh();
+}
+
+/* ───────────── Website products ───────────── */
+const SITE_PRODUCTS_TAG = "site-products";
+
+// The product list is cached and the home page prerendered: expire both so visitors see the change now
+function productsChanged() {
+  updateTag(SITE_PRODUCTS_TAG);
+  revalidatePath("/[lang]", "page");
+}
+
+// "Názov: hodnota" per line → [["Názov", "hodnota"], …]
+function parseSpecs(raw: string): [string, string][] {
+  return raw
+    .split("\n")
+    .map((line) => {
+      const at = line.indexOf(":");
+      return at < 0 ? ["", ""] : [line.slice(0, at).trim(), line.slice(at + 1).trim()];
+    })
+    .filter(([k, v]) => k && v)
+    .slice(0, 12)
+    .map(([k, v]) => [k.slice(0, 80), v.slice(0, 160)]);
+}
+
+// Path inside the product-images bucket, for photos uploaded here (not the starter Pexels ones)
+const storedImagePath = (url: string | null) => url?.split("/storage/v1/object/public/product-images/")[1] ?? null;
+
+const slugify = (s: string) =>
+  s
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 40) || "produkt";
+
+export async function saveSiteProduct(_: string | null, form: FormData): Promise<string | null> {
+  const { supabase } = await requireAdmin();
+  const id = text(form, "id");
+  const content: Record<string, ProductText> = {};
+  for (const l of PRODUCT_LANGS) {
+    const t: ProductText = {
+      name: text(form, `${l}_name`).slice(0, 120) || undefined,
+      tagline: text(form, `${l}_tagline`).slice(0, 200) || undefined,
+      description: text(form, `${l}_description`).slice(0, 1500) || undefined,
+      image_alt: text(form, `${l}_image_alt`).slice(0, 200) || undefined,
+      specs: parseSpecs(text(form, `${l}_specs`)),
+    };
+    if (t.name || t.tagline || t.description || t.specs?.length) content[l] = t;
+  }
+  if (!content.sk?.name) return "Zadajte aspoň slovenský názov produktu.";
+
+  // A new photo, already shrunk in the browser
+  let image = text(form, "image") || null;
+  const file = form.get("image_file");
+  if (file instanceof File && file.size > 0) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return "Fotka musí byť JPG, PNG alebo WebP.";
+    if (file.size > 3_500_000) return "Fotka je príliš veľká. Skúste menšiu.";
+    const path = `${slugify(content.sk.name)}-${Date.now()}.${file.type.split("/")[1]}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file, { contentType: file.type });
+    if (error) return "Fotku sa nepodarilo nahrať. Skúste to znova.";
+    const old = storedImagePath(image);
+    image = supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl;
+    if (old) await supabase.storage.from("product-images").remove([old]); // the replaced photo
+  }
+
+  const row = {
+    content,
+    image,
+    active: form.get("active") === "on",
+    quote_key: (["epal", "collars", "mixed"].includes(text(form, "quote_key")) ? text(form, "quote_key") : "mixed") as "epal" | "collars" | "mixed",
+    updated_at: new Date().toISOString(),
+  };
+  if (id) {
+    const { error } = await supabase.from("site_products").update(row).eq("id", id);
+    if (error) throw error;
+  } else {
+    // New products go to the end of the list, with a web-address name made from the Slovak name
+    const { data: last } = await supabase.from("site_products").select("sort").order("sort", { ascending: false }).limit(1);
+    let slug = slugify(content.sk.name);
+    const { data: taken } = await supabase.from("site_products").select("slug").like("slug", `${slug}%`);
+    if (taken?.some((t) => t.slug === slug)) slug = `${slug.slice(0, 34)}-${Date.now().toString(36).slice(-5)}`;
+    const { error } = await supabase.from("site_products").insert({ ...row, slug, sort: (last?.[0]?.sort ?? 0) + 10 });
+    if (error) throw error;
+  }
+  productsChanged();
+  redirect("/admin/products");
+}
+
+export async function setSiteProductActive(id: string, active: boolean) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from("site_products").update({ active, updated_at: new Date().toISOString() }).eq("id", id);
+  if (error) throw error;
+  productsChanged();
+  refresh();
+}
+
+// Swaps a product with its neighbour in the list
+export async function moveSiteProduct(id: string, direction: -1 | 1) {
+  const { supabase } = await requireAdmin();
+  const { data } = await supabase.from("site_products").select("id, sort").order("sort").order("created_at");
+  const rows = data ?? [];
+  const i = rows.findIndex((r) => r.id === id);
+  const j = i + direction;
+  if (i < 0 || j < 0 || j >= rows.length) return;
+  const order = rows.map((r) => r.id);
+  [order[i], order[j]] = [order[j], order[i]];
+  await Promise.all(order.map((rid, n) => supabase.from("site_products").update({ sort: n * 10 }).eq("id", rid)));
+  productsChanged();
+  refresh();
+}
+
+export async function deleteSiteProduct(id: string) {
+  const { supabase } = await requireAdmin();
+  const { data } = await supabase.from("site_products").select("image").eq("id", id).maybeSingle();
+  const { error } = await supabase.from("site_products").delete().eq("id", id);
+  if (error) throw error;
+  const photo = storedImagePath(data?.image ?? null);
+  if (photo) await supabase.storage.from("product-images").remove([photo]);
+  productsChanged();
+  redirect("/admin/products");
 }

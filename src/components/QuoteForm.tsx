@@ -15,12 +15,15 @@ export default function QuoteForm({
   dict,
   lang,
   available,
+  products,
 }: {
   dict: Dictionary["quote"];
   lang: Locale;
   available: boolean;
+  // What the site sells right now (edited in the admin)
+  products: { value: string; label: string }[];
 }) {
-  const [product, setProduct] = useState("epal");
+  const [product, setProduct] = useState(products[0]?.value ?? "mixed");
   const [status, setStatus] = useState<Status>("idle");
   const [attempt, setAttempt] = useState(0);
   const f = dict.fields;
@@ -84,11 +87,12 @@ export default function QuoteForm({
           {f.product} <i aria-hidden>*</i>
         </span>
         <select name="product_key" value={product} onChange={(e) => setProduct(e.target.value)} required>
-          {Object.entries(dict.productOptions).map(([value, label]) => (
+          {products.map(({ value, label }) => (
             <option key={value} value={value}>
               {label}
             </option>
           ))}
+          <option value="mixed">{dict.productOptions.mixed}</option>
         </select>
       </label>
 
