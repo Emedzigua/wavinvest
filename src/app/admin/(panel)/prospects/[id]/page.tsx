@@ -153,6 +153,17 @@ export default async function ProspectPage({ params }: PageProps<"/admin/prospec
                 )}
               </dd>
             </div>
+            {(p.pallets_per_month || p.current_supplier || p.email_consent_at) && (
+              <div>
+                <dt>Z hovoru</dt>
+                <dd>
+                  {p.pallets_per_month ? `${num(p.pallets_per_month)} paliet mesačne` : null}
+                  {p.pallets_per_month && p.current_supplier ? " · " : null}
+                  {p.current_supplier ? `teraz berú od: ${p.current_supplier}` : null}
+                  {p.email_consent_at && <span className="tag tag--strong">súhlas s e-mailom {date(p.email_consent_at)}</span>}
+                </dd>
+              </div>
+            )}
             {p.web_checked_at && (
               <div>
                 <dt>Z webu</dt>

@@ -7,6 +7,7 @@ export const MENU = [
   { key: "invoices", href: "/admin/invoices", label: "Faktúry" },
   { key: "mail", href: "/admin/mail", label: "Pošta" },
   { key: "products", href: "/admin/products", label: "Produkty na webe" },
+  { key: "callers", href: "/admin/callers", label: "Volajúci" },
 ] as const;
 
 export type MenuKey = (typeof MENU)[number]["key"];
@@ -16,7 +17,7 @@ export const MENU_KEYS = MENU.map((m) => m.key) as MenuKey[];
 export const MENU_PRESETS: { label: string; keys: MenuKey[] }[] = [
   { label: "Všetko", keys: MENU_KEYS },
   { label: "Obchod", keys: ["overview", "customers", "quotes", "invoices", "mail", "products"] },
-  { label: "Prospekty", keys: ["prospects"] },
+  { label: "Prospekty", keys: ["prospects", "callers"] },
 ];
 
 // null (never saved) means everything

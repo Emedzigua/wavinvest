@@ -24,12 +24,13 @@ const number = (form: FormData, key: string) => Number(text(form, key).replace("
 export async function signIn(_: string | null, form: FormData): Promise<string | null> {
   if (!(await verifyTurnstile(form))) return "Potvrďte, že nie ste robot, a skúste znova.";
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: text(form, "email"),
-    password: String(form.get("password") ?? ""),
-  });
-  if (error) return "Nesprávny e-mail alebo heslo.";
-  redirect("/admin");
+  // Callers sign in with a short name; their account email is made from it
+  const login = text(form, "email").toLowerCase();
+  const email = login.includes("@") ? login : `${login}@callers.wavinvest.eu`;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: String(form.get("password") ?? "") });
+  if (error) return "Nesprávne meno, e-mail alebo heslo.";
+  const { data: caller } = await supabase.from("callers").select("user_id").eq("user_id", data.user.id).maybeSingle();
+  redirect(caller ? "/admin/call" : "/admin");
 }
 
 export async function signOut() {
@@ -700,4 +701,70 @@ export async function deleteSiteProduct(id: string) {
   if (photo) await supabase.storage.from("product-images").remove([photo]);
   productsChanged();
   redirect("/admin/products");
+}
+
+/* ───────────── Callers ───────────── */
+
+const CALLER_COUNTRIES = ["PL", "SK", "CZ", "HU", "AT", "DE", "LT", "LV"];
+const CALLER_LANGS = ["sk", "cs", "pl", "de", "hu", "en"];
+
+const callerError = (message: string) =>
+  message.includes("login taken")
+    ? "Toto prihlasovacie meno už existuje. Zvoľte iné."
+    : message.includes("password too short")
+      ? "Heslo musí mať aspoň 8 znakov."
+      : "Uloženie sa nepodarilo. Skúste to znova.";
+
+export async function createCaller(_: string | null, form: FormData): Promise<string | null> {
+  const { supabase } = await requireAdmin();
+  const login = text(form, "login").toLowerCase();
+  const name = text(form, "name").slice(0, 80);
+  const password = String(form.get("password") ?? "");
+  const countries = form.getAll("countries").map(String).filter((c) => CALLER_COUNTRIES.includes(c));
+  const language = CALLER_LANGS.includes(text(form, "language")) ? text(form, "language") : "sk";
+  if (!name) return "Zadajte meno volajúceho.";
+  if (!/^[a-z0-9._-]{2,32}$/.test(login)) return "Prihlasovacie meno: 2–32 malých písmen bez diakritiky, číslic, bodiek alebo pomlčiek.";
+  if (password.length < 8) return "Heslo musí mať aspoň 8 znakov.";
+  if (countries.length === 0) return "Vyberte aspoň jednu krajinu.";
+  const { error } = await supabase.rpc("create_caller", {
+    p_login: login,
+    p_name: name,
+    p_password: password,
+    p_countries: countries,
+    p_language: language,
+  });
+  if (error) return callerError(error.message);
+  redirect("/admin/callers");
+}
+
+export async function updateCaller(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const id = text(form, "id");
+  const countries = form.getAll("countries").map(String).filter((c) => CALLER_COUNTRIES.includes(c));
+  if (countries.length === 0) return "Vyberte aspoň jednu krajinu.";
+  const { error } = await supabase
+    .from("callers")
+    .update({
+      name: text(form, "name").slice(0, 80) || undefined,
+      countries,
+      language: CALLER_LANGS.includes(text(form, "language")) ? text(form, "language") : "sk",
+    })
+    .eq("user_id", id);
+  if (error) throw error;
+  refresh();
+}
+
+export async function setCallerPassword(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const password = String(form.get("password") ?? "");
+  if (password.length < 8) return "Heslo musí mať aspoň 8 znakov.";
+  const { error } = await supabase.rpc("set_caller_password", { p_user: text(form, "id"), p_password: password });
+  if (error) return callerError(error.message);
+}
+
+export async function setCallerActive(id: string, active: boolean) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.rpc("set_caller_active", { p_user: id, p_active: active });
+  if (error) throw error;
+  refresh();
 }

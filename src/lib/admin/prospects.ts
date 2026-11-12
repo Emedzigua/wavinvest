@@ -39,6 +39,10 @@ export type Prospect = {
   web_signals: string[] | null;
   web_checked_at: string | null;
   web_status: "ok" | "no_contacts" | "unreachable" | "blocked" | "error" | null;
+  pallets_per_month: number | null;
+  current_supplier: string | null;
+  email_consent_at: string | null;
+  call_attempts: number;
 };
 
 // What the contact finder saw on the company's website (stored keys are Polish)

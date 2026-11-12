@@ -14,6 +14,9 @@ export const requireAdmin = cache(async () => {
 
   const { data: admin } = await supabase.from("admins").select("name, menu").eq("user_id", userId).maybeSingle();
   if (!admin) {
+    // Callers have their own simple screen and never see the admin
+    const { data: caller } = await supabase.from("callers").select("user_id").eq("user_id", userId).eq("active", true).maybeSingle();
+    if (caller) redirect("/admin/call");
     await supabase.auth.signOut();
     redirect("/admin/login?e=forbidden");
   }
@@ -22,6 +25,35 @@ export const requireAdmin = cache(async () => {
       name: admin.name as string,
       email: data.claims.email as string,
       menu: (admin.menu as string[] | null) ?? null,
+    },
+  };
+});
+
+export type CallerLanguage = "sk" | "cs" | "pl" | "de" | "hu" | "en";
+
+// Every caller page and action calls this: only active callers get through
+export const requireCaller = cache(async () => {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const userId = data?.claims?.sub;
+  if (!userId) redirect("/admin/login");
+  const { data: caller } = await supabase
+    .from("callers")
+    .select("name, countries, language")
+    .eq("user_id", userId)
+    .eq("active", true)
+    .maybeSingle();
+  if (!caller) {
+    await supabase.auth.signOut();
+    redirect("/admin/login?e=forbidden");
+  }
+  return {
+    supabase,
+    caller: {
+      id: userId,
+      name: caller.name as string,
+      countries: caller.countries as string[],
+      language: caller.language as CallerLanguage,
     },
   };
 });

@@ -892,6 +892,13 @@
 .locked__fields:disabled select {
   background-image: none;
 }
+/* Pill checkboxes keep their input hidden in the read-only view too */
+.locked__fields:disabled .outcome input {
+  opacity: 0;
+}
+.locked__fields:disabled .outcome:not(:has(input:checked)) {
+  display: none;
+}
 .locked__fields:disabled input::placeholder,
 .locked__fields:disabled textarea::placeholder {
   color: transparent;
@@ -2635,4 +2642,338 @@
   height: 18px;
   flex: none;
   accent-color: var(--carbon);
+}
+
+/* ───────────── Caller screen: large text, big targets, one company at a time ───────────── */
+.caller {
+  min-height: 100dvh;
+  background: var(--vellum);
+  color: var(--carbon);
+  font-size: 18px;
+  line-height: 1.5;
+}
+.caller__bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 28px;
+  background: var(--carbon);
+  color: var(--paper);
+}
+.caller__bar .logo img {
+  height: 34px;
+  width: auto;
+}
+.caller__who {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  text-align: right;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.caller__who span {
+  opacity: 0.75;
+}
+.caller__main {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 28px;
+}
+.caller__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 560px;
+  margin: 10vh auto;
+  padding: 40px;
+  border-radius: 28px;
+  background: var(--paper);
+}
+.caller__empty h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 400;
+}
+.call {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "company script"
+    "result script";
+  gap: 24px;
+  align-items: start;
+}
+.call__company,
+.call__script,
+.call__result {
+  padding: 32px;
+  border-radius: 28px;
+  background: var(--paper);
+}
+.call__company {
+  grid-area: company;
+}
+.call__script {
+  grid-area: script;
+  position: sticky;
+  top: 24px;
+}
+.call__result {
+  grid-area: result;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.call p {
+  margin: 0 0 6px;
+}
+.call a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.call__meta {
+  font-size: 15px;
+  color: var(--mercury);
+}
+.call__name {
+  margin: 4px 0 20px;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.call .call__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 30px;
+  border-radius: var(--r-pill);
+  background: var(--carbon);
+  color: var(--paper);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.call .call__phone:hover {
+  background: #1f1b19;
+}
+.call__more {
+  margin-top: 12px !important;
+  font-size: 16px;
+}
+.call__more a {
+  display: inline-block;
+  margin-right: 14px;
+  white-space: nowrap;
+}
+.call__h {
+  margin: 28px 0 10px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mercury);
+}
+.call__company > .call__h:first-of-type,
+.call__script > .call__h:first-child,
+.call__result > .call__h:first-of-type {
+  margin-top: 0;
+}
+.call__history {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+}
+.call__history li + li {
+  margin-top: 6px;
+}
+.call__step + .call__step {
+  margin-top: 20px;
+}
+.call__step h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 500;
+}
+.call__step p {
+  font-size: 20px;
+  line-height: 1.5;
+}
+.call__facts {
+  margin-top: 24px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: var(--vellum);
+}
+.call__facts summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+.call__facts ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+.call__outcomes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+.call__outcome {
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 2px solid var(--hair);
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--carbon);
+  font: inherit;
+  font-size: 17px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.call__outcome:hover {
+  border-color: var(--carbon);
+}
+.call__outcome:focus-visible {
+  outline: 3px solid var(--carbon);
+  outline-offset: 2px;
+}
+.call__outcome[aria-checked="true"] {
+  border-color: var(--carbon);
+  background: var(--carbon);
+  color: var(--paper);
+}
+.call__outcome--interested[aria-checked="true"],
+.call__outcome--meeting[aria-checked="true"] {
+  border-color: var(--ok);
+  background: var(--ok);
+}
+.call__hint {
+  color: var(--mercury);
+  font-size: 16px;
+}
+.call__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.call .field input,
+.call .field textarea,
+.call .field select {
+  font-size: 18px;
+  min-height: 52px;
+}
+.call__consent {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--vellum);
+  cursor: pointer;
+}
+.call__consent input {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  accent-color: var(--carbon);
+}
+.call__save {
+  min-height: 64px;
+  font-size: 19px;
+}
+.call__save:disabled {
+  opacity: 0.45;
+}
+.call__skip {
+  align-self: center;
+  border: 0;
+  background: none;
+  color: var(--mercury);
+  font: inherit;
+  font-size: 16px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (max-width: 900px) {
+  .caller__main {
+    padding: 16px;
+  }
+  .caller__bar {
+    padding: 12px 16px;
+    gap: 14px;
+  }
+  .call {
+    grid-template-columns: 1fr;
+    grid-template-areas: "company" "script" "result";
+  }
+  .call__script {
+    position: static;
+  }
+  .call__company,
+  .call__script,
+  .call__result {
+    padding: 22px;
+  }
+  .call__name {
+    font-size: 28px;
+  }
+  .call .call__phone {
+    width: 100%;
+    justify-content: center;
+    font-size: 26px;
+  }
+  .call__outcomes {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+  .call__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Admin: callers */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+.stats-row dt {
+  font-size: 13px;
+  color: var(--mercury);
+}
+.stats-row dd {
+  margin: 4px 0 0;
+  font-size: 30px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+.caller-countries {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.caller-countries legend {
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.outcome:has(input:checked) {
+  border-color: var(--carbon);
+  background: var(--carbon);
+  color: var(--paper);
+}
+tr.is-muted td {
+  opacity: 0.55;
+}
+@media (max-width: 700px) {
+  .stats-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

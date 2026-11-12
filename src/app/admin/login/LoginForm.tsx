@@ -16,8 +16,8 @@ export default function LoginForm() {
   return (
     <form action={action} className="adm-form">
       <label className="field">
-        <span>E-mail</span>
-        <input name="email" type="email" autoComplete="username" required autoFocus />
+        <span>E-mail alebo meno</span>
+        <input name="email" type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} required autoFocus />
       </label>
       <label className="field">
         <span>Heslo</span>
