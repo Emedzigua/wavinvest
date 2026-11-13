@@ -5,13 +5,14 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendPush } from "@/lib/push";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireAdmin, requireDeveloper } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { addressQuery, geocode, refreshGeo } from "@/lib/admin/geo";
 import { addDays, invoiceTotals } from "@/lib/admin/invoice";
 import { OUTCOMES, countryLabel, type Outcome } from "@/lib/admin/prospects";
-import { MENU_KEYS, type MenuKey } from "@/lib/admin/menu";
+import { ROLE_KEYS } from "@/lib/admin/menu";
 import { PRODUCT_LANGS, type ProductText } from "@/lib/site-products-shared";
+import { slovakMoment } from "@/lib/admin/meetings";
 
 import type { Billing, Depot, DiscountTier, InvoiceItem, InvoiceStatus, Party, QuoteStatus } from "@/lib/admin/types";
 
@@ -481,7 +482,7 @@ export async function logEmail(draft: EmailDraft) {
 
 // Records a call (or visit/note) and moves the prospect to the matching status
 export async function logProspectActivity(form: FormData): Promise<string | void> {
-  const { supabase, user } = await requireAdmin();
+  const { supabase, user } = await requireDeveloper();
   const id = text(form, "prospect_id");
   const kind = (text(form, "kind") || "call") as "call" | "visit" | "email" | "note";
   const outcome = optional(form, "outcome") as Outcome | null;
@@ -506,7 +507,7 @@ export async function logProspectActivity(form: FormData): Promise<string | void
 }
 
 export async function saveProspect(form: FormData): Promise<string | void> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const { error } = await supabase
     .from("prospects")
     .update({
@@ -530,14 +531,14 @@ export async function saveProspect(form: FormData): Promise<string | void> {
 }
 
 export async function setProspectStatus(id: string, status: string) {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   await supabase.from("prospects").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
   refresh();
 }
 
 // A won prospect becomes a real customer, with its contact person
 export async function convertProspect(id: string) {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const { data: p, error } = await supabase.from("prospects").select("*").eq("id", id).single();
   if (error) throw error;
   if (p.customer_id) redirect(`/admin/customers/${p.customer_id}`);
@@ -575,8 +576,8 @@ export async function convertProspect(id: string) {
 /* ───────────── Menu ───────────── */
 
 export async function saveMenu(keys: string[]) {
-  const { supabase } = await requireAdmin();
-  const menu = MENU_KEYS.filter((k: MenuKey) => keys.includes(k));
+  const { supabase, user } = await requireAdmin();
+  const menu = ROLE_KEYS[user.role].filter((k) => keys.includes(k));
   const { error } = await supabase.rpc("set_admin_menu", { p_menu: menu });
   if (error) throw error;
   refresh();
@@ -716,7 +717,7 @@ const callerError = (message: string) =>
       : "Uloženie sa nepodarilo. Skúste to znova.";
 
 export async function createCaller(_: string | null, form: FormData): Promise<string | null> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const login = text(form, "login").toLowerCase();
   const name = text(form, "name").slice(0, 80);
   const password = String(form.get("password") ?? "");
@@ -738,7 +739,7 @@ export async function createCaller(_: string | null, form: FormData): Promise<st
 }
 
 export async function updateCaller(form: FormData): Promise<string | void> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const id = text(form, "id");
   const countries = form.getAll("countries").map(String).filter((c) => CALLER_COUNTRIES.includes(c));
   if (countries.length === 0) return "Vyberte aspoň jednu krajinu.";
@@ -755,7 +756,7 @@ export async function updateCaller(form: FormData): Promise<string | void> {
 }
 
 export async function setCallerPassword(form: FormData): Promise<string | void> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const password = String(form.get("password") ?? "");
   if (password.length < 8) return "Heslo musí mať aspoň 8 znakov.";
   const { error } = await supabase.rpc("set_caller_password", { p_user: text(form, "id"), p_password: password });
@@ -763,8 +764,79 @@ export async function setCallerPassword(form: FormData): Promise<string | void> 
 }
 
 export async function setCallerActive(id: string, active: boolean) {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const { error } = await supabase.rpc("set_caller_active", { p_user: id, p_active: active });
+  if (error) throw error;
+  refresh();
+}
+
+/* ───────────── Meetings ───────────── */
+
+const validDay = (v: string) => /^\d{4}-\d{2}-\d{2}$/.test(v);
+const validTime = (v: string) => /^([01]\d|2[0-3]):[0-5]\d$/.test(v);
+
+// From a prospect's page: books a meeting for the owner with the company's details copied in
+export async function bookProspectMeeting(_: string | null, form: FormData): Promise<string | null> {
+  const { supabase } = await requireDeveloper();
+  const day = text(form, "day");
+  const time = text(form, "time");
+  if (!validDay(day) || !validTime(time)) return "Zadajte dátum aj čas stretnutia.";
+  const { error } = await supabase.rpc("book_prospect_meeting", {
+    p_prospect: text(form, "prospect_id"),
+    p_starts: slovakMoment(day, time).toISOString(),
+    p_note: text(form, "note"),
+  });
+  if (error) return "Stretnutie sa nepodarilo uložiť.";
+  refresh();
+  return "ok";
+}
+
+// A meeting typed in by hand (the owner's own, or any other)
+export async function saveMeeting(_: string | null, form: FormData): Promise<string | null> {
+  const { supabase, user } = await requireAdmin();
+  const id = text(form, "id");
+  const title = text(form, "title").slice(0, 200);
+  const day = text(form, "day");
+  const time = text(form, "time");
+  if (!title) return "Zadajte firmu alebo názov stretnutia.";
+  if (!validDay(day) || !validTime(time)) return "Zadajte dátum aj čas.";
+  const address = optional(form, "address")?.slice(0, 300) ?? null;
+  const point = address ? await geocode(address) : null;
+  const row = {
+    title,
+    address,
+    lat: point?.lat ?? null,
+    lng: point?.lng ?? null,
+    contact_name: optional(form, "contact_name")?.slice(0, 120) ?? null,
+    contact_phone: optional(form, "contact_phone")?.slice(0, 50) ?? null,
+    starts_at: slovakMoment(day, time).toISOString(),
+    duration_min: Math.min(480, Math.max(15, Number.parseInt(text(form, "duration"), 10) || 60)),
+    notes: optional(form, "notes")?.slice(0, 2000) ?? null,
+    updated_at: new Date().toISOString(),
+  };
+  const { error } = id
+    ? await supabase.from("meetings").update(row).eq("id", id)
+    : await supabase.from("meetings").insert({ ...row, created_by: user.id });
+  if (error) return "Stretnutie sa nepodarilo uložiť.";
+  redirect(`/admin/meetings?d=${day}`);
+}
+
+// After the visit: done (with how it went) or cancelled
+export async function setMeetingStatus(form: FormData): Promise<string | void> {
+  const { supabase } = await requireAdmin();
+  const status = text(form, "status");
+  if (!["planned", "done", "cancelled"].includes(status)) return;
+  const { error } = await supabase
+    .from("meetings")
+    .update({ status, result: optional(form, "result")?.slice(0, 2000) ?? null, updated_at: new Date().toISOString() })
+    .eq("id", text(form, "id"));
+  if (error) throw error;
+  refresh();
+}
+
+export async function deleteMeeting(id: string) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from("meetings").delete().eq("id", id);
   if (error) throw error;
   refresh();
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { randomInt } from "node:crypto";
 import BackButton from "@/components/admin/BackButton";
 import NewCallerForm from "@/components/admin/NewCallerForm";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireDeveloper } from "@/lib/admin/auth";
 
 export const metadata: Metadata = { title: "Nový volajúci" };
 // Admin pages are personal and always rendered per request
@@ -13,7 +13,7 @@ const WORDS = ["paleta", "sklad", "drevo", "kamion", "nadstavec", "regal", "vozi
 const suggestPassword = () => `${WORDS[randomInt(WORDS.length)]}-${randomInt(1000, 9999)}-${WORDS[randomInt(WORDS.length)]}`;
 
 export default async function NewCallerPage() {
-  await requireAdmin();
+  await requireDeveloper();
   return (
     <>
       <header className="adm-head">

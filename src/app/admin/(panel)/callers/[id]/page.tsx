@@ -5,7 +5,7 @@ import BackButton from "@/components/admin/BackButton";
 import CallerFields from "@/components/admin/CallerFields";
 import ConfirmButton from "@/components/admin/ConfirmButton";
 import LockedForm from "@/components/admin/LockedForm";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireDeveloper } from "@/lib/admin/auth";
 import { dateTime, num } from "@/lib/admin/format";
 import { OUTCOMES, type Outcome } from "@/lib/admin/prospects";
 import type { UiLang } from "@/lib/caller/texts";
@@ -18,7 +18,7 @@ export const instant = false;
 
 export default async function CallerPage({ params }: PageProps<"/admin/callers/[id]">) {
   const { id } = await params;
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const monthStart = new Date();
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);

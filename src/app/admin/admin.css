@@ -2977,3 +2977,161 @@ tr.is-muted td {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Meetings calendar */
+.meet {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.meet__month {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.meet__month strong {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.meet__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.meet__wd {
+  padding: 4px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--mercury);
+}
+.meet__day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.meet__day:hover {
+  background: var(--vellum);
+}
+.meet__day.is-today span {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.meet__day.is-selected {
+  background: var(--carbon);
+  color: var(--paper);
+}
+.meet__day em {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #7f6951;
+  color: var(--paper);
+  font-size: 11px;
+  font-style: normal;
+  line-height: 18px;
+  text-align: center;
+}
+.meet__today {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.meet__daycard .card__title {
+  text-transform: capitalize;
+}
+.meet__list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.meet__item {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--hair);
+  border-radius: 18px;
+}
+.meet__item.is-cancelled {
+  opacity: 0.55;
+}
+.meet__item.is-done {
+  border-color: rgba(47, 107, 60, 0.4);
+}
+.meet__time {
+  display: flex;
+  flex-direction: column;
+}
+.meet__time strong {
+  font-size: 22px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.meet__time span {
+  font-size: 12px;
+  color: var(--mercury);
+}
+.meet__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.meet__body h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+.meet__body p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.meet__body a:not(.btn) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.meet__actions {
+  margin-top: 8px;
+}
+.meet__link {
+  border: 0;
+  background: none;
+  padding: 6px 4px;
+  color: var(--mercury);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.meet__done {
+  margin-top: 8px;
+}
+@media (max-width: 900px) {
+  .meet {
+    grid-template-columns: 1fr;
+  }
+}
+.card .filters .field--inline select {
+  min-width: 240px;
+  min-height: 34px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 34px;
+}

@@ -4,7 +4,7 @@ import BackButton from "@/components/admin/BackButton";
 import AutoSubmitForm from "@/components/admin/AutoSubmitForm";
 import RowLink from "@/components/admin/RowLink";
 import MapView from "@/components/admin/MapView";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireDeveloper } from "@/lib/admin/auth";
 import { visibleMenu } from "@/lib/admin/menu";
 import { getSettings } from "@/lib/admin/data";
 import { num } from "@/lib/admin/format";
@@ -39,8 +39,8 @@ export default async function ProspectsPage({ searchParams }: PageProps<"/admin/
   const q = str("q").trim();
   const sort = ["score", "distance", "name"].includes(str("sort")) ? str("sort") : "score";
   const page = Math.max(1, Number(str("page")) || 1);
-  const { supabase, user } = await requireAdmin();
-  const showOverview = visibleMenu(user.menu).includes("overview");
+  const { supabase, user } = await requireDeveloper();
+  const showOverview = visibleMenu(user.menu, user.role).includes("overview");
   const today = new Date().toISOString().slice(0, 10);
   const filter = <T,>(query: T) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the same filters go on two query shapes

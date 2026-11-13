@@ -2,10 +2,18 @@
 
 import { useState, useTransition } from "react";
 import { saveMenu } from "@/app/admin/actions";
-import { MENU, MENU_PRESETS, type MenuKey } from "@/lib/admin/menu";
+import { MENU, type MenuKey } from "@/lib/admin/menu";
 
 // Saves on every change, so the sidebar switches right away
-export default function MenuPicker({ initial }: { initial: MenuKey[] }) {
+export default function MenuPicker({
+  initial,
+  allowed,
+  presets,
+}: {
+  initial: MenuKey[];
+  allowed: MenuKey[];
+  presets: { label: string; keys: MenuKey[] }[];
+}) {
   const [keys, setKeys] = useState<MenuKey[]>(initial);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -30,14 +38,14 @@ export default function MenuPicker({ initial }: { initial: MenuKey[] }) {
   return (
     <div className="adm-form" aria-busy={pending}>
       <div className="seg" role="group" aria-label="Rýchly výber">
-        {MENU_PRESETS.map((p) => (
+        {presets.map((p) => (
           <button key={p.label} type="button" aria-pressed={same(keys, p.keys)} onClick={() => apply(p.keys)}>
             {p.label}
           </button>
         ))}
       </div>
       <div className="outcomes" role="group" aria-label="Položky menu">
-        {MENU.map((m) => (
+        {MENU.filter((m) => allowed.includes(m.key)).map((m) => (
           <label key={m.key} className={`outcome${keys.includes(m.key) ? " is-on" : ""}`}>
             <input type="checkbox" checked={keys.includes(m.key)} onChange={() => toggle(m.key)} />
             {m.label}

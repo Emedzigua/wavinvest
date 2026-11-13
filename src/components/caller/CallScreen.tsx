@@ -143,10 +143,18 @@ export default function CallScreen({
         {outcome && <p className="call__hint">{t.outcomeHints[outcome]}</p>}
 
         {needsDate && (
-          <label className="field">
-            <span>{outcome === "meeting" ? t.meetingDate : t.callBackDate}</span>
-            <input type="date" name="next_action" min={today} required />
-          </label>
+          <div className="call__fields">
+            <label className="field">
+              <span>{outcome === "meeting" ? t.meetingDate : t.callBackDate}</span>
+              <input type="date" name="next_action" min={today} required />
+            </label>
+            {outcome === "meeting" && (
+              <label className="field">
+                <span>{t.meetingTime}</span>
+                <input type="time" name="meeting_time" defaultValue="10:00" required />
+              </label>
+            )}
+          </div>
         )}
 
         {reached && (

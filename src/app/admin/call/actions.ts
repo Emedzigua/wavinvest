@@ -25,6 +25,7 @@ export async function logCall(_: string | null, form: FormData): Promise<string 
     p_supplier: text(form, "supplier"),
     p_email_consent: form.get("email_consent") === "on",
     p_note: text(form, "note"),
+    p_time: outcome === "meeting" && /^\d{2}:\d{2}$/.test(text(form, "meeting_time")) ? text(form, "meeting_time") : null,
   });
   if (error) {
     console.error("caller_log failed", error.message);

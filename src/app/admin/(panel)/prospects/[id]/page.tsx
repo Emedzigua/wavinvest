@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import BackButton from "@/components/admin/BackButton";
+import BookMeeting from "@/components/admin/BookMeeting";
 import CallLogger from "@/components/admin/CallLogger";
 import ConfirmButton from "@/components/admin/ConfirmButton";
 import LockedForm from "@/components/admin/LockedForm";
 import MapView from "@/components/admin/MapView";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireDeveloper } from "@/lib/admin/auth";
 import { getSettings } from "@/lib/admin/data";
 import { date, dateTime, num } from "@/lib/admin/format";
 import {
@@ -32,7 +33,7 @@ const kindLabel = { call: "Hovor", visit: "Návšteva", email: "E-mail", note: "
 
 export default async function ProspectPage({ params }: PageProps<"/admin/prospects/[id]">) {
   const { id } = await params;
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const [{ data }, { data: acts }, settings] = await Promise.all([
     supabase.from("prospects").select("*").eq("id", id).maybeSingle(),
     supabase.from("prospect_activities").select("*").eq("prospect_id", id).order("created_at", { ascending: false }),
@@ -44,6 +45,9 @@ export default async function ProspectPage({ params }: PageProps<"/admin/prospec
   const address = [p.street, [p.postal_code, p.city].filter(Boolean).join(" "), countryLabel[p.country]].filter(Boolean).join(", ");
   const search = `https://www.google.com/search?q=${encodeURIComponent(`${p.name} ${p.city ?? countryLabel[p.country]}`)}`;
   const route = `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const tomorrow = new Date(now.getTime() + 86_400_000).toISOString().slice(0, 10);
   const tel = (n: string) => `tel:${n.replace(/[^\d+]/g, "")}`;
   const otherPhones = (p.web_phones ?? []).filter((n) => n !== p.phone);
   const emails = [p.email, ...(p.web_emails ?? [])].filter((e, i, all): e is string => !!e && all.indexOf(e) === i);
@@ -203,6 +207,8 @@ export default async function ProspectPage({ params }: PageProps<"/admin/prospec
           </dl>
           <h3 className="mini">Zaznamenať</h3>
           <CallLogger prospectId={p.id} />
+          <h3 className="mini">Stretnutie pre majiteľa</h3>
+          <BookMeeting prospectId={p.id} today={today} tomorrow={tomorrow} />
         </section>
 
         <section className="card card--flush">

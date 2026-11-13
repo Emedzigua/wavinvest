@@ -11,7 +11,7 @@ import DepotRows from "@/components/admin/DepotRows";
 import PasswordForm from "@/components/admin/PasswordForm";
 import PushToggle from "@/components/admin/PushToggle";
 import MenuPicker from "@/components/admin/MenuPicker";
-import { MENU, MENU_PRESETS, visibleMenu } from "@/lib/admin/menu";
+import { MENU, ROLE_KEYS, presetsFor, visibleMenu } from "@/lib/admin/menu";
 
 export const metadata: Metadata = { title: "Nastavenia" };
 // Admin pages are personal and always rendered per request
@@ -26,8 +26,9 @@ export default async function SettingsPage() {
   ]);
   const b = s.billing;
   const cur = s.currency;
-  const menu = visibleMenu(user.menu);
-  const preset = MENU_PRESETS.find((p) => p.keys.length === menu.length && p.keys.every((k) => menu.includes(k)));
+  const menu = visibleMenu(user.menu, user.role);
+  const presets = presetsFor(user.role);
+  const preset = presets.find((p) => p.keys.length === menu.length && p.keys.every((k) => menu.includes(k)));
   const menuSummary = 
     preset?.label ?? (MENU.filter((m) => menu.includes(m.key)).map((m) => m.label).join(" · ") || "Len nastavenia");
   const billingMissing = [!b.ico && "IČO", !b.iban && "IBAN"].filter(Boolean).join(" a ");
@@ -43,7 +44,7 @@ export default async function SettingsPage() {
 
       <div className="acc-list">
         <Section title="Menu" summary={menuSummary}>
-          <MenuPicker initial={menu} />
+          <MenuPicker initial={menu} allowed={ROLE_KEYS[user.role]} presets={presets} />
         </Section>
 
         <Section title="Ceny" summary={`EPAL ${money(s.price_epal, cur)} · Nadstavec ${money(s.price_collars, cur)} · DPH ${num(s.vat_rate)} %`}>

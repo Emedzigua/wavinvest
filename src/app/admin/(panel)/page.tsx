@@ -26,7 +26,7 @@ const plural = (n: number, one: string, few: string, many: string) => (n === 1 ?
 export default async function Dashboard() {
   const { supabase, user } = await requireAdmin();
   // Overview hidden from the menu: start on the first tab this admin uses
-  if (!visibleMenu(user.menu).includes("overview")) redirect(homeHref(user.menu));
+  if (!visibleMenu(user.menu, user.role).includes("overview")) redirect(homeHref(user.menu, user.role));
   const today = new Date();
   const fiveDaysAgo = new Date(today);
   fiveDaysAgo.setUTCDate(fiveDaysAgo.getUTCDate() - 5);

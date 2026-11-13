@@ -42,6 +42,7 @@ type Ui = {
   consent: string;
   callBackDate: string;
   meetingDate: string;
+  meetingTime: string;
   note: string;
   notePlaceholder: string;
   save: string;
@@ -101,6 +102,7 @@ export const ui: Record<UiLang, Ui> = {
     consent: "Súhlasia, aby sme im poslali ponuku e-mailom",
     callBackDate: "Kedy zavolať znova",
     meetingDate: "Kedy by sa chceli stretnúť",
+    meetingTime: "Čas stretnutia",
     note: "Poznámka",
     notePlaceholder: "Čo povedali, čo potrebujú…",
     save: "Uložiť a ďalšia firma",
@@ -156,6 +158,7 @@ export const ui: Record<UiLang, Ui> = {
     consent: "Souhlasí, abychom jim poslali nabídku e-mailem",
     callBackDate: "Kdy zavolat znovu",
     meetingDate: "Kdy by se chtěli sejít",
+    meetingTime: "Čas schůzky",
     note: "Poznámka",
     notePlaceholder: "Co řekli, co potřebují…",
     save: "Uložit a další firma",
@@ -211,6 +214,7 @@ export const ui: Record<UiLang, Ui> = {
     consent: "Zgadzają się na ofertę e-mailem",
     callBackDate: "Kiedy zadzwonić ponownie",
     meetingDate: "Kiedy chcą się spotkać",
+    meetingTime: "Godzina spotkania",
     note: "Notatka",
     notePlaceholder: "Co powiedzieli, czego potrzebują…",
     save: "Zapisz i następna firma",
@@ -266,6 +270,7 @@ export const ui: Record<UiLang, Ui> = {
     consent: "Einverstanden, dass wir ein Angebot per E-Mail schicken",
     callBackDate: "Wann erneut anrufen",
     meetingDate: "Wunschtermin",
+    meetingTime: "Uhrzeit",
     note: "Notiz",
     notePlaceholder: "Was gesagt wurde, was gebraucht wird…",
     save: "Speichern und nächste Firma",
@@ -321,6 +326,7 @@ export const ui: Record<UiLang, Ui> = {
     consent: "Hozzájárul, hogy e-mailben ajánlatot küldjünk",
     callBackDate: "Mikor hívjuk újra",
     meetingDate: "Mikor szeretnének találkozni",
+    meetingTime: "Időpont (óra)",
     note: "Megjegyzés",
     notePlaceholder: "Mit mondtak, mire van szükségük…",
     save: "Mentés és következő cég",
@@ -376,6 +382,7 @@ export const ui: Record<UiLang, Ui> = {
     consent: "They agree to receive an offer by email",
     callBackDate: "When to call again",
     meetingDate: "When they would like to meet",
+    meetingTime: "Meeting time",
     note: "Note",
     notePlaceholder: "What they said, what they need…",
     save: "Save and next company",

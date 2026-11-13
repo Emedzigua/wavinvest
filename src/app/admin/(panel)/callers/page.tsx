@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireDeveloper } from "@/lib/admin/auth";
 import { num } from "@/lib/admin/format";
 import { countryLabel } from "@/lib/admin/prospects";
 import { uiLangLabel, type UiLang } from "@/lib/caller/texts";
@@ -12,7 +12,7 @@ export const instant = false;
 
 type CallerRow = { user_id: string; login: string; name: string; countries: string[]; language: UiLang; active: boolean };
 export default async function CallersPage() {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireDeveloper();
   const monthStart = new Date();
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);

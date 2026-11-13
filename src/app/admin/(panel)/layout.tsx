@@ -36,7 +36,7 @@ export default function PanelLayout({ children }: LayoutProps<"/admin">) {
 
 async function NavWithCount() {
   const { supabase, user } = await requireAdmin();
-  const visible = visibleMenu(user.menu);
+  const visible = visibleMenu(user.menu, user.role);
   const { count } = visible.includes("quotes")
     ? await supabase.from("quotes").select("id", { count: "exact", head: true }).eq("status", "new")
     : { count: 0 };
@@ -53,7 +53,7 @@ function HomeLink({ href }: { href: string }) {
 
 async function UserHomeLink() {
   const { user } = await requireAdmin();
-  return <HomeLink href={homeHref(user.menu)} />;
+  return <HomeLink href={homeHref(user.menu, user.role)} />;
 }
 
 async function UserBox() {
